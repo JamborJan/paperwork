@@ -64,6 +64,12 @@ etc/apparmor.d/usr.sbin.rsyslogd
 etc/console-setup/vtrgb
 etc/container_environment
 etc/container_environment.sh
+etc/container_environment/HOSTNAME
+etc/container_environment/INITRD
+etc/container_environment/LANG
+etc/container_environment/LC_CTYPE
+etc/container_environment/PATH
+etc/container_environment/TERM
 etc/default/syslog-ng
 etc/ld.so.cache
 etc/locale.alias
@@ -34740,6 +34746,7 @@ usr/bin/xzless
 usr/bin/xzmore
 usr/lib/libmcrypt.so.4
 usr/lib/libmcrypt.so.4.4.8
+usr/lib/locale/locale-archive
 usr/lib/php5/20121212/gd.so
 usr/lib/php5/20121212/json.so
 usr/lib/php5/20121212/mcrypt.so
@@ -34813,6 +34820,7 @@ usr/lib/python3.4/sitecustomize.py
 usr/lib/python3.4/tarfile.py
 usr/lib/python3/dist-packages
 usr/lib/ssl/openssl.cnf
+usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
 usr/lib/x86_64-linux-gnu/libGeoIP.so.1
 usr/lib/x86_64-linux-gnu/libGeoIP.so.1.6.0
 usr/lib/x86_64-linux-gnu/libX11.so.6
@@ -35021,6 +35029,8 @@ usr/share/ca-certificates/mozilla/thawte_Primary_Root_CA.crt
 usr/share/ca-certificates/mozilla/thawte_Primary_Root_CA_-_G2.crt
 usr/share/ca-certificates/mozilla/thawte_Primary_Root_CA_-_G3.crt
 usr/share/ca-certificates/spi-inc.org/spi-cacert-2008.crt
+usr/share/locale-langpack/en/LC_MESSAGES/coreutils.mo
+usr/share/locale/locale.alias
 usr/share/man/fr/man1/vim.1.gz
 usr/share/man/it/man1/vim.1.gz
 usr/share/man/ja/man1/vim.1.gz
