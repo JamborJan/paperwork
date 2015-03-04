@@ -60,7 +60,7 @@ const pkgdef :Spk.PackageDefinition = (
   # `spk dev` will write a list of all the files your app uses to this file.
   # You should review it later, before shipping your app.
 
-  alwaysInclude = ["opt/app_original"]
+  alwaysInclude = ["opt/app"]
   # Fill this list with more names of files or directories that should be
   # included in your package, even if not listed in sandstorm-files.list.
   # Use this to force-include stuff that you know you need but which may
@@ -70,10 +70,10 @@ const pkgdef :Spk.PackageDefinition = (
 
 const myCommand :Spk.Manifest.Command = (
   # Here we define the command used to start up your server.
-  argv = ["/sandstorm-http-bridge", "33411", "--", "/opt/app_original/run_grain.sh"],
+  argv = ["/sandstorm-http-bridge", "33411", "--", "/opt/app/run_grain.sh"],
   environ = [
     # Note that this defines the *entire* environment seen by your app.
     (key = "PATH", value = "/usr/local/bin:/usr/bin:/bin"),
-    (key = "HOME", value = "/var_original")
+    (key = "HOME", value = "/var")
   ]
 );
