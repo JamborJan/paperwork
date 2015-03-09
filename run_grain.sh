@@ -10,7 +10,10 @@ test -d /var/log/nginx || cp -r /var_original/log/nginx /var/log
 # test -f /var/feed-icons || cp -r /opt/app/feed-icons-old /var/feed-icons
 rm -f /var/run/mysqld/mysqld.sock && ln -s /tmp/mysqld.sock /var/run/mysqld/mysqld.sock
 
+# app verzeichnis kopieren ?
+test -d /var/app || cp -r /opt/app_original /var/app
+
 # update
-bash -c 'sleep 20 && /usr/bin/php5 /opt/app/update.php --feeds --force-update' 2>&1 &
+# bash -c 'sleep 20 && /usr/bin/php5 /opt/app/update.php --feeds --force-update' 2>&1 &
 
 /sbin/my_init
