@@ -113,8 +113,8 @@ class UserController extends BaseController
     public function showLoginForm()
     {
         //
-        // This get's the user from sandstorm, checks if it's the already there
-        // If not creates the first admin user and then starts the app
+        // This checks, if we are running on Sandstorm (https://sandstorm.io/)
+        // If yes, we check if we are in a new grain or an existing one
         //
         
         $sandstorm_permissions = array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'] : '';
@@ -122,9 +122,9 @@ class UserController extends BaseController
 		$sandstorm_id = array_key_exists('HTTP_X_SANDSTORM_USER_ID', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_USER_ID'] : '0';
 		
 		if ($sandstorm_id != '0') {
-			// Okay we a sandstorm user
-			// Sharing is not working anyway at the moment, so there should be only one user
-			// So we create a user with the sandstorm data if there is none 
+			// Okay, we are running on Sandstorm but there is no app user = new grain
+			// Sharing is not working anyway at the moment, the Sandstorm guys are working on that.
+			// So we create a new app user with the sandstorm data which is admin 
 			if (User::all()->count() <= 1) {
 				
 				$user = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
@@ -137,49 +137,40 @@ class UserController extends BaseController
 					$user->is_admin = 1;
 					$user->save();
 					$setting = Setting::create(['ui_language' => 'en' , 'user_id' => $user->id]);
-				
-				
-					 /* Add welcome note to user - create notebook, tag and note */
-					//$notebookCreate = Notebook::create(array('title' => Lang::get('notebooks.welcome_notebook_title')));
+								
+					// We add of course a welcome notebook
 					$notebookCreate = new Notebook();
-
 					$notebookCreate->title = Lang::get('notebooks.welcome_notebook_title');
 					$notebookCreate->save();
-
 					$notebookCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
-
-					//$tagCreate = Tag::create(array('title' => Lang::get('notebooks.welcome_note_tag'), 'visibility' => 0));
 					$tagCreate = new Tag();
-
 					$tagCreate->title      = Lang::get('notebooks.welcome_note_tag');
 					$tagCreate->visibility = 0;
 					$tagCreate->save();
 					$tagCreate->users()->attach($user->id);
-
 					$noteCreate = new Note;
-
 					$versionCreate = new Version([
 						'title'           => Lang::get('notebooks.welcome_note_title'),
 						'content'         => Lang::get('notebooks.welcome_note_content'),
 						'content_preview' => mb_substr(strip_tags(Lang::get('notebooks.welcome_note_content')), 0, 255)
 					]);
-
 					$versionCreate->save();
-
 					$noteCreate->version()->associate($versionCreate);
 					$noteCreate->notebook_id = $notebookCreate->id;
 					$noteCreate->save();
 					$noteCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
 					$noteCreate->tags()->sync([$tagCreate->id]);
-				
+					
+					// And finally we log the new user in				
 					Auth::login($user);
 					Session::put('ui_language', $setting->ui_language);
 					return Redirect::route("/");
 				}
             } else {
-            	// okay there is already a user in the database
-            	// as sharing is not yet implemented this should be the one we have
-            	// so we login
+            	// There is already an app user in the database
+            	// As sharing grains is not yet working there can be only one
+            	// That makes live easy here, we can assume the user we get from sandstorm
+            	// Is the one we can login with ... and go.
             	
 				$user->username = $sandstorm_name;
 				$user->password = $sandstorm_id;
@@ -188,7 +179,7 @@ class UserController extends BaseController
                 return Redirect::route("/");
             }
 		} else {
-			// We have no sandstorm user so we run in "normal" mode
+			// When we have no Sandstorm user we run the app in "normal" mode.
 			return View::make('user/login');
 		}
         
