@@ -112,7 +112,86 @@ class UserController extends BaseController
 
     public function showLoginForm()
     {
-        return View::make('user/login');
+        //
+        // This get's the user from sandstorm, checks if it's the already there
+        // If not creates the first admin user and then starts the app
+        //
+        
+        $sandstorm_permissions = array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'] : '';
+		$sandstorm_name = array_key_exists('HTTP_X_SANDSTORM_USERNAME', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_USERNAME'] : '';
+		$sandstorm_id = array_key_exists('HTTP_X_SANDSTORM_USER_ID', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_USER_ID'] : '0';
+		
+		if ($sandstorm_id != '0') {
+			// Okay we a sandstorm user
+			// Sharing is not working anyway at the moment, so there should be only one user
+			// So we create a user with the sandstorm data if there is none 
+			if (User::all()->count() <= 1) {
+				
+				$user = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
+				if ($user) {
+					//make the first user an admin
+					$user->firstname = $sandstorm_name;
+					$user->lastname  = " ";
+					$user->username = $sandstorm_name;
+					$user->password = $sandstorm_id;
+					$user->is_admin = 1;
+					$user->save();
+					$setting = Setting::create(['ui_language' => 'en' , 'user_id' => $user->id]);
+				
+				
+					 /* Add welcome note to user - create notebook, tag and note */
+					//$notebookCreate = Notebook::create(array('title' => Lang::get('notebooks.welcome_notebook_title')));
+					$notebookCreate = new Notebook();
+
+					$notebookCreate->title = Lang::get('notebooks.welcome_notebook_title');
+					$notebookCreate->save();
+
+					$notebookCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
+
+					//$tagCreate = Tag::create(array('title' => Lang::get('notebooks.welcome_note_tag'), 'visibility' => 0));
+					$tagCreate = new Tag();
+
+					$tagCreate->title      = Lang::get('notebooks.welcome_note_tag');
+					$tagCreate->visibility = 0;
+					$tagCreate->save();
+					$tagCreate->users()->attach($user->id);
+
+					$noteCreate = new Note;
+
+					$versionCreate = new Version([
+						'title'           => Lang::get('notebooks.welcome_note_title'),
+						'content'         => Lang::get('notebooks.welcome_note_content'),
+						'content_preview' => mb_substr(strip_tags(Lang::get('notebooks.welcome_note_content')), 0, 255)
+					]);
+
+					$versionCreate->save();
+
+					$noteCreate->version()->associate($versionCreate);
+					$noteCreate->notebook_id = $notebookCreate->id;
+					$noteCreate->save();
+					$noteCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
+					$noteCreate->tags()->sync([$tagCreate->id]);
+				
+					Auth::login($user);
+					Session::put('ui_language', $setting->ui_language);
+					return Redirect::route("/");
+				}
+            } else {
+            	// okay there is already a user in the database
+            	// as sharing is not yet implemented this should be the one we have
+            	// so we login
+            	
+				$user->username = $sandstorm_name;
+				$user->password = $sandstorm_id;
+				Auth::login($user);
+                Session::put('ui_language', $setting->ui_language);
+                return Redirect::route("/");
+            }
+		} else {
+			// We have no sandstorm user so we run in "normal" mode
+			return View::make('user/login');
+		}
+        
     }
 
     protected function isPostRequest()

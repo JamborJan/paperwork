@@ -70,7 +70,3 @@ EXPOSE 33411
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN rm -rf /usr/share/vim /usr/share/doc /usr/share/man /var/lib/dpkg /var/lib/belocs /var/lib/ucf /var/cache/debconf /var/log/*.log
-
-# load initial paperwork DB
-# This needs to be run manually at the first start of the container
-# mysql paperwork < /opt/app/init_paperwork.sql

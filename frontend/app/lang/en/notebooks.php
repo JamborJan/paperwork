@@ -11,8 +11,8 @@ return array(
     'welcome_notebook_title' => 'Welcome',
     'welcome_note_tag' => 'welcome',
     'welcome_note_content' => 
-        '<p>Hi there, <strong>welcome to Paperwork</strong>, the open source note-taking solution. This '.
-        'is your first note and we&#39;d like to explain to you some features we hope you&#39;ll find very'.
+        '<p>Hi there, <b>welcome to the Sandstorm powered Paperwork</b>, the leading open source note-taking solution brought to your own secure server by <a href="https://sandstorm.io/" target="_blank">Sandstorm.io</a>. '.
+        'This is your first note and we&#39;d like to explain to you some features we hope you&#39;ll find very'.
         'interesting.</p><h3><strong>Notes</strong></h3><p>Notes are the basic form of writing in Paperwork.'.
         'Notes are saved inside notebooks. You already have one named &#39;Welcome&#39; in which this note is '.
         'stored. You can create as much notebooks and notes as you want by using the <a id="file_click_handler" href="#">'.
@@ -35,5 +35,5 @@ return array(
         'on Github</a>. If you want to be informed on what we&#39;re planning for Paperwork and be able to participate in the discussion, please join '.
         'our mailing list <a href="mailto:paperwork-dev@googlegroups.com">here</a>.</p><p><strong>Thanks for choosing Paperwork,</strong></p><p><strong>'.
         'The Paperwork Team. </strong></p>',
-    'welcome_note_title' => 'Welcome to Paperwork'
+    'welcome_note_title' => 'Welcome to the Sandstorm powered Paperwork'
 );

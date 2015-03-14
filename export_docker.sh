@@ -29,7 +29,7 @@ cd ..
 cd opt
 # mv app/feed-icons app/feed-icons-old
 # ln -s ../../var/feed-icons app/feed-icons
-cp app/sandstorm/bin/* ../bin
+# cp app/sandstorm/bin/* ../bin
 cp app/config.php-sandstorm app/config.php
 cd ../..
 
