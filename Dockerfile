@@ -56,6 +56,14 @@ ADD . /opt/app
 RUN rm -rf /opt/app/.git
 RUN chmod -R 777 /opt/app
 
+# move storage folders which must be writable to /var
+# move default content
+RUN mv /opt/app/frontend/app/storage  /var/storage
+# chmod the folder
+RUN chmod -R 777 /var/storage
+# symlink folders to /var
+RUN ln -s /var/storage /opt/app/frontend/app/storage
+
 EXPOSE 33411
 
 # Clean up APT when done.
