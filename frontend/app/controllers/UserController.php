@@ -117,7 +117,7 @@ class UserController extends BaseController
         // If yes, we check if we are in a new grain or an existing one
         //
         
-        $sandstorm_permissions = array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'] : '';
+		$sandstorm_permissions = array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'] : '';
 		$sandstorm_name = array_key_exists('HTTP_X_SANDSTORM_USERNAME', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_USERNAME'] : '';
 		$sandstorm_id = array_key_exists('HTTP_X_SANDSTORM_USER_ID', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_USER_ID'] : '0';
 		
@@ -125,7 +125,7 @@ class UserController extends BaseController
 			// Okay, we are running on Sandstorm but there is no app user = new grain
 			// Sharing is not working anyway at the moment, the Sandstorm guys are working on that.
 			// So we create a new app user with the sandstorm data which is admin 
-			if (User::all()->count() <= 1) {
+			if (User::all()->count() == 0) {
 				
 				$user = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
 				if ($user) {
@@ -172,12 +172,13 @@ class UserController extends BaseController
             	// That makes live easy here, we can assume the user we get from sandstorm
             	// Is the one we can login with ... and go.
             	
-				$user->username = $sandstorm_name;
-				$user->password = $sandstorm_id;
-				Auth::login($user);
-                Session::put('ui_language', $setting->ui_language);
-                return Redirect::route("/");
-            }
+	            $credentials = ["username" => $sandstorm_name, "password" => $sandstorm_id];
+	            if (Auth::attempt($credentials)) {
+        	        $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
+	                Session::put('ui_language', $settings->ui_language);
+	                return Redirect::route("/");
+	            }
+	        }
 		} else {
 			// When we have no Sandstorm user we run the app in "normal" mode.
 			return View::make('user/login');

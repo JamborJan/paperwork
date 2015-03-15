@@ -291,12 +291,16 @@ opt/app/frontend/public/ckeditor/skins/bootstrapck/editor_gecko.css
 opt/app/frontend/public/ckeditor/skins/bootstrapck/icons.png
 opt/app/frontend/public/ckeditor/skins/bootstrapck/images/close.png
 opt/app/frontend/public/ckeditor/styles.js
+opt/app/frontend/public/css/bootstrap-editable.css
 opt/app/frontend/public/css/freqselector.min.css
 opt/app/frontend/public/css/themes/paperwork-v1.min.css
 opt/app/frontend/public/css/typeahead.min.css
 opt/app/frontend/public/favicon.ico
+opt/app/frontend/public/fonts/Lato-Black.woff
 opt/app/frontend/public/fonts/Lato-Bold.ttf
 opt/app/frontend/public/fonts/Lato-Bold.woff
+opt/app/frontend/public/fonts/Lato-Heavy.woff
+opt/app/frontend/public/fonts/Lato-Light.woff
 opt/app/frontend/public/fonts/Lato-Medium.ttf
 opt/app/frontend/public/fonts/Lato-Medium.woff
 opt/app/frontend/public/fonts/Lato-Regular.ttf
@@ -307,6 +311,8 @@ opt/app/frontend/public/fonts/Lato-Thin.ttf
 opt/app/frontend/public/fonts/Lato-Thin.woff
 opt/app/frontend/public/fonts/fontawesome-webfont.ttf
 opt/app/frontend/public/fonts/fontawesome-webfont.woff
+opt/app/frontend/public/images/freqselector/default/background.png
+opt/app/frontend/public/images/freqselector/default/ruler.png
 opt/app/frontend/public/images/navbar-logo.png
 opt/app/frontend/public/images/paperwork-icons/favicon-128x128.png
 opt/app/frontend/public/images/paperwork-icons/favicon-192x192.png
@@ -314,6 +320,7 @@ opt/app/frontend/public/images/paperwork-icons/favicon-64x64.png
 opt/app/frontend/public/images/paperwork-logo.png
 opt/app/frontend/public/index.php
 opt/app/frontend/public/js/angular.min.js
+opt/app/frontend/public/js/bootstrap-editable.min.js
 opt/app/frontend/public/js/bootstrap.min.js
 opt/app/frontend/public/js/jquery.min.js
 opt/app/frontend/public/js/libraries.min.js
@@ -35959,6 +35966,7 @@ var_original/storage/meta/services.json
 var_original/storage/sessions
 var_original/storage/sessions/.gitignore
 var_original/storage/sessions/0402aad3b1d281cf1f90d8fd0da2948da9ff943a
+var_original/storage/sessions/0a209e92af847a06f3e786f93d2e89f90945b6e7
 var_original/storage/sessions/1ad23a71846beb6848d977b517e1400e85ac2fea
 var_original/storage/sessions/e97f85bc92b19fac1a1e2632b9f34018170636ce
 var_original/storage/views

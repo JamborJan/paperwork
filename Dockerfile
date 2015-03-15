@@ -70,3 +70,7 @@ EXPOSE 33411
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN rm -rf /usr/share/vim /usr/share/doc /usr/share/man /var/lib/dpkg /var/lib/belocs /var/lib/ucf /var/cache/debconf /var/log/*.log
+
+# Run init script from paperwork
+# Needs to be run at first start of docker container
+# RUN cd /opt/app/frontend && php artisan migrate --force
