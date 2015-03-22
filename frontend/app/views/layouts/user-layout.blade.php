@@ -5,15 +5,17 @@
 
 	<!-- [[ HTML::style('css/bootstrap.min.css') ]] -->
     <!-- [[ HTML::style('css/bootstrap-theme.min.css') ]] -->
+    
+    [[ HTML::style('css/themes/paperwork-v1.min.css', array(), true) ]]
 
-    [[ HTML::style('css/themes/paperwork-v1.min.css') ]]
+    [[ HTML::style('css/freqselector.min.css', array(), true) ]]
 
-    [[ HTML::style('css/freqselector.min.css') ]]
+    [[ HTML::style('css/typeahead.min.css', array(), true) ]]
+    
+    [[ HTML::style('css/mathquill.css', array(), true)]]
 
-    [[ HTML::style('css/typeahead.min.css') ]]
-
-    [[ HTML::style('css/bootstrap-editable.css') ]]
-
+    [[ HTML::style('css/bootstrap-editable.css', array(), true)]]
+    
 </head>
   <body ng-app="paperworkNotes">
   	<div ng-controller="ConstructorController"></div>
@@ -48,8 +50,12 @@
 				@include('partials/menu-main')
 
 				@include('partials/search-main')
+				
+				<!-- We don't need these buttons in Sandstorm Mode-->
+				@if (!array_key_exists('HTTP_X_SANDSTORM_USER_ID', $_SERVER))
+					@include('partials/navigation-main')
+				@endif
 
-				@include('partials/navigation-main')
 			</div>
 		</div>
 	</div>
@@ -64,17 +70,19 @@
       </div>
     </div>
 
-	[[ HTML::script('js/jquery.min.js') ]]
-	[[ HTML::script('js/libraries.min.js') ]]
-	[[ HTML::script('js/angular.min.js') ]]
+	[[ HTML::script('js/jquery.min.js', array(), true) ]]
+	[[ HTML::script('js/libraries.min.js', array(), true) ]]
+	[[ HTML::script('js/angular.min.js', array(), true) ]]
 
-	[[ HTML::script('js/paperwork.min.js') ]]
+	[[ HTML::script('js/paperwork.min.js', array(), true) ]]
+	[[ HTML::script('js/paperwork-native.min.js', array(), true) ]]
 
-	[[ HTML::script('js/bootstrap.min.js') ]]
-	[[ HTML::script('js/tagsinput.min.js') ]]
+	[[ HTML::script('js/bootstrap.min.js', array(), true) ]]
+	[[ HTML::script('js/tagsinput.min.js', array(), true) ]]
 
-	[[ HTML::script('ckeditor/ckeditor.js') ]]
-	[[ HTML::script('js/bootstrap-editable.min.js') ]]
+	[[ HTML::script('ckeditor/ckeditor.js', array(), true) ]]
+	[[ HTML::script('ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js', array(), true) ]]
+	[[ HTML::script('js/bootstrap-editable.min.js', array(), true) ]]
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>

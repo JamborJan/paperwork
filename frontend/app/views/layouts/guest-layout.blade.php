@@ -6,7 +6,7 @@
     <!-- [[ HTML::style('css/bootstrap.min.css') ]] -->
     <!-- [[ HTML::style('css/bootstrap-theme.min.css') ]] -->
 
-    [[ HTML::style('css/themes/paperwork-v1.min.css') ]]
+    [[ HTML::style('css/themes/paperwork-v1.min.css', array(), true) ]]
 
   </head>
   <body class="paperwork-guest">
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-  [[ HTML::script('js/jquery.min.js') ]]
+	[[ HTML::script('js/jquery.min.js', array(), true) ]]
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
@@ -35,6 +35,6 @@
   <!--[if lt IE 11]>
     [[ HTML::script('js/ltie11compat.js') ]]
   <![endif]-->
-  [[ HTML::script('js/libraries.min.js') ]]
+  [[ HTML::script('js/libraries.min.js', array(), true) ]]
   </body>
 </html>
