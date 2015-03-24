@@ -1,5 +1,13 @@
 <?php
 
+/*
+|--------------------------------------------------------------------------
+| Get the Sandstorm base path
+|--------------------------------------------------------------------------
+|
+*/
+$sandstorm_base_path =  array_key_exists('HTTP_X_SANDSTORM_BASE_PATH', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_BASE_PATH'] : 'localhost';
+
 return array(
 	/*
 	|--------------------------------------------------------------------------
@@ -23,10 +31,10 @@ return array(
 	*/
 	'access' => array(
 		'external' => array(
-			'dns'	=> 'paperwork.example.com',
+			'dns'	=> $sandstorm_base_path,
 			'ports' => array(
-				'http'		 => 80,
-				'https' 	 => 443,
+				'http'		 => 33411,
+				'https' 	 => 33411,
 				'forceHttps' => true
 			)
 		),
@@ -51,7 +59,7 @@ return array(
 	| no new users will be able to register.
 	|
 	*/
-	'registration' => true,
+	'registration' => false,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -61,7 +69,7 @@ return array(
 	| If set to true, forgot password link is enabled.
 	|
 	*/
-	'forgot_password' => true,
+	'forgot_password' => false,
 
 	/*
 	|--------------------------------------------------------------------------

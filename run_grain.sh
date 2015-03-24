@@ -12,7 +12,7 @@ test -d /var/storage || cp -r /var_original/storage /var
 rm -f /var/run/mysqld/mysqld.sock && ln -s /tmp/mysqld.sock /var/run/mysqld/mysqld.sock
 
 # app verzeichnis kopieren ?
-test -d /var/app || cp -r /opt/app_original /var/app
+# test -d /var/app || cp -r /opt/app_original /var/app
 
 # update
 # bash -c 'sleep 20 && /usr/bin/php5 /opt/app/update.php --feeds --force-update' 2>&1 &

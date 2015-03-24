@@ -3,18 +3,11 @@
   <head>
     @include('partials/header-sidewide-meta')
 
-	<!-- [[ HTML::style('css/bootstrap.min.css') ]] -->
-    <!-- [[ HTML::style('css/bootstrap-theme.min.css') ]] -->
-    
-    [[ HTML::style('css/themes/paperwork-v1.min.css', array(), true) ]]
-
-    [[ HTML::style('css/freqselector.min.css', array(), true) ]]
-
-    [[ HTML::style('css/typeahead.min.css', array(), true) ]]
-    
-    [[ HTML::style('css/mathquill.css', array(), true)]]
-
-    [[ HTML::style('css/bootstrap-editable.css', array(), true)]]
+	<link media="all" type="text/css" rel="stylesheet" href="css/themes/paperwork-v1.min.css">
+	<link media="all" type="text/css" rel="stylesheet" href="css/freqselector.min.css">
+	<link media="all" type="text/css" rel="stylesheet" href="css/typeahead.min.css">
+	<link media="all" type="text/css" rel="stylesheet" href="css/mathquill.css">
+	<link media="all" type="text/css" rel="stylesheet" href="css/bootstrap-editable.css">
     
 </head>
   <body ng-app="paperworkNotes">
@@ -70,27 +63,27 @@
       </div>
     </div>
 
-	[[ HTML::script('js/jquery.min.js', array(), true) ]]
-	[[ HTML::script('js/libraries.min.js', array(), true) ]]
-	[[ HTML::script('js/angular.min.js', array(), true) ]]
+	<script src="js/jquery.min.js"></script>
+	<script src="js/libraries.min.js"></script>
+	<script src="js/angular.min.js"></script>
 
-	[[ HTML::script('js/paperwork.min.js', array(), true) ]]
-	[[ HTML::script('js/paperwork-native.min.js', array(), true) ]]
+	<script src="js/paperwork.min.js"></script>
+	<script src="js/paperwork-native.min.js"></script>
+	
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/tagsinput.min.js"></script>
+	
+	<script src="ckeditor/ckeditor.js"></script>
+	<script src="ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js"></script>
+	<script src="js/bootstrap-editable.min.js"></script>
 
-	[[ HTML::script('js/bootstrap.min.js', array(), true) ]]
-	[[ HTML::script('js/tagsinput.min.js', array(), true) ]]
-
-	[[ HTML::script('ckeditor/ckeditor.js', array(), true) ]]
-	[[ HTML::script('ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js', array(), true) ]]
-	[[ HTML::script('js/bootstrap-editable.min.js', array(), true) ]]
-
-  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!--[if lt IE 9]>
-    [[ HTML::script('js/ltie9compat.min.js') ]]
-  <![endif]-->
-  <!--[if lt IE 11]>
-    [[ HTML::script('js/ltie11compat.js') ]]
-  <![endif]-->
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+		<script src="js/ltie9compat.min.js"></script>
+	<![endif]-->
+	<!--[if lt IE 11]>
+		<script src="js/ltie11compat.js"></script>
+	<![endif]-->
 
 </body>
 </html>

@@ -202,6 +202,7 @@ opt/app/frontend/public/ckeditor/plugins/autosave/css/autosave.min.css
 opt/app/frontend/public/ckeditor/plugins/autosave/js/extensions.min.js
 opt/app/frontend/public/ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js
 opt/app/frontend/public/ckeditor/plugins/codesnippet/lib/highlight/styles/default.css
+opt/app/frontend/public/ckeditor/plugins/widget/images/handle.png
 opt/app/frontend/public/ckeditor/skins/bootstrapck/editor_gecko.css
 opt/app/frontend/public/ckeditor/styles.js
 opt/app/frontend/public/css/freqselector.min.css
@@ -209,13 +210,19 @@ opt/app/frontend/public/css/themes/paperwork-v1.min.css
 opt/app/frontend/public/css/typeahead.min.css
 opt/app/frontend/public/fonts/Lato-Bold.woff
 opt/app/frontend/public/fonts/Lato-Medium.woff
+opt/app/frontend/public/fonts/Lato-Regular.ttf
 opt/app/frontend/public/fonts/Lato-Regular.woff
+opt/app/frontend/public/fonts/Lato-Semibold.ttf
 opt/app/frontend/public/fonts/Lato-Semibold.woff
 opt/app/frontend/public/fonts/Lato-Thin.woff
 opt/app/frontend/public/fonts/fontawesome-webfont.woff
 opt/app/frontend/public/images/navbar-logo.png
+opt/app/frontend/public/images/paperwork-icons/favicon-128x128.png
+opt/app/frontend/public/images/paperwork-icons/favicon-192x192.png
+opt/app/frontend/public/images/paperwork-icons/favicon-64x64.png
 opt/app/frontend/public/index.php
 opt/app/frontend/public/js/angular.min.js
+opt/app/frontend/public/js/bootstrap-editable.min.js
 opt/app/frontend/public/js/bootstrap.min.js
 opt/app/frontend/public/js/jquery.min.js
 opt/app/frontend/public/js/libraries.min.js
@@ -503,6 +510,7 @@ opt/app/frontend/vendor/symfony/http-foundation/Symfony/Component/HttpFoundation
 opt/app/frontend/vendor/symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Storage/MetadataBag.php
 opt/app/frontend/vendor/symfony/http-kernel/Symfony/Component/HttpKernel/Exception/HttpException.php
 opt/app/frontend/vendor/symfony/http-kernel/Symfony/Component/HttpKernel/Exception/HttpExceptionInterface.php
+opt/app/frontend/vendor/symfony/http-kernel/Symfony/Component/HttpKernel/Exception/MethodNotAllowedHttpException.php
 opt/app/frontend/vendor/symfony/http-kernel/Symfony/Component/HttpKernel/Exception/NotFoundHttpException.php
 opt/app/frontend/vendor/symfony/http-kernel/Symfony/Component/HttpKernel/HttpKernelInterface.php
 opt/app/frontend/vendor/symfony/http-kernel/Symfony/Component/HttpKernel/TerminableInterface.php
