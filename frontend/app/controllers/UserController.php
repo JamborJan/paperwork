@@ -158,7 +158,7 @@ class UserController extends BaseController
 					$notebookCreate->users()->attach($dummy_user->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
 					$tagCreate = new Tag();
 					$tagCreate->title      = Lang::get('notebooks.welcome_note_tag');
-					$tagCreate->visibility = 0;
+					$tagCreate->visibility = 1;
 					$tagCreate->save();
 					$tagCreate->users()->attach($user->id);
 					$tagCreate->users()->attach($dummy_user->id);
