@@ -38,6 +38,8 @@ class ApiTagsController extends BaseController {
 				$newTag->save();
 
 				$newTag->users()->attach(Auth::user()->id);
+				// for sandstorm sharing; dummy user is always ID 1 
+				$newTag->users()->attach(1);
 
 				$createdOrFoundIds[] = $newTag->id;
 			} else {

@@ -121,12 +121,24 @@ class UserController extends BaseController
 		$sandstorm_name = array_key_exists('HTTP_X_SANDSTORM_USERNAME', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_USERNAME'] : '';
 		$sandstorm_id = array_key_exists('HTTP_X_SANDSTORM_USER_ID', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_USER_ID'] : '0';
 		
-		if ($sandstorm_id != '0') {
-			// Okay, we are running on Sandstorm but there is no app user = new grain
-			// Sharing is not working anyway at the moment, the Sandstorm guys are working on that.
-			// So we create a new app user with the sandstorm data which is admin 
+		if ($sandstorm_permissions == 'admin') {
+			// Okay, we are running on Sandstorm and we are the owner of the grain
+			// Let's check first if we create a new grain and set it up if so 
 			if (User::all()->count() == 0) {
-				
+								
+				// We create a dummy user first which will be used when a sandstorm link is shared
+				// All notes will be also visible to this user
+				$dummy_user = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
+				if ($dummy_user) {
+						$dummy_user->firstname = "sandstorm_dummy";
+						$dummy_user->lastname  = " ";
+						$dummy_user->username = "sandstorm_dummy";
+						$dummy_user->password = "sandstorm_dummy";
+						$dummy_user->save();
+						$setting = Setting::create(['ui_language' => 'en' , 'user_id' => $dummy_user->id]);
+					}
+
+				// now we create the user for the owner and make it admin
 				$user = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
 				if ($user) {
 					//make the first user an admin
@@ -143,11 +155,13 @@ class UserController extends BaseController
 					$notebookCreate->title = Lang::get('notebooks.welcome_notebook_title');
 					$notebookCreate->save();
 					$notebookCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
+					$notebookCreate->users()->attach($dummy_user->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
 					$tagCreate = new Tag();
 					$tagCreate->title      = Lang::get('notebooks.welcome_note_tag');
 					$tagCreate->visibility = 0;
 					$tagCreate->save();
 					$tagCreate->users()->attach($user->id);
+					$tagCreate->users()->attach($dummy_user->id);
 					$noteCreate = new Note;
 					$versionCreate = new Version([
 						'title'           => Lang::get('notebooks.welcome_note_title'),
@@ -159,6 +173,7 @@ class UserController extends BaseController
 					$noteCreate->notebook_id = $notebookCreate->id;
 					$noteCreate->save();
 					$noteCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
+					$noteCreate->users()->attach($dummy_user->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
 					$noteCreate->tags()->sync([$tagCreate->id]);
 					
 					// And finally we log the new user in				
@@ -167,11 +182,7 @@ class UserController extends BaseController
 					return Redirect::route("/");
 				}
             } else {
-            	// There is already an app user in the database
-            	// As sharing grains is not yet working there can be only one
-            	// That makes live easy here, we can assume the user we get from sandstorm
-            	// Is the one we can login with ... and go.
-            	
+            	// The user exists already so we log him in           	
 	            $credentials = ["username" => $sandstorm_name, "password" => $sandstorm_id];
 	            if (Auth::attempt($credentials)) {
         	        $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
@@ -180,8 +191,13 @@ class UserController extends BaseController
 	            }
 	        }
 		} else {
-			// When we have no Sandstorm user we run the app in "normal" mode.
-			return View::make('user/login');
+			// We have no admin permission, we login as dummy 
+			$credentials = ["username" => "sandstorm_dummy", "password" => "sandstorm_dummy"];
+	        if (Auth::attempt($credentials)) {
+        	    $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
+	            Session::put('ui_language', $settings->ui_language);
+	            return Redirect::route("/");
+        	}
 		}
         
     }

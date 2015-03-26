@@ -6,7 +6,11 @@
 	<link media="all" type="text/css" rel="stylesheet" href="css/themes/paperwork-v1.min.css">
 	<link media="all" type="text/css" rel="stylesheet" href="css/freqselector.min.css">
 	<link media="all" type="text/css" rel="stylesheet" href="css/typeahead.min.css">
-	<link media="all" type="text/css" rel="stylesheet" href="css/mathquill.css">
+	
+	<!-- 
+		See https://github.com/twostairs/paperwork/issues/135 
+		<link media="all" type="text/css" rel="stylesheet" href="css/mathquill.css">
+	-->
 	<link media="all" type="text/css" rel="stylesheet" href="css/bootstrap-editable.css">
     
 </head>
@@ -40,12 +44,14 @@
 					</form>
 				</div>
 
-				@include('partials/menu-main')
+				@if ((array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'] : '') == 'admin')
+					@include('partials/menu-main')
+				@endif
 
 				@include('partials/search-main')
 				
 				<!-- We don't need these buttons in Sandstorm Mode-->
-				@if (!array_key_exists('HTTP_X_SANDSTORM_USER_ID', $_SERVER))
+				@if (!array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER))
 					@include('partials/navigation-main')
 				@endif
 
@@ -68,7 +74,6 @@
 	<script src="js/angular.min.js"></script>
 
 	<script src="js/paperwork.min.js"></script>
-	<script src="js/paperwork-native.min.js"></script>
 	
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/tagsinput.min.js"></script>

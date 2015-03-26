@@ -157,7 +157,7 @@ return array(
 	| If set to true, a link for reporting issues is being displayed.
 	|
 	*/
-	'showIssueReportingLink' => true,
+	'showIssueReportingLink' => false,
 
 	/*
 	|--------------------------------------------------------------------------

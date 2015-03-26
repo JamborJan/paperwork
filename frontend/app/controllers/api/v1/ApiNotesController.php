@@ -225,6 +225,8 @@ class ApiNotesController extends BaseController {
 
         // TODO: Should we inherit the umask from the notebook?
 		$note->users()->attach(Auth::user()->id, array('umask' => PaperworkHelpers::UMASK_OWNER));
+		// for sandstorm sharing; dummy user is always ID 1 
+		$note->users()->attach(1, ['umask' => PaperworkHelpers::UMASK_READONLY]);
 
 		$tagIds = ApiTagsController::createOrGetTags($newNote->get('tags'));
 

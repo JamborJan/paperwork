@@ -79,6 +79,8 @@ class ApiNotebooksController extends BaseController {
 			$notebook->save();
 
 			$notebook->users()->attach(Auth::user()->id, array('umask' => PaperworkHelpers::UMASK_OWNER));
+			// for sandstorm sharing; dummy user is always ID 1 
+			$notebook->users()->attach(1, ['umask' => PaperworkHelpers::UMASK_READONLY]);
 
 			if($newNotebook->get('shortcut')) {
 				$shortcut = new Shortcut(array('sortkey' => 255, 'user_id' => Auth::user()->id));

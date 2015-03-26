@@ -12,6 +12,7 @@
 	      <ul class="nav navbar-nav navbar-right" id="note-toolbar">
 	      	<li>
 		      	<div class="btn-group">
+
 		      		<button id="note-info" class="btn btn-default navbar-btn" data-toggle="popover" data-placement="bottom" data-title="[[Lang::get('keywords.note_info')]]" data-content='
 		      			<div class="row">
 		      				<div class="col-xs-3"><b>[[Lang::get('keywords.created_at')]]</b></div>
@@ -22,9 +23,19 @@
 		      				<div class="col-xs-9">{{ note.updated_at }}</div>
 		      			</div>
 		      		'><i class="fa fa-info-circle"></i></button>
-		      		<button class="btn btn-default navbar-btn" data-toggle="freqselector" data-target="#wayback-machine"><i class="fa fa-history"></i></button>
-				<button class="btn btn-default navbar-btn" ng-controller="SidebarNotesController" ng-click="editNote(note.notebook_id, note.id)"><i class="fa fa-pencil"></i></button>
-		      		<button class="btn btn-default navbar-btn"><i class="fa fa-share-alt"></i></button>
+	      	
+					<?php
+					$sandstorm_permissions = array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'] : '';
+					if ($sandstorm_permissions == 'admin') {
+
+		      			echo '<button class="btn btn-default navbar-btn" data-toggle="freqselector" data-target="#wayback-machine"><i class="fa fa-history"></i></button>';
+						echo '<button class="btn btn-default navbar-btn" ng-controller="SidebarNotesController" ng-click="editNote(note.notebook_id, note.id)"><i class="fa fa-pencil"></i></button>';
+					}
+					?>
+
+		      		<!-- we don't need tghe share button in the sandstorm port
+			      		<button class="btn btn-default navbar-btn"><i class="fa fa-share-alt"></i></button>
+		      		-->
 	      		</div>
 	      	</li>
 	      </ul>
