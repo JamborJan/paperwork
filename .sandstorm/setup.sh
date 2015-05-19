@@ -1,15 +1,13 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y nginx php5-fpm php5-mysql mariadb-server
-apt-get install -y php5-gd 
+apt-get install -y php5-fpm php5-mysql mariadb-server
+apt-get install -y php5-gd php5-cli php5-common
 apt-get install -y php5-mcrypt
+apt-get install -y nginx
 php5enmod mcrypt
 sudo unlink /etc/nginx/sites-enabled/default
 cat > /etc/nginx/sites-available/sandstorm-php <<EOF
-upstream php-handler {
-  server unix:/var/run/php5-fpm.sock;
-}
 server {
   listen 8000 default_server;
   listen [::]:8000 default_server ipv6only=on;
@@ -18,7 +16,7 @@ server {
   root /opt/app/frontend/public;
 
   include mime.types;
-  default_type application/octet-stream;
+  default_type text/html;
   sendfile on;
   keepalive_timeout 65;
   client_max_body_size 1000M;
