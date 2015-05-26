@@ -20,7 +20,10 @@ const pkgdef :Spk.PackageDefinition = (
     appTitle = (defaultText = "Paperwork"),
 
     appVersion = 3,  # Increment this for every release.
+
     appMarketingVersion = (defaultText = "0.0.3"),
+    # Human-readable representation of appVersion. Should match the way you
+    # identify versions of your app in documentation and marketing.
 
     actions = [
       # Define your "new document" handlers here.

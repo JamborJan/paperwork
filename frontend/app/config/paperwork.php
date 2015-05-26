@@ -33,8 +33,8 @@ return array(
 		'external' => array(
 			'dns'	=> $sandstorm_base_path,
 			'ports' => array(
-				'http'		 => 33411,
-				'https' 	 => 33411,
+				'http'		 => 8000,
+				'https' 	 => 8000,
 				'forceHttps' => true
 			)
 		),

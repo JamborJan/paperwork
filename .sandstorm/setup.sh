@@ -1,37 +1,28 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y php5-fpm php5-mysql mariadb-server
-apt-get install -y php5-gd php5-cli php5-common
-apt-get install -y php5-mcrypt
-apt-get install -y nginx
-php5enmod mcrypt
+apt-get install -y nginx php5-fpm php5-mysql mysql-server
 sudo unlink /etc/nginx/sites-enabled/default
 cat > /etc/nginx/sites-available/sandstorm-php <<EOF
 server {
-  listen 8000 default_server;
-  listen [::]:8000 default_server ipv6only=on;
+    listen 8000 default_server;
+    listen [::]:8000 default_server ipv6only=on;
 
-  server_name localhost;
-  root /opt/app/frontend/public;
+    server_name localhost;
+    root /opt/app/frontend/public;
+    default_type text/html;
 
-  include mime.types;
-  default_type text/html;
-  sendfile on;
-  keepalive_timeout 65;
-  client_max_body_size 1000M;
+    location / {
+        index index.php;
+        try_files \$uri \$uri/ =404;
+    }
 
-  location / {
-    index index.html index.htm index.php;
-    try_files $uri $uri/ /index.php;
-  }
-  location ~ \\.php\$ {
-    fastcgi_split_path_info ^(.+\\.php)(/.+)\$;
-    fastcgi_pass unix:/var/run/php5-fpm.sock;
-    try_files $uri = 404;
-    fastcgi_index index.php;
-    include fastcgi_params;
-  }
+    location ~ \\.php\$ {
+        fastcgi_split_path_info ^(.+\\.php)(/.+)\$;
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+    }
 }
 EOF
 ln -s /etc/nginx/sites-available/sandstorm-php /etc/nginx/sites-enabled/sandstorm-php
