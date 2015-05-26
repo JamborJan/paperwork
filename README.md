@@ -23,7 +23,7 @@ You will need to install:
 
 ## Step by Step
 
-    git clone git://github.com/JamborJan/vagrant-spk
+    git clone https://github.com/zarvox/vagrant-spk
     git clone https://github.com/JamborJan/paperwork
     export PATH=$(pwd)/vagrant-spk:$PATH
     cd paperwork
