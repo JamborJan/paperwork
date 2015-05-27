@@ -8,4 +8,6 @@
 # This particular script does nothing at present, but you should adapt it
 # sensibly for your package.
 
-exit 0
+set -eu
+cd /opt/app/frontend
+php ../composer.phar install
