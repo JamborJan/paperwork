@@ -7,14 +7,18 @@
 # - for JS/CSS/SASS/LESS, compile, minify, or otherwise do asset pipeline work.
 # This particular script does nothing at present, but you should adapt it
 # sensibly for your package.
+# Checks if there's a composer.json, and if so, installs/runs composer.
 
 set -eu
-
 cd /opt/app
-curl -sS https://getcomposer.org/installer | php
-cd /opt/app/frontend
-php ../composer.phar install
-php ../composer.phar self-update
+
+if [ -f /opt/app/composer.json ] ; then
+    if [ ! -f composer.phar ] ; then
+        curl -sS https://getcomposer.org/installer | php
+    fi
+    php composer.phar install
+fi
+php composer.phar self-update
 
 # move storage folders which must be writable to /var
 if  test -d /var/storage ; then

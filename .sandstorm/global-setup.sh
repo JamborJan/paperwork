@@ -26,3 +26,8 @@ fi
 # stop some other services that are running by default in vagrant VMs
 sudo service puppet stop
 sudo service chef-client stop
+# Enable apt-cacher-ng proxy to make things faster if one appears to be running on the gateway IP
+GATEWAY_IP=$(ip route  | grep ^default  | cut -d ' ' -f 3)
+if nc -z "$GATEWAY_IP" 3142 ; then
+    echo "Acquire::http::Proxy \"http://$GATEWAY_IP:3142\";" > /etc/apt/apt.conf.d/80httpproxy
+fi
