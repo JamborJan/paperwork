@@ -66,20 +66,3 @@ EOF
 sed --in-place='' \
         --expression 's/^fastcgi_param\tHTTPS.*$/fastcgi_param\tHTTPS\t\t\$fe_https if_not_empty;/' \
         /etc/nginx/fastcgi_params
-# move storage folders which must be writable to /var
-if  test -d /var/storage ; then
-   sudo rm -R /var/storage
-fi
-sudo mkdir /var/storage
-sudo mkdir /var/storage/attachments
-sudo mkdir /var/storage/cache
-sudo mkdir /var/storage/logs
-sudo mkdir /var/storage/meta
-sudo mkdir /var/storage/sessions
-sudo mkdir /var/storage/views
-if  test -d /opt/app/frontend/app/storage ; then
-   sudo rm -R /opt/app/frontend/app/storage
-fi
-sudo ln -s /var/storage /opt/app/frontend/app/
-sudo cp /opt/app/services.json /var/storage/meta/services.json
-sudo chmod -R 777 /var/storage/
