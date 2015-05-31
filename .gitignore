@@ -8,3 +8,4 @@ Thumbs.db
 frontend/npm-debug.log
 composer.phar
 .sandstorm/.vagrant
+frontend/app/storage
