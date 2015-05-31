@@ -30,3 +30,14 @@ done
 
 # Start nginx.
 /usr/sbin/nginx -g "daemon off;"
+
+# move storage folders which must be writable to /var
+rm -rf /var/storage
+mkdir -p /var/storage
+mkdir -p /var/storage/attachments
+mkdir -p /var/storage/cache
+mkdir -p /var/storage/logs
+mkdir -p /var/storage/meta
+mkdir -p /var/storage/sessions
+mkdir -p /var/storage/views
+cp /opt/app/services.json /var/storage/meta/services.json
