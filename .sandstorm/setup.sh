@@ -1,8 +1,12 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-dev php5-gd php5-mcrypt mysql-server nodejs nodejs-legacy git
+apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-dev php5-gd php5-mcrypt mysql-server nodejs nodejs-legacy git npm
+# Install bower and gulp
+npm install -g gulp bower
+# Enable mcrypt for PHP
 php5enmod mcrypt
+# Set up nginx config
 unlink /etc/nginx/sites-enabled/default
 cat > /etc/nginx/sites-available/sandstorm-php <<EOF
 server {
@@ -15,19 +19,20 @@ server {
     server_name example.com;
 
     location / {
-        try_files $uri $uri/ /index.php?$query_string;
+        try_files \$uri \$uri/ /index.php?\$query_string;
     }
 
     location ~ \.php$ {
-        try_files $uri =404;
+        try_files \$uri =404;
         fastcgi_pass unix:/var/run/php5-fpm.sock;
         fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
         include fastcgi_params;
     }
 }
 EOF
 ln -s /etc/nginx/sites-available/sandstorm-php /etc/nginx/sites-enabled/sandstorm-php
+# Stop services outside the sandbox
 service nginx stop
 service php5-fpm stop
 service mysql stop
