@@ -10,3 +10,4 @@ composer.phar
 .sandstorm/.vagrant
 frontend/app/storage
 frontend/install.sh
+frontend/bower_components

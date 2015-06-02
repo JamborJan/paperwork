@@ -22,10 +22,12 @@ fi
 php ../composer.phar self-update
 
 ## install npm, bower & gulp
-#wget https://www.npmjs.org/install.sh
-#bash ./install.sh
-#sudo npm install -g gulp bower
-#sudo npm install
+wget https://www.npmjs.org/install.sh
+sudo bash ./install.sh
+sudo npm install -g gulp
+sudo npm install -g bower
+sudo npm install
+
 ## install bower & gulp
 bower install
 gulp

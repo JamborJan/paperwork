@@ -1,7 +1,7 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-dev php5-gd php5-mcrypt mysql-server nodejs nodejs-legacy
+apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-dev php5-gd php5-mcrypt mysql-server nodejs nodejs-legacy git
 php5enmod mcrypt
 unlink /etc/nginx/sites-enabled/default
 cat > /etc/nginx/sites-available/sandstorm-php <<EOF
@@ -9,26 +9,20 @@ server {
     listen 8000 default_server;
     listen [::]:8000 default_server ipv6only=on;
 
-    server_name localhost;
     root /opt/app/frontend/public;
+    index index.php index.html index.htm;
 
-    include mime.types;
-    ## default_type application/octet-stream;
-    default_type text/html;
-    sendfile on;
-    keepalive_timeout 65;
-    client_max_body_size 1000M;
+    server_name example.com;
 
     location / {
-        index index.html index.htm index.php;
-        try_files \$uri \$uri/ /index.php?$query_string;
+        try_files $uri $uri/ /index.php?$query_string;
     }
 
-    location ~ \\.php\$ {
-        fastcgi_split_path_info ^(.+\\.php)(/.+)\$;
+    location ~ \.php$ {
+        try_files $uri =404;
         fastcgi_pass unix:/var/run/php5-fpm.sock;
-        try_files $uri = 404;
         fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
     }
 }
