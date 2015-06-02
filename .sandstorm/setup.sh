@@ -1,9 +1,9 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-dev php5-gd php5-mcrypt mysql-server
-sudo php5enmod mcrypt
-sudo unlink /etc/nginx/sites-enabled/default
+apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-dev php5-gd php5-mcrypt mysql-server nodejs nodejs-legacy
+php5enmod mcrypt
+unlink /etc/nginx/sites-enabled/default
 cat > /etc/nginx/sites-available/sandstorm-php <<EOF
 server {
     listen 8000 default_server;
@@ -11,16 +11,23 @@ server {
 
     server_name localhost;
     root /opt/app/frontend/public;
+
+    include mime.types;
+    ## default_type application/octet-stream;
     default_type text/html;
+    sendfile on;
+    keepalive_timeout 65;
+    client_max_body_size 1000M;
 
     location / {
-        index index.php;
-        try_files \$uri \$uri/ =404;
+        index index.html index.htm index.php;
+        try_files \$uri \$uri/ /index.php?$query_string;
     }
 
     location ~ \\.php\$ {
         fastcgi_split_path_info ^(.+\\.php)(/.+)\$;
         fastcgi_pass unix:/var/run/php5-fpm.sock;
+        try_files $uri = 404;
         fastcgi_index index.php;
         include fastcgi_params;
     }
@@ -45,10 +52,7 @@ sed --in-place='' \
 # echo '[mysqld]\ninnodb_data_file_path = ibdata1:10M:autoextend\ninnodb_log_file_size = 10KB\ninnodb_file_per_table = 1' > /etc/mysql/conf.d/small.cnf
 # sed -i 's_^socket\s*=.*_socket = /tmp/mysqld.sock_g' /etc/mysql/*.cnf && ln -s /tmp/mysqld.sock /var/run/mysqld/mysqld.sock
 # rm -rf /var/lib/mysql/* && mysql_install_db && chown -R mysql: /var/lib/mysql
-## initial paperwork DB
-# /usr/sbin/mysqld & \
-# sleep 10s &&\
-# echo "DROP DATABASE IF EXISTS paperwork; CREATE DATABASE IF NOT EXISTS paperwork DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; GRANT ALL PRIVILEGES ON paperwork.* TO 'paperwork'@'localhost' IDENTIFIED BY 'paperwork' WITH GRANT OPTION; FLUSH PRIVILEGES;" | mysql
+
 # patch nginx conf to not bother trying to setuid, since we're not root
 sed --in-place='' \
         --expression 's/^user www-data/#user www-data/' \

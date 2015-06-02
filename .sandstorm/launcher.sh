@@ -12,6 +12,17 @@ rm -rf /var/run
 mkdir -p /var/run
 mkdir -p /var/run/mysqld
 
+# move storage folders which must be writable to /var
+rm -rf /var/storage
+mkdir -p /var/storage
+mkdir -p /var/storage/attachments
+mkdir -p /var/storage/cache
+mkdir -p /var/storage/logs
+mkdir -p /var/storage/meta
+mkdir -p /var/storage/sessions
+mkdir -p /var/storage/views
+cp /opt/app/services.json /var/storage/meta/services.json
+
 # Ensure mysql tables created
 HOME=/etc/mysql /usr/bin/mysql_install_db --force
 
@@ -28,16 +39,10 @@ while [ ! -e /var/run/php5-fpm.sock ] ; do
     sleep .2
 done
 
+# Ensure the paperwork database exists.
+echo "CREATE DATABASE IF NOT EXISTS paperwork DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; GRANT ALL PRIVILEGES ON paperwork.* TO 'paperwork'@'localhost' IDENTIFIED BY 'paperwork' WITH GRANT OPTION; FLUSH PRIVILEGES;" | mysql --user root --socket /var/run/mysqld/mysqld.sock
+# Run database migrations.
+time php /opt/app/frontend/artisan migrate --force
+
 # Start nginx.
 /usr/sbin/nginx -g "daemon off;"
-
-# move storage folders which must be writable to /var
-rm -rf /var/storage
-mkdir -p /var/storage
-mkdir -p /var/storage/attachments
-mkdir -p /var/storage/cache
-mkdir -p /var/storage/logs
-mkdir -p /var/storage/meta
-mkdir -p /var/storage/sessions
-mkdir -p /var/storage/views
-cp /opt/app/services.json /var/storage/meta/services.json

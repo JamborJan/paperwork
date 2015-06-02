@@ -10,15 +10,25 @@
 # Checks if there's a composer.json, and if so, installs/runs composer.
 
 set -eu
-cd /opt/app
+cd /opt/app/frontend
 
+# install composer
 if [ -f /opt/app/composer.json ] ; then
     if [ ! -f composer.phar ] ; then
         curl -sS https://getcomposer.org/installer | php
     fi
-    php composer.phar install
+    php ../composer.phar install
 fi
-php composer.phar self-update
+php ../composer.phar self-update
+
+## install npm, bower & gulp
+#wget https://www.npmjs.org/install.sh
+#bash ./install.sh
+#sudo npm install -g gulp bower
+#sudo npm install
+## install bower & gulp
+bower install
+gulp
 
 # link storage folder 
 rm -rf /opt/app/frontend/app/storage

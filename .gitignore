@@ -9,3 +9,4 @@ frontend/npm-debug.log
 composer.phar
 .sandstorm/.vagrant
 frontend/app/storage
+frontend/install.sh
