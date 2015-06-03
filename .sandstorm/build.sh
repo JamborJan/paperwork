@@ -13,13 +13,13 @@ set -eu
 cd /opt/app/frontend
 
 # install composer
-if [ -f /opt/app/composer.json ] ; then
+if [ -f /opt/app/frontend/composer.json ] ; then
     if [ ! -f composer.phar ] ; then
         curl -sS https://getcomposer.org/installer | php
     fi
-    php ../composer.phar install
+    php composer.phar install
 fi
-php ../composer.phar self-update
+php composer.phar self-update
 
 # Install paperwork's npm dependencies
 npm install
