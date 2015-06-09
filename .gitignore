@@ -11,3 +11,4 @@ composer.phar
 frontend/app/storage
 frontend/install.sh
 frontend/bower_components
+paperwork.spk
