@@ -15,7 +15,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # visit their sandstorm app from their browser as local.sandstorm.io:6080
   # (aka 127.0.0.1:6080).
   config.vm.network :forwarded_port, guest: 6080, host: 6080
-  config.vm.network :private_network, ip: "169.254.253.2"
 
   # Use a shell script to "provision" the box. This installs Sandstorm using
   # the bundled installer.
@@ -24,8 +23,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell", inline: "sudo bash /opt/app/.sandstorm/setup.sh"
 
   # Share a few host folders into the VM, since it'll need them
-  config.vm.synced_folder "..", "/vagrant", type: "nfs"
-  config.vm.synced_folder "..", "/opt/app", type: "nfs"
+  config.vm.synced_folder "..", "/vagrant"
+  config.vm.synced_folder "..", "/opt/app"
   config.vm.synced_folder ENV["HOME"] + "/.sandstorm", "/host-dot-sandstorm"
 
   # Calculate the number of CPUs and the amount of RAM the system has,
