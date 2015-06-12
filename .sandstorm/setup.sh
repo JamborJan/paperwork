@@ -47,11 +47,6 @@ sed --in-place='' \
 sed --in-place='' \
         --expression='s/^user\t\t= mysql/#user\t\t= mysql/' \
         /etc/mysql/my.cnf
-## minimize mysql allocations
-# echo '[mysqld]\ninnodb_data_file_path = ibdata1:10M:autoextend\ninnodb_log_file_size = 10KB\ninnodb_file_per_table = 1' > /etc/mysql/conf.d/small.cnf
-# sed -i 's_^socket\s*=.*_socket = /tmp/mysqld.sock_g' /etc/mysql/*.cnf && ln -s /tmp/mysqld.sock /var/run/mysqld/mysqld.sock
-# rm -rf /var/lib/mysql/* && mysql_install_db && chown -R mysql: /var/lib/mysql
-
 # patch nginx conf to not bother trying to setuid, since we're not root
 sed --in-place='' \
         --expression 's/^user www-data/#user www-data/' \
