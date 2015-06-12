@@ -3,7 +3,10 @@
   <head>
     @include('partials/header-sidewide-meta')
 
-    <link media="all" type="text/css" rel="stylesheet" href="css/themes/paperwork-v1.min.css">
+    <!-- [[ HTML::style('css/bootstrap.min.css') ]] -->
+    <!-- [[ HTML::style('css/bootstrap-theme.min.css') ]] -->
+
+    [[ HTML::style('css/themes/paperwork-v1.min.css') ]]
 
   </head>
   <body class="paperwork-guest">
@@ -23,7 +26,7 @@
       </div>
     </div>
 
-	<script src="js/jquery.min.js"></script>
+	[[ HTML::script('js/jquery.min.js') ]]
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -33,7 +36,7 @@
 		<script src="js/ltie11compat.js"></script>
 	<![endif]-->
 	
-	<script src="js/libraries.min.js"></script>
+	[[ HTML::script('js/libraries.min.js') ]]
 	
   </body>
 </html>

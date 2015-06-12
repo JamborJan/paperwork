@@ -32,6 +32,16 @@ App::missing(function($exception)
     return Response::view('404', array(), 404);
 });
 
+/*
+// Test for https://github.com/JamborJan/paperwork/issues/4
+App::before(function($request)
+{
+    if ((array_key_exists('HTTP_X_FORWARDED_PROTO', $_SERVER) ? $_SERVER[ 'HTTP_X_FORWARDED_PROTO'] : 'HTTP_X_FORWARDED_PROTO not set') == "https") {
+        Request::setTrustedProxies([ $request->getClientIp()]);
+    }
+});
+*/
+
 Route::get('/login',["as" => "user/login", "uses" => "UserController@showLoginForm"]);
 Route::post('/login',["as" => "user/login", "uses" => "UserController@login"]);
 

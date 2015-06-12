@@ -3,16 +3,22 @@
   <head>
     @include('partials/header-sidewide-meta')
 
-	<link media="all" type="text/css" rel="stylesheet" href="css/themes/paperwork-v1.min.css">
-	<link media="all" type="text/css" rel="stylesheet" href="css/freqselector.min.css">
-	<link media="all" type="text/css" rel="stylesheet" href="css/typeahead.min.css">
-	
-	<!-- 
-		See https://github.com/twostairs/paperwork/issues/135 
-		<link media="all" type="text/css" rel="stylesheet" href="css/mathquill.css">
-	-->
-	<link media="all" type="text/css" rel="stylesheet" href="css/bootstrap-editable.css">
+	<!-- [[ HTML::style('css/bootstrap.min.css') ]] -->
+    <!-- [[ HTML::style('css/bootstrap-theme.min.css') ]] -->
+
+    [[ HTML::style('css/themes/paperwork-v1.min.css') ]]
+
+    [[ HTML::style('css/freqselector.min.css') ]]
+
+    [[ HTML::style('css/typeahead.min.css') ]]
     
+	<!-- 
+	See https://github.com/twostairs/paperwork/issues/135 
+    [[ HTML::style('css/mathquill.css')]]
+	-->
+
+    [[ HTML::style('css/bootstrap-editable.css') ]]
+   
 </head>
   <body ng-app="paperworkNotes">
   	<div ng-controller="ConstructorController"></div>
@@ -69,26 +75,27 @@
       </div>
     </div>
 
-	<script src="js/jquery.min.js"></script>
-	<script src="js/libraries.min.js"></script>
-	<script src="js/angular.min.js"></script>
+	[[ HTML::script('js/jquery.min.js') ]]
+	[[ HTML::script('js/libraries.min.js') ]]
+	[[ HTML::script('js/angular.min.js') ]]
 
-	<script src="js/paperwork.min.js"></script>
-	
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/tagsinput.min.js"></script>
-	
-	<script src="ckeditor/ckeditor.js"></script>
-	<script src="ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js"></script>
-	<script src="js/bootstrap-editable.min.js"></script>
+	[[ HTML::script('js/paperwork.min.js') ]]
+	[[ HTML::script('js/paperwork-native.min.js') ]]
 
-	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!--[if lt IE 9]>
-		<script src="js/ltie9compat.min.js"></script>
-	<![endif]-->
-	<!--[if lt IE 11]>
-		<script src="js/ltie11compat.js"></script>
-	<![endif]-->
+	[[ HTML::script('js/bootstrap.min.js') ]]
+	[[ HTML::script('js/tagsinput.min.js') ]]
+
+	[[ HTML::script('ckeditor/ckeditor.js') ]]
+	[[ HTML::script('ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js') ]]
+	[[ HTML::script('js/bootstrap-editable.min.js') ]]
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+    [[ HTML::script('js/ltie9compat.min.js') ]]
+  <![endif]-->
+  <!--[if lt IE 11]>
+    [[ HTML::script('js/ltie11compat.js') ]]
+  <![endif]-->
 
 </body>
 </html>
