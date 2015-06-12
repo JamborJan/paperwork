@@ -13,7 +13,6 @@ mkdir -p /var/run
 mkdir -p /var/run/mysqld
 
 # move storage folders which must be writable to /var
-rm -rf /var/storage
 mkdir -p /var/storage
 mkdir -p /var/storage/attachments
 mkdir -p /var/storage/cache

@@ -32,4 +32,5 @@ gulp
 
 # link storage folder 
 rm -rf /opt/app/frontend/app/storage
+rm -rf /var/storage
 ln -s /var/storage /opt/app/frontend/app
