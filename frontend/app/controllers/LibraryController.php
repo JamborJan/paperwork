@@ -44,7 +44,7 @@ class LibraryController extends BaseController {
             }else{
                 $welcomeNoteArray = array('welcomeNoteSaved' => 0);
             }
-        }*/	
+        }*/
         return View::make('main');
         //return View::make('main', $welcomeNoteArray);
     }

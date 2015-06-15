@@ -26,17 +26,16 @@
       </div>
     </div>
 
-	[[ HTML::script('js/jquery.min.js') ]]
+  [[ HTML::script('js/jquery.min.js') ]]
 
-	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!--[if lt IE 9]>
-    	<script src="js/ltie9compat.min.js"></script>
-	<![endif]-->
-	<!--[if lt IE 11]>
-		<script src="js/ltie11compat.js"></script>
-	<![endif]-->
-	
-	[[ HTML::script('js/libraries.min.js') ]]
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+    [[ HTML::script('js/ltie9compat.min.js') ]]
+  <![endif]-->
+  <!--[if lt IE 11]>
+    [[ HTML::script('js/ltie11compat.js') ]]
+  <![endif]-->
+  [[ HTML::script('js/libraries.min.js') ]]
 	
   </body>
 </html>
