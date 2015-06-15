@@ -69,7 +69,24 @@ const pkgdef :Spk.PackageDefinition = (
   # Use this to force-include stuff that you know you need but which may
   # not have been detected as a dependency during `spk dev`. If you list
   # a directory here, its entire contents will be included recursively.
-  bridgeConfig = ( viewInfo = ( permissions = [(name = "admin")] ) )
+  bridgeConfig = (
+    viewInfo = (
+      permissions = [(name = "admin", title = (defaultText = "admin"),
+                      description = (defaultText = "Admin pormission")),
+                     (name = "edit", title = (defaultText = "edit"),
+                      description = (defaultText = "allows editing notes"))],
+      roles = [(title = (defaultText = "editor"),
+                permissions = [true, true],
+                verbPhrase = (defaultText = "can add & edit notes"),
+                default = true),
+               (title = (defaultText = "viewer"),
+                permissions = [false, false],
+                verbPhrase = (defaultText = "can view notes")),
+               (title = (defaultText = "commenter"),
+                permissions = [false, true],
+                verbPhrase = (defaultText = "can edit existing notes"))]
+    )
+  )
 );
 
 const myCommand :Spk.Manifest.Command = (

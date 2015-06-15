@@ -126,8 +126,7 @@ class UserController extends BaseController
 			// Let's check first if we create a new grain and set it up if so 
 			if (User::all()->count() == 0) {
 								
-				// We create a dummy user first which will be used when a sandstorm link is shared
-				// All notes will be also visible to this user
+				// We create a anonymous user first which will be used when a sandstorm link is shared public
 				$dummy_user = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
 				if ($dummy_user) {
 						$dummy_user->firstname = "sandstorm_dummy";

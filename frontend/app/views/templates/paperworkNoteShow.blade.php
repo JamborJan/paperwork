@@ -23,17 +23,18 @@
 		      				<div class="col-xs-9">{{ note.updated_at }}</div>
 		      			</div>
 		      		'><i class="fa fa-info-circle"></i></button>
-	      	
+	      			
+	      			<!-- Depending on the user permission we enable or disable features -->
 					<?php
 					$sandstorm_permissions = array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'] : '';
-					if ($sandstorm_permissions == 'admin') {
+					if (($sandstorm_permissions == 'admin') || ($sandstorm_permissions == 'edit')) {
 
 		      			echo '<button class="btn btn-default navbar-btn" data-toggle="freqselector" data-target="#wayback-machine"><i class="fa fa-history"></i></button>';
 						echo '<button class="btn btn-default navbar-btn" ng-controller="SidebarNotesController" ng-click="editNote(note.notebook_id, note.id)"><i class="fa fa-pencil"></i></button>';
 					}
 					?>
 
-		      		<!-- we don't need tghe share button in the sandstorm port
+		      		<!-- we don't need the share button in the sandstorm port
 			      		<button class="btn btn-default navbar-btn"><i class="fa fa-share-alt"></i></button>
 		      		-->
 	      		</div>

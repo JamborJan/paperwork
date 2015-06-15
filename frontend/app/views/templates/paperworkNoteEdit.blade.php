@@ -13,8 +13,22 @@
 		      <ul class="nav navbar-nav navbar-right">
 		      	<li>
 			      	<div class="btn-group" ng-controller="SidebarNotesController">
-			      		<a id="updateNote" href="" ng-click="updateNote()" class="btn btn-default navbar-btn" title="[[Lang::get('keywords.save')]]"><i class="fa fa-floppy-o"></i></a>
-			      		<a href="" ng-click="closeNote()" class="btn btn-default navbar-btn" title="[[Lang::get('keywords.close')]]"><i class="fa fa-times-circle"></i></a>
+
+			      		<!-- Depending on the user permission we enable or disable features -->
+						<?php
+						$sandstorm_permissions = array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'] : '';
+						if (($sandstorm_permissions == 'admin') || ($sandstorm_permissions == 'edit')) {
+			      			echo '<a id="updateNote" href="" ng-click="updateNote()" class="btn btn-default navbar-btn" title="save note"><i class="fa fa-floppy-o"></i></a>';
+							$sandstorm_readonly ='';
+							$sandstorm_disabled ='';
+						} else {
+							$sandstorm_readonly ='READONLY';
+							$sandstorm_disabled ='DISABLED';
+						}
+						?>
+
+						<a href="" ng-click="closeNote()" class="btn btn-default navbar-btn" title="[[Lang::get('keywords.close')]]"><i class="fa fa-times-circle"></i></a>
+
 		      		</div>
 		      	</li>
 		      </ul>
@@ -29,14 +43,14 @@
 					<div>
 						<div class="page-header">
 							<div class="form-group {{ errors.title ? 'has-error' : '' }}">
-								<input type="text" class="form-control input-lg" id="title" placeholder="[[Lang::get('keywords.note_title')]]" ng-model="templateNoteEdit.title">
+								<input type="text" class="form-control input-lg" id="title" placeholder="[[Lang::get('keywords.note_title')]]" ng-model="templateNoteEdit.title" <?php echo $sandstorm_readonly; ?> />
 							</div>
 							<div class="form-group {{ errors.tags ? 'has-error' : '' }}">
-								<input type="text" class="form-control input-lg" id="tags" placeholder="[[Lang::get('keywords.tags_separated')]]">
+								<input type="text" class="form-control input-lg" id="tags" placeholder="[[Lang::get('keywords.tags_separated')]]" <?php echo $sandstorm_disabled; ?> />
 							</div>
 						</div>
 						<div class="page-content">
-							<textarea id="content" class="form-control" rows="16" ng-model="templateNoteEdit.content"></textarea>
+							<textarea id="content" class="form-control" rows="16" ng-model="templateNoteEdit.content" <?php echo $sandstorm_readonly; ?> ></textarea>
 						</div>
 					</div>
 				</form>
