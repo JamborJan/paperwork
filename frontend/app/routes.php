@@ -53,23 +53,46 @@ if(Config::get('paperwork.registration')) {
 Route::any("/request",["as" => "user/request","uses" => "UserController@request"]);
 Route::any("/reset/{token}",[ "as" => "user/reset","uses" => "UserController@reset"]);
 
-//Authorized Users
-Route::group(["before" => "auth"],function(){
-    App::setLocale(PaperworkHelpers::getUiLanguageFromSession());
-	Route::any("/profile",["as" => "user/profile","uses" => "UserController@profile"]);
-	Route::any("/settings",["as" => "user/settings","uses" => "UserController@settings"]);
-	Route::any("/help/{topic?}",["as" => "user/help","uses" => "UserController@help"]);
-	Route::any("/logout",["as" => "user/logout","uses" => "UserController@logout"]);
-	Route::any("/settings/export",["as" => "user/settings/export","uses" => "UserController@export"]);
-	Route::get('/',["as" => "/","uses" => "LibraryController@show"]);
+/* We don't allow all routes in Sandstorm mode e.g. user and admin seetings */
+if (array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) == false) {
 
-    //Administrators
-    Route::group(['prefix' => 'admin', 'before' => ['admin']], function()
-    {
-        Route::get('/', ['as' => 'admin/console', 'uses' => 'AdminController@showConsole']);
+    //Authorized Users
+    Route::group(["before" => "auth"],function(){
+        App::setLocale(PaperworkHelpers::getUiLanguageFromSession());
+        Route::any("/profile",["as" => "user/profile","uses" => "UserController@profile"]);
+        Route::any("/settings",["as" => "user/settings","uses" => "UserController@settings"]);
+        Route::any("/help/{topic?}",["as" => "user/help","uses" => "UserController@help"]);
+        Route::any("/logout",["as" => "user/logout","uses" => "UserController@logout"]);
+        Route::any("/settings/export",["as" => "user/settings/export","uses" => "UserController@export"]);
+        Route::get('/',["as" => "/","uses" => "LibraryController@show"]);
+
+        //Administrators
+        Route::group(['prefix' => 'admin', 'before' => ['admin']], function()
+        {
+            Route::get('/', ['as' => 'admin/console', 'uses' => 'AdminController@showConsole']);
+        });
     });
-});
 
+} else {
+
+    //Authorized Users
+    Route::group(["before" => "auth"],function(){
+        App::setLocale(PaperworkHelpers::getUiLanguageFromSession());
+        /* Route::any("/profile",["as" => "user/profile","uses" => "UserController@profile"]); */
+        /* Route::any("/settings",["as" => "user/settings","uses" => "UserController@settings"]); */
+        Route::any("/help/{topic?}",["as" => "user/help","uses" => "UserController@help"]);
+        Route::any("/logout",["as" => "user/logout","uses" => "UserController@logout"]);
+        /* Route::any("/settings/export",["as" => "user/settings/export","uses" => "UserController@export"]); */
+        Route::get('/',["as" => "/","uses" => "LibraryController@show"]);
+
+        //Administrators
+        Route::group(['prefix' => 'admin', 'before' => ['admin']], function()
+        {
+            Route::get('/', ['as' => 'admin/console', 'uses' => 'AdminController@showConsole']);
+        });
+    });
+
+}
 
 Route::get('/templates/{angularTemplate}', function($angularTemplate) {
 	return View::make('templates/' . $angularTemplate);
