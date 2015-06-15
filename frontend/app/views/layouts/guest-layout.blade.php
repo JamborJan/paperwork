@@ -36,6 +36,5 @@
     [[ HTML::script('js/ltie11compat.js') ]]
   <![endif]-->
   [[ HTML::script('js/libraries.min.js') ]]
-	
   </body>
 </html>
