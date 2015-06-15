@@ -6,7 +6,6 @@
 |--------------------------------------------------------------------------
 |
 */
-$sandstorm_base_path =  array_key_exists('HTTP_X_SANDSTORM_BASE_PATH', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_BASE_PATH'] : 'localhost';
 
 return array(
 	/*
@@ -31,7 +30,7 @@ return array(
 	*/
 	'access' => array(
 		'external' => array(
-			'dns'	=> $sandstorm_base_path,
+			'dns'	=> array_key_exists('HTTP_X_SANDSTORM_BASE_PATH', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_BASE_PATH'] : 'localhost',
 			'ports' => array(
 				'http'		 => 8000,
 				'https' 	 => 8000,
@@ -102,9 +101,9 @@ return array(
 			//_
 			'underscore' => false,
 			//'
-			'apostrophe' => true,
+			'apostrophe' => false,
 			//" " Note, leading and trailing spaces are still trimmed
-			'space' => true,
+			'space' => false,
 		),
 
 	/*
