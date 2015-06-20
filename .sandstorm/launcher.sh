@@ -20,7 +20,7 @@ mkdir -p /var/storage/logs
 mkdir -p /var/storage/meta
 mkdir -p /var/storage/sessions
 mkdir -p /var/storage/views
-cp /opt/app/services.json /var/storage/meta/services.json
+# cp /opt/app/services.json /var/storage/meta/services.json
 
 # Ensure mysql tables created
 HOME=/etc/mysql /usr/bin/mysql_install_db --force

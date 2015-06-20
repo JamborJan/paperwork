@@ -1,14 +1,26 @@
 <?php
 
+use \Paperwork\UserRegistrator;
+
 /**
  * Class UserController
  *
  * Provides user login and registration functionality.
+ *
  * @todo provide documentation for every action.
  *       Clean up the commented legacy code. We use git for history.
  */
 class UserController extends BaseController
 {
+
+    private $userRegistrator;
+    private $isLdap;
+
+    public function __construct(UserRegistrator $userRegistrator)
+    {
+        $this->userRegistrator = $userRegistrator;
+        $this->isLdap          = PaperworkHelpers::isLdap();
+    }
 
     public function showRegistrationForm()
     {
@@ -25,64 +37,38 @@ class UserController extends BaseController
         $validator = $this->getRegistrationValidator();
 
         if ($validator->passes()) {
-            // $credentials = $this->getRegistrationCredentials();
-
-            $user = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
-            if ($user) {
-                //make the first user an admin
-                if (User::all()->count() <= 1) {
-                    $user->is_admin = 1;
+            //only allow users to register who actually have a valid ldap account
+            if ($this->isLdap) {
+                $creds               = $this->getLoginCredentials();
+                $creds['isRegister'] = true;
+                if (!Auth::validate($creds)) {
+                    return Redirect::back()
+                                   ->withInput()
+                                   ->withErrors(["password" => [Lang::get('messages.invalid_credentials')]]);
                 }
-
-                // Trim trailing whitespace from user first and last name.
-                $user->firstname = trim($user->firstname);
-                $user->lastname  = trim($user->lastname);
-
-                $user->save();
-                $setting = Setting::create(['ui_language' => Input::get('ui_language'), 'user_id' => $user->id]);
-
-                /* Add welcome note to user - create notebook, tag and note */
-                //$notebookCreate = Notebook::create(array('title' => Lang::get('notebooks.welcome_notebook_title')));
-                $notebookCreate = new Notebook();
-
-                $notebookCreate->title = Lang::get('notebooks.welcome_notebook_title');
-                $notebookCreate->save();
-
-                $notebookCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
-
-                //$tagCreate = Tag::create(array('title' => Lang::get('notebooks.welcome_note_tag'), 'visibility' => 0));
-                $tagCreate = new Tag();
-
-                $tagCreate->title      = Lang::get('notebooks.welcome_note_tag');
-                $tagCreate->visibility = 0;
-                $tagCreate->save();
-                $tagCreate->users()->attach($user->id);
-
-                $noteCreate = new Note;
-
-                $versionCreate = new Version([
-                    'title'           => Lang::get('notebooks.welcome_note_title'),
-                    'content'         => Lang::get('notebooks.welcome_note_content'),
-                    'content_preview' => mb_substr(strip_tags(Lang::get('notebooks.welcome_note_content')), 0, 255)
-                ]);
-
-                $versionCreate->save();
-
-                $noteCreate->version()->associate($versionCreate);
-                $noteCreate->notebook_id = $notebookCreate->id;
-                $noteCreate->save();
-                $noteCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
-                $noteCreate->tags()->sync([$tagCreate->id]);
-                // Commented code above does not work because no $fillable is in the model files
-
+            }
+            //if we are using ldap and auto registration, the user will have been created in the Auth::attemp call above
+            //thus, we need to just load the user using eloquent and not create a new one.
+            if ($this->isLdap && Config::get('ldap.autoRegister')) {
+                $user = User::query()
+                            ->where('username', Input::get('username'))
+                            ->first();
+            } else {
+                $user =
+                  $this->userRegistrator->registerUser(Input::except('_token',
+                    'password_confirmation', 'ui_language'),
+                    Input::get('ui_language'));
+            }
+            if ($user) {
                 Auth::login($user);
 
-                Session::put('ui_language', $setting->ui_language);
+                Session::put('ui_language', Input::get('ui_language'));
 
                 return Redirect::route("/");
             }
 
-            return Redirect::back()->withErrors(["password" => [Lang::get('messages.account_creation_failed')]]);
+            return Redirect::back()
+                           ->withErrors(["password" => [Lang::get('messages.account_creation_failed')]]);
         } else {
             return Redirect::back()->withInput()->withErrors($validator);
         }
@@ -96,14 +82,16 @@ class UserController extends BaseController
             $credentials = $this->getLoginCredentials();
 
             if (Auth::attempt($credentials, Input::has('remember_me'))) {
-                $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
+                $settings =
+                  Setting::where('user_id', '=', Auth::user()->id)->first();
 
                 Session::put('ui_language', $settings->ui_language);
 
                 return Redirect::route("/");
             }
 
-            return Redirect::back()->withErrors(["password" => [Lang::get('messages.invalid_credentials')]]);
+            return Redirect::back()
+                           ->withErrors(["password" => [Lang::get('messages.invalid_credentials')]]);
 
         } else {
             return Redirect::back()->withInput()->withErrors($validator);
@@ -112,93 +100,7 @@ class UserController extends BaseController
 
     public function showLoginForm()
     {
-        //
-        // This checks, if we are running on Sandstorm (https://sandstorm.io/)
-        // If yes, we check if we are in a new grain or an existing one
-        //
-        
-		$sandstorm_permissions = array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'] : '';
-		$sandstorm_name = array_key_exists('HTTP_X_SANDSTORM_USERNAME', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_USERNAME'] : '';
-		$sandstorm_id = array_key_exists('HTTP_X_SANDSTORM_USER_ID', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_USER_ID'] : '0';
-		
-		if ($sandstorm_permissions == 'admin') {
-			// Okay, we are running on Sandstorm and we are the owner of the grain
-			// Let's check first if we create a new grain and set it up if so 
-			if (User::all()->count() == 0) {
-								
-				// We create a anonymous user first which will be used when a sandstorm link is shared public
-				$dummy_user = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
-				if ($dummy_user) {
-						$dummy_user->firstname = "sandstorm_dummy";
-						$dummy_user->lastname  = " ";
-						$dummy_user->username = "sandstorm_dummy";
-						$dummy_user->password = "sandstorm_dummy";
-						$dummy_user->save();
-						$setting = Setting::create(['ui_language' => 'en' , 'user_id' => $dummy_user->id]);
-					}
-
-				// now we create the user for the owner and make it admin
-				$user = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
-				if ($user) {
-					//make the first user an admin
-					$user->firstname = $sandstorm_name;
-					$user->lastname  = " ";
-					$user->username = $sandstorm_name;
-					$user->password = $sandstorm_id;
-					$user->is_admin = 1;
-					$user->save();
-					$setting = Setting::create(['ui_language' => 'en' , 'user_id' => $user->id]);
-								
-					// We add of course a welcome notebook
-					$notebookCreate = new Notebook();
-					$notebookCreate->title = Lang::get('notebooks.welcome_notebook_title');
-					$notebookCreate->save();
-					$notebookCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
-					$notebookCreate->users()->attach($dummy_user->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
-					$tagCreate = new Tag();
-					$tagCreate->title      = Lang::get('notebooks.welcome_note_tag');
-					$tagCreate->visibility = 1;
-					$tagCreate->save();
-					$tagCreate->users()->attach($user->id);
-					$tagCreate->users()->attach($dummy_user->id);
-					$noteCreate = new Note;
-					$versionCreate = new Version([
-						'title'           => Lang::get('notebooks.welcome_note_title'),
-						'content'         => Lang::get('notebooks.welcome_note_content'),
-						'content_preview' => mb_substr(strip_tags(Lang::get('notebooks.welcome_note_content')), 0, 255)
-					]);
-					$versionCreate->save();
-					$noteCreate->version()->associate($versionCreate);
-					$noteCreate->notebook_id = $notebookCreate->id;
-					$noteCreate->save();
-					$noteCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
-					$noteCreate->users()->attach($dummy_user->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
-					$noteCreate->tags()->sync([$tagCreate->id]);
-					
-					// And finally we log the new user in				
-					Auth::login($user);
-					Session::put('ui_language', $setting->ui_language);
-					return Redirect::route("/");
-				}
-            } else {
-            	// The user exists already so we log him in           	
-	            $credentials = ["username" => $sandstorm_name, "password" => $sandstorm_id];
-	            if (Auth::attempt($credentials)) {
-        	        $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
-	                Session::put('ui_language', $settings->ui_language);
-	                return Redirect::route("/");
-	            }
-	        }
-		} else {
-			// We have no admin permission, we login as dummy 
-			$credentials = ["username" => "sandstorm_dummy", "password" => "sandstorm_dummy"];
-	        if (Auth::attempt($credentials)) {
-        	    $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
-	            Session::put('ui_language', $settings->ui_language);
-	            return Redirect::route("/");
-        	}
-		}
-        
+        return View::make('user/login');
     }
 
     protected function isPostRequest()
@@ -210,11 +112,12 @@ class UserController extends BaseController
     {
         $attributes = ["username" => "email address"];
         $validator  = Validator::make(Input::all(), [
-            "username"              => "required|email|unique:users",
-            "password"              => "required|min:5|confirmed",
-            "password_confirmation" => "required",
-            "firstname"             => "required|name_validator",
-            "lastname"              => "required|name_validator"
+          "username"              => $this->isLdap ? "required|unique:users" :
+            "required|email|unique:users",
+          "password"              => "required|min:5|confirmed",
+          "password_confirmation" => "required",
+          "firstname"             => "required|name_validator",
+          "lastname"              => "required|name_validator"
         ]);
 
         $validator->setAttributeNames($attributes);
@@ -224,15 +127,18 @@ class UserController extends BaseController
 
     protected function getLoginValidator()
     {
-        return Validator::make(Input::all(), ["username" => "required|email", "password" => "required"]);
+        return Validator::make(Input::all(), [
+          "username" => $this->isLdap ? "required" : "required|email",
+          "password" => "required"
+        ]);
     }
 
     protected function getProfileValidator()
     {
         return Validator::make(Input::all(), [
-            "password"  => "min:5|confirmed",
-            "firstname" => "required|name_validator",
-            "lastname"  => "required|name_validator"
+          "password"  => "min:5|confirmed",
+          "firstname" => "required|name_validator",
+          "lastname"  => "required|name_validator"
         ]);
     }
 
@@ -243,7 +149,10 @@ class UserController extends BaseController
 
     protected function getLoginCredentials()
     {
-        return ["username" => Input::get("username"), "password" => Input::get("password")];
+        return [
+          "username" => Input::get("username"),
+          "password" => Input::get("password")
+        ];
     }
 
     public function profile()
@@ -264,7 +173,8 @@ class UserController extends BaseController
                 }
 
                 if (!$user->save()) {
-                    return Redirect::back()->withErrors(["password" => [Lang::get('messages.account_update_failed')]]);
+                    return Redirect::back()
+                                   ->withErrors(["password" => [Lang::get('messages.account_update_failed')]]);
                 }
             } else {
                 return Redirect::back()->withInput()->withErrors($validator);
@@ -287,11 +197,15 @@ class UserController extends BaseController
                 $document_languages    = Input::get('document_languages');
 
                 // TODO: I think this whole thing could be done nicer...
-                DB::Table('language_user')->where('user_id', '=', $user->id)->delete();
+                DB::Table('language_user')
+                  ->where('user_id', '=', $user->id)
+                  ->delete();
 
                 if (!is_null($document_languages)) {
                     foreach ($document_languages as $document_lang) {
-                        $foundLanguage = Language::where('language_code', '=', $document_lang)->first();
+                        $foundLanguage =
+                          Language::where('language_code', '=', $document_lang)
+                                  ->first();
                         if (!is_null($foundLanguage)) {
                             $user->languages()->save($foundLanguage);
                         }
@@ -311,7 +225,9 @@ class UserController extends BaseController
             $languages[$userDocumentLanguage->language_code] = true;
         }
 
-        return View::make("user/settings")->with('settings', $settings)->with('languages', $languages);
+        return View::make("user/settings")
+                   ->with('settings', $settings)
+                   ->with('languages', $languages);
 
         // TODO:
         // Think about whether we need to run an OCRing process in background, if document languages selection changed.
@@ -323,7 +239,9 @@ class UserController extends BaseController
             if ($this->isPostRequest()) {
                 $response = $this->getPasswordRemindResponse();
                 if ($this->isInvalidUser($response)) {
-                    return Redirect::back()->withInput()->with("error", Lang::get($response));
+                    return Redirect::back()
+                                   ->withInput()
+                                   ->with("error", Lang::get($response));
                 }
 
                 return Redirect::back()->with("status", Lang::get($response));
@@ -351,13 +269,17 @@ class UserController extends BaseController
     public function reset($token)
     {
         if ($this->isPostRequest()) {
-            $credentials = Input::only("username", "password", "password_confirmation") + compact("token");
+            $credentials =
+              Input::only("username", "password", "password_confirmation") +
+              compact("token");
             $response    = $this->resetPassword($credentials);
             if ($response === Password::PASSWORD_RESET) {
                 return Redirect::route("user/profile");
             }
 
-            return Redirect::back()->withInput()->with("error", Lang::get($response));
+            return Redirect::back()
+                           ->withInput()
+                           ->with("error", Lang::get($response));
         }
 
         return View::make("user/reset", compact("token"));
@@ -392,8 +314,11 @@ class UserController extends BaseController
     {
         $topic_clean = str_replace('.', '/', $topic);
 
-        $topic_path             = app_path() . '/help/' . $topic_clean . '.' . App::getLocale() . '.md';
-        $topic_path_alternative = app_path() . '/help/' . $topic_clean . '/index.' . App::getLocale() . '.md';
+        $topic_path             =
+          app_path() . '/help/' . $topic_clean . '.' . App::getLocale() . '.md';
+        $topic_path_alternative =
+          app_path() . '/help/' . $topic_clean . '/index.' . App::getLocale() .
+          '.md';
 
         if (File::exists($topic_path)) {
             return $topic_path;
@@ -409,17 +334,19 @@ class UserController extends BaseController
     {
         $content = File::get($path);
 
-        $conent_prepared = preg_replace_callback('/(\@(help|image))((.[A-Za-z0-9]+)+)/', function ($match) {
-            if (is_null($match) || count($match) < 4) {
-                return $match;
-            }
-            $topic = ltrim($match[3], '.');
-            if ($match[1] === "@help") {
-                return URL::route("user/help", $topic);
-            } elseif ($match[1] === "@image") {
-                return url('/images/help/' . $topic);
-            }
-        }, $content);
+        $conent_prepared =
+          preg_replace_callback('/(\@(help|image))((.[A-Za-z0-9]+)+)/',
+            function ($match) {
+                if (is_null($match) || count($match) < 4) {
+                    return $match;
+                }
+                $topic = ltrim($match[3], '.');
+                if ($match[1] === "@help") {
+                    return URL::route("user/help", $topic);
+                } elseif ($match[1] === "@image") {
+                    return url('/images/help/' . $topic);
+                }
+            }, $content);
 
         $pdown = new Parsedown();
 
@@ -432,6 +359,23 @@ class UserController extends BaseController
         Session::flush();
 
         return Redirect::route("user/login");
+    }
+
+    public function import()
+    {
+        if ($this->isPostRequest()) {
+            if(Input::hasFile('enex')) {
+                $notebookId = with(new \Paperwork\Import\EvernoteImport())->import(Input::file('enex'));
+                if($notebookId) {
+                    // TODO: redirect to notebook
+                    return Redirect::route("/");
+                }
+                else {
+                    // Show some error message
+                }
+            }
+        }
+        return Redirect::route("user/settings");
     }
 
     public function export()
@@ -451,8 +395,10 @@ class UserController extends BaseController
                    ->join('versions', function ($join) {
                        $join->on('notes.version_id', '=', 'versions.id');
                    })
-                   ->select('notes.id', 'notebooks.title as notebook_title', 'versions.id as version_id', 'versions.title', 'versions.content', 'notes.created_at',
-                       'notes.updated_at')
+                   ->select('notes.id', 'notebooks.title as notebook_title',
+                     'versions.id as version_id', 'versions.title',
+                     'versions.content', 'notes.created_at',
+                     'notes.updated_at')
                    ->whereNull('notes.deleted_at')
                    ->whereNull('notebooks.deleted_at')
                    ->get();
@@ -464,21 +410,27 @@ class UserController extends BaseController
             $noteid    = $note->id;
 
             $noteArray = [
-                'title'   => $note->title,
-                'content' => $note->content,
-                'created' => date('omd', strtotime($note->created_at)) . 'T' . date('His', strtotime($note->created_at)) . 'Z',
-                'updated' => date('omd', strtotime($note->updated_at)) . 'T' . date('His', strtotime($note->updated_at)) . 'Z'
+              'title'   => $note->title,
+              'content' => $note->content,
+              'created' => date('omd', strtotime($note->created_at)) . 'T' .
+                           date('His', strtotime($note->created_at)) . 'Z',
+              'updated' => date('omd', strtotime($note->updated_at)) . 'T' .
+                           date('His', strtotime($note->updated_at)) . 'Z'
             ];
 
             $attachments = DB::table('attachment_version')
-                             ->join('versions', function ($join) use (&$versionId) {
-                                 $join->on('attachment_version.version_id', '=', 'versions.id')
-                                      ->where('versions.id', '=', $versionId);
-                             })
+                             ->join('versions',
+                               function ($join) use (&$versionId) {
+                                   $join->on('attachment_version.version_id',
+                                     '=', 'versions.id')
+                                        ->where('versions.id', '=', $versionId);
+                               })
                              ->join('attachments', function ($join) {
-                                 $join->on('attachment_version.attachment_id', '=', 'attachments.id');
+                                 $join->on('attachment_version.attachment_id',
+                                   '=', 'attachments.id');
                              })
-                             ->select('attachments.id', 'attachments.filename', 'attachments.mimetype')
+                             ->select('attachments.id', 'attachments.filename',
+                               'attachments.mimetype')
                              ->whereNull('attachments.deleted_at')
                              ->get();
 
@@ -498,16 +450,19 @@ class UserController extends BaseController
             $noteArray['lastname']  = Auth::user()->lastname;
 
             foreach ($attachments as $attachment) {
-                $attachments_directory = Config::get('paperwork.attachmentsDirectory');
-                $path                  = $attachments_directory . "/" . $attachment->id . "/" . $attachment->filename;
+                $attachments_directory =
+                  Config::get('paperwork.attachmentsDirectory');
+                $path                  =
+                  $attachments_directory . "/" . $attachment->id . "/" .
+                  $attachment->filename;
                 $file_contents         = File::get($path);
                 $data                  = base64_encode($file_contents);
 
                 $noteArray['attachments'][] = [
-                    'hash'     => md5($file_contents),
-                    'filename' => $attachment->filename,
-                    'mimetype' => $attachment->mimetype,
-                    'encoded'  => $data
+                  'hash'     => md5($file_contents),
+                  'filename' => $attachment->filename,
+                  'mimetype' => $attachment->mimetype,
+                  'encoded'  => $data
                 ];
             }
 
@@ -517,12 +472,13 @@ class UserController extends BaseController
                 $noteArray['end'] = 1;
             }
 
-            $file_content .= View::make('user/settings/export_file', $noteArray)->render();
+            $file_content .= View::make('user/settings/export_file', $noteArray)
+                                 ->render();
         }
 
         $headers = [
-            "Content-Type"        => "application/xml",
-            "Content-Disposition" => "attachment; filename=\"export.enex\""
+          "Content-Type"        => "application/xml",
+          "Content-Disposition" => "attachment; filename=\"export.enex\""
         ];
 
         return Response::make(rtrim($file_content, "\r\n"), 200, $headers);

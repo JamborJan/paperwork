@@ -1,12 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Get the Sandstorm base path
-|--------------------------------------------------------------------------
-|
-*/
-
 return array(
 	/*
 	|--------------------------------------------------------------------------
@@ -31,6 +24,7 @@ return array(
 	'access' => array(
 		'external' => array(
 			'dns'	=> array_key_exists('HTTP_X_SANDSTORM_BASE_PATH', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_BASE_PATH'] : 'localhost',
+			/* 'dns'	=> 'paperwork.example.com', */
 			'ports' => array(
 				'http'		 => 8000,
 				'https' 	 => 8000,
@@ -58,7 +52,7 @@ return array(
 	| no new users will be able to register.
 	|
 	*/
-	'registration' => false,
+	'registration' => true,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -68,7 +62,7 @@ return array(
 	| If set to true, forgot password link is enabled.
 	|
 	*/
-	'forgot_password' => false,
+	'forgot_password' => true,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -101,9 +95,9 @@ return array(
 			//_
 			'underscore' => false,
 			//'
-			'apostrophe' => false,
+			'apostrophe' => true,
 			//" " Note, leading and trailing spaces are still trimmed
-			'space' => false,
+			'space' => true,
 		),
 
 	/*
@@ -156,7 +150,7 @@ return array(
 	| If set to true, a link for reporting issues is being displayed.
 	|
 	*/
-	'showIssueReportingLink' => false,
+	'showIssueReportingLink' => true,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -178,5 +172,6 @@ return array(
 	|
 	*/
 	'tagsPublicPrefixCharacter' => '+',
+  	'purgeTagList' => ['script'],
 
 );

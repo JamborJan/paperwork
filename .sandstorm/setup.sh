@@ -32,21 +32,32 @@ server {
 }
 EOF
 ln -s /etc/nginx/sites-available/sandstorm-php /etc/nginx/sites-enabled/sandstorm-php
-# Stop services outside the sandbox
 service nginx stop
 service php5-fpm stop
 service mysql stop
-# patch /etc/php5/fpm/php-fpm.conf to not change uid/gid to www-data
+# patch /etc/php5/fpm/pool.d/www.conf to not change uid/gid to www-data
 sed --in-place='' \
         --expression='s/^listen.owner = www-data/#listen.owner = www-data/' \
         --expression='s/^listen.group = www-data/#listen.group = www-data/' \
         --expression='s/^user = www-data/#user = www-data/' \
         --expression='s/^group = www-data/#group = www-data/' \
         /etc/php5/fpm/pool.d/www.conf
+# patch /etc/php5/fpm/php-fpm.conf to not have a pidfile
+sed --in-place='' \
+        --expression='s/^pid =/#pid =/' \
+        /etc/php5/fpm/php-fpm.conf
 # patch mysql conf to not change uid
 sed --in-place='' \
         --expression='s/^user\t\t= mysql/#user\t\t= mysql/' \
         /etc/mysql/my.cnf
+# patch mysql conf to use smaller transaction logs to save disk space
+cat <<EOF > /etc/mysql/conf.d/sandstorm.cnf
+[mysqld]
+# Set the transaction log file to the minimum allowed size to save disk space.
+innodb_log_file_size = 1048576
+# Set the main data file to grow by 1MB at a time, rather than 8MB at a time.
+innodb_autoextend_increment = 1
+EOF
 # patch nginx conf to not bother trying to setuid, since we're not root
 sed --in-place='' \
         --expression 's/^user www-data/#user www-data/' \

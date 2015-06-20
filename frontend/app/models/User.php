@@ -5,7 +5,7 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableTrait;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
-class User extends Eloquent implements UserInterface, RemindableInterface {
+class User extends PaperworkModel implements UserInterface, RemindableInterface {
 	use UserTrait, RemindableTrait;
 
 	/**
@@ -29,11 +29,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function notebooks() {
-		return $this->belongsToMany('Notebook')->withTimestamps();
+		return $this->belongsToMany('Notebook')->withPivot('umask')->withTimestamps();
 	}
 
 	public function notes() {
-		return $this->belongsToMany('Note')->withTimestamps();
+		return $this->belongsToMany('Note')->withPivot('umask')->withTimestamps();
 	}
 
 	public function shortcuts() {
@@ -42,6 +42,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function languages() {
 		return $this->belongsToMany('Language');
+	}
+	public function tags(){
+		return $this->hasMany('Tag');
+	}
+	public function versions(){
+	  return $this->hasMany('Version')->withTimestamps();
 	}
 	
     public function isAdmin() {

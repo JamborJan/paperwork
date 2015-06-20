@@ -6,7 +6,9 @@ This is the Sandstorm package of [Paperwork](http://paperwork.rocks/).
 
 Version 3 of the app can be used for testing it's not 100% stable but should work pretty well. Please add issues and questions you have as Issue here on [Github](https://github.com/JamborJan/paperwork/issues).
 
-Version 4 is work in progress. The current code should work but you might face iccues and bugs. See the issues list filtered by label v4 for the issues which are included in this version.
+Version 4 - the master branch - is work in progress. The current code should work but you might face issues and bugs. See the issues list filtered by label v4 for the issues which are included in this version.
+
+Version 5 and it's branch is also work in progress but not working.
 
 # How to
 
