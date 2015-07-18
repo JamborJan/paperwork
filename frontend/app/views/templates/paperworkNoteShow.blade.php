@@ -44,9 +44,11 @@
                             <button class="btn btn-default navbar-btn" title="[[Lang::get('keywords.edit_note')]]"
                                     ng-controller="SidebarNotesController"
                                     ng-click="editNote(note.notebook_id, note.id)"><i class="fa fa-pencil"></i></button>
+                            @if(Config::get('paperwork.sandstorm_debug') == false)
                             <button class="btn btn-default navbar-btn" title="[[Lang::get('keywords.share')]]"
                                     ng-controller="SidebarNotesController" ng-click="modalShareNote(note.notebook_id, note.id)"><i
                                         class="fa fa-share-alt"></i></button>
+                            @endif
                         </div>
                     </li>
                 </ul>
