@@ -72,19 +72,21 @@ const pkgdef :Spk.PackageDefinition = (
   bridgeConfig = (
     viewInfo = (
       permissions = [(name = "admin", title = (defaultText = "admin"),
-                      description = (defaultText = "Admin pormission")),
-                     (name = "edit", title = (defaultText = "edit"),
-                      description = (defaultText = "allows editing notes"))],
-      roles = [(title = (defaultText = "editor"),
-                permissions = [true, true],
-                verbPhrase = (defaultText = "can add & edit notes"),
+                      description = (defaultText = "Is the owner.")),
+                     (name = "write", title = (defaultText = "write"),
+                      description = (defaultText = "Can write.")),
+                     (name = "read", title = (defaultText = "read"),
+                      description = (defaultText = "Can read."))],
+      roles = [(title = (defaultText = "Owner"),
+                permissions = [true, true, true],
+                verbPhrase = (defaultText = "Is owner, can add & edit notes."),
                 default = true),
-               (title = (defaultText = "viewer"),
-                permissions = [false, false],
-                verbPhrase = (defaultText = "can view notes")),
-               (title = (defaultText = "commenter"),
-                permissions = [false, true],
-                verbPhrase = (defaultText = "can edit existing notes"))]
+               (title = (defaultText = "Read & write"),
+                permissions = [false, true, true],
+                verbPhrase = (defaultText = "Can add & edit notes.")),
+               (title = (defaultText = "Read only"),
+                permissions = [false, false, true],
+                verbPhrase = (defaultText = "Can read existing notes."))]
     )
   )
 );

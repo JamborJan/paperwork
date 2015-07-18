@@ -17,8 +17,12 @@ App::missing(function ($exception) {
     return Response::view('404', array(), 404);
 });
 
-Route::get('/login', ["as" => "user/login", "uses" => "UserController@showLoginForm"]);
-Route::post('/login', ["as" => "user/login", "uses" => "UserController@login"]);
+if (Config::get('paperwork.sandstorm')) {
+  Route::get('/login', ["as" => "user/login", "uses" => "UserController@checkSandstormUsers"]);
+} else {
+  Route::get('/login', ["as" => "user/login", "uses" => "UserController@showLoginForm"]);
+  Route::post('/login', ["as" => "user/login", "uses" => "UserController@login"]);
+}
 
 if (Config::get('paperwork.registration')) {
     Route::get("/register", ["as" => "user/register", "uses" => "UserController@showRegistrationForm"]);
