@@ -1,4 +1,4 @@
-{ 
+{
 	"name": "laravel/laravel",
 	"description": "The Laravel Framework.",
 	"keywords": ["framework", "laravel"],
@@ -10,7 +10,8 @@
 		"thiagoalessio/tesseract_ocr": ">= 0.2.0",
 		"simplesoftwareio/simple-qrcode": "1.1.*",
 		"barryvdh/laravel-ide-helper": "~1.11",
-		"webpatser/laravel-uuid": "1.*"
+		"webpatser/laravel-uuid": "1.*",
+		"strebl/adldap": "^4.0"
 	},
 	"autoload": {
 		"classmap": [

@@ -146,71 +146,71 @@ class UserController extends BaseController
               $sandstorm_admin->save();
               $setting_sandstorm_admin = Setting::create(['ui_language' => 'en' , 'user_id' => $sandstorm_admin->id]);
 
-        } else {
-          // if the user table is empty and we are not admin
-          // something is srewed up and we show an error package
+          } else {
+            // if the user table is empty and we are not admin
+            // something is srewed up and we show an error package
 
-          // We need to create a special page for sandstorm here
-          // as we cannot simply go back to the login screen
+            // We need to create a special page for sandstorm here
+            // as we cannot simply go back to the login screen
 
-          // return Redirect::route("/");
+            // return Redirect::route("/");
 
+          }
+
+          // Now that the required users are there we create the default
+          // Notebook ...
+          $notebookCreate = new Notebook();
+          $notebookCreate->title = Lang::get('notebooks.welcome_notebook_title');
+          $notebookCreate->save();
+          $notebookCreate->users()->attach($sandstorm_readonly->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
+          $notebookCreate->users()->attach($sandstorm_readwrite->id, ['umask' => PaperworkHelpers::UMASK_READWRITE]);
+          $notebookCreate->users()->attach($sandstorm_admin->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
+
+          // Tag ...
+          $tagCreate = new Tag();
+          $tagCreate->title = Lang::get('notebooks.welcome_note_tag');
+          $tagCreate->visibility = 1;
+          $tagCreate->user_id=$sandstorm_admin->id;
+          $tagCreate->save();
+
+          // Note ...
+          $noteCreate = new Note;
+          $versionCreate = new Version([
+            'title'           => Lang::get('notebooks.welcome_note_title'),
+            'content'         => Lang::get('notebooks.welcome_note_content'),
+            'content_preview' => mb_substr(strip_tags(Lang::get('notebooks.welcome_note_content')), 0, 255),
+            'user_id'         => $sandstorm_admin->id
+          ]);
+          $versionCreate->save();
+          $noteCreate->version()->associate($versionCreate);
+          $noteCreate->notebook_id = $notebookCreate->id;
+          $noteCreate->save();
+          $noteCreate->users()->attach($sandstorm_readonly->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
+          $noteCreate->users()->attach($sandstorm_readwrite->id, ['umask' => PaperworkHelpers::UMASK_READWRITE]);
+          $noteCreate->users()->attach($sandstorm_admin->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
+          $noteCreate->tags()->sync([$tagCreate->id]);
         }
+      }
 
-        // Now that the required users are there we create the default
-        // Notebook ...
-        $notebookCreate = new Notebook();
-        $notebookCreate->title = Lang::get('notebooks.welcome_notebook_title');
-        $notebookCreate->save();
-        $notebookCreate->users()->attach($sandstorm_readonly->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
-        $notebookCreate->users()->attach($sandstorm_readwrite->id, ['umask' => PaperworkHelpers::UMASK_READWRITE]);
-        $notebookCreate->users()->attach($sandstorm_admin->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
+      // login
+      if ($sandstorm_permissions == "read") {
+        $credentials = ["username" => "sandstorm_readonly", "password" => "sandstorm_readonly"];
+      }
 
-        // Tag ...
-        $tagCreate = new Tag();
-        $tagCreate->title = Lang::get('notebooks.welcome_note_tag');
-        $tagCreate->visibility = 1;
-        $tagCreate->user_id=$sandstorm_admin->id;
-        $tagCreate->save();
+      if ($sandstorm_permissions == "write,read") {
+        $credentials = ["username" => "sandstorm_readwrite", "password" => "sandstorm_readwrite"];
+      }
 
-        // Note ...
-        $noteCreate = new Note;
-        $versionCreate = new Version([
-          'title'           => Lang::get('notebooks.welcome_note_title'),
-          'content'         => Lang::get('notebooks.welcome_note_content'),
-          'content_preview' => mb_substr(strip_tags(Lang::get('notebooks.welcome_note_content')), 0, 255),
-          'user_id'         => $sandstorm_admin->id
-        ]);
-        $versionCreate->save();
-        $noteCreate->version()->associate($versionCreate);
-        $noteCreate->notebook_id = $notebookCreate->id;
-        $noteCreate->save();
-        $noteCreate->users()->attach($sandstorm_readonly->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
-        $noteCreate->users()->attach($sandstorm_readwrite->id, ['umask' => PaperworkHelpers::UMASK_READWRITE]);
-        $noteCreate->users()->attach($sandstorm_admin->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
-        $noteCreate->tags()->sync([$tagCreate->id]);
+      if ($sandstorm_permissions == "admin,write,read") {
+        $credentials = ["username" => "sandstorm_admin", "password" => "sandstorm_admin"];
+      }
+
+      if (Auth::attempt($credentials)) {
+        $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
+        Session::put('ui_language', $settings->ui_language);
+        return Redirect::route("/");
       }
     }
-
-    // login
-    if ($sandstorm_permissions == "read") {
-      $credentials = ["username" => "sandstorm_readonly", "password" => "sandstorm_readonly"];
-    }
-
-    if ($sandstorm_permissions == "write,read") {
-      $credentials = ["username" => "sandstorm_readwrite", "password" => "sandstorm_readwrite"];
-    }
-
-    if ($sandstorm_permissions == "admin,write,read") {
-      $credentials = ["username" => "sandstorm_admin", "password" => "sandstorm_admin"];
-    }
-
-    if (Auth::attempt($credentials)) {
-      $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
-      Session::put('ui_language', $settings->ui_language);
-      return Redirect::route("/");
-    }
-  }
 
     protected function isPostRequest()
     {

@@ -1,9 +1,7 @@
 <div class="error-reporting">
     <?php
-    /* 
-    See: https://github.com/twostairs/paperwork/search?utf8=%E2%9C%93&q=lastCommitOnInstall
+
     list($lastCommitOnInstall, $upstreamLatest, $lastCommitTimestamp, $upstreamTimestamp) = PaperworkHelpers::getHashes();
-    */
     ?>
     @if(empty($lastCommitOnInstall))
         <div class="alert alert-warning" role="alert">

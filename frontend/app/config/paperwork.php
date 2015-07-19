@@ -24,7 +24,6 @@ return array(
 	'access' => array(
 		'external' => array(
 			'dns'	=> array_key_exists('HTTP_X_SANDSTORM_BASE_PATH', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_BASE_PATH'] : 'localhost',
-			/* 'dns'	=> 'paperwork.example.com', */
 			'ports' => array(
 				'http'		 => 8000,
 				'https' 	 => 8000,
@@ -67,7 +66,7 @@ return array(
 	| no new users will be able to register.
 	|
 	*/
-	'registration' => true,
+	'registration' => false,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -89,7 +88,7 @@ return array(
 	| language set in app.php -> locale will be used.
 	|
 	*/
-	'userAgentLanguage' => false,
+	'userAgentLanguage' => true,
 
 	/*
 	|--------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 <ul class="nav navbar-nav navbar-right">
 	@include("partials.navbar.navbar-link", [
 			"route" => URL::route("/"),
-			"title" => Lang::get("keywords.library"),
+			"title" => Lang::get("keywords.library"), 
 			"fa_icon" => "fa-book"
 		])
 
@@ -15,21 +15,21 @@
 
 	@include("partials.navbar.navbar-link", [
 			"route" => URL::route("user/settings"),
-			"title" => Lang::get("keywords.settings"),
+			"title" => Lang::get("keywords.settings"), 
 			"fa_icon" => "fa-cog"
 		])
 
 	@if (Auth::user() && Auth::user()->isAdmin())
 		@include("partials.navbar.navbar-link", [
 				"route" => URL::route("admin/console"),
-				"title" => Lang::get("keywords.admin_area"),
+				"title" => Lang::get("keywords.admin_area"), 
 				"fa_icon" => "fa-star"
 			])
 	@endif
 
 	@include("partials.navbar.navbar-link", [
 			"route" => URL::route("user/help"),
-			"title" => Lang::get("keywords.help"),
+			"title" => Lang::get("keywords.help"), 
 			"fa_icon" => "fa-question"
 		])
 

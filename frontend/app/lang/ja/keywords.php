@@ -2,13 +2,13 @@
 
 return array(
 
-	'admin_area' => '管理者エリア',
-	'admin_status' => '管理者権限',
-	'deleted_at' => '削除日時',
+	'admin_area' => 'Admin Area',
+	'admin_status' => 'Admin Status',
+	'deleted_at' => 'Deleted',
 	'email_address' => 'メールアドレス',
 	'username' => 'Username',
 	'id' => 'ID',
-	'users' => 'ユーザー',
+	'users' => 'Users',
 	'first_name' => '名前',
 	'last_name' => '姓',
 	'password' => 'パスワード',
@@ -88,12 +88,6 @@ return array(
 	'experimental' => '実験的',
 	'import' => '読み込み',
 	'export' => '書き出し',
-	'back' => '戻る'
-	'share_note' => 'Share note',
-	'share_notes' => 'Share notes',
-	'select_user_title' => 'Invite users to share the note(s)',
-	'not_shared' => 'Do not share',
-	'read_only' => 'Read only',
-	'read_write' => 'Read and write'
+	'back' => 'Back'
 
 );
