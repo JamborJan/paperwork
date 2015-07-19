@@ -8,9 +8,11 @@
 			<li ng-controller="SidebarNotebooksController">
 				<a id="menu-item-file-sub-new_notebook" href="" ng-click="modalNewNotebook()"><i class="fa fa-book"></i> [[Lang::get('keywords.new_notebook')]]</a>
 			</li>
-			<li>
-				<a id="menu-item-file-sub-new_collection" href="" data-toggle="modal" data-target="#modalCollection"><i class="fa fa-folder"></i> [[Lang::get('keywords.new_collection')]]</a>
-			</li>
+			@if(Config::get('paperwork.sandstorm_debug') == false)
+				<li>
+					<a id="menu-item-file-sub-new_collection" href="" data-toggle="modal" data-target="#modalCollection"><i class="fa fa-folder"></i> [[Lang::get('keywords.new_collection')]]</a>
+				</li>
+			@endif
 		</ul>
 	</li>
 	<li class="dropdown">
