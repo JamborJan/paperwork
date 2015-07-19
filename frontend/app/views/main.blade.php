@@ -19,9 +19,6 @@
 			<ul class="nav nav-sidebar sidebar-no-border" ng-hide="sidebarCollapsed">
 				<div class="tree ">
 					<ul class="tree-base">
-						@if(Config::get('paperwork.sandstorm_debug'))
-							Sandstorm Debug: <?php echo $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS']; ?>
-						@endif
 						<li>
 							<span class="tree-header tree-header-shortcuts"><i class="fa fa-chevron-down"></i> [[Lang::get('keywords.shortcuts')]]</span>
 							<ul class="tree-child">
@@ -59,6 +56,14 @@
 								</li>
 							</ul>
 						</li>
+						@if(Config::get('paperwork.sandstorm_debug'))
+						<li>
+							<span class="tree-header tree-header-calendar"><i class="fa fa-chevron-down"></i> Debugging Info</span>
+							<ul class="tree-child">
+								@include('partials/debug-main')
+							</ul>
+						</li>
+						@endif
 					</ul>
 				</div>
 			</ul>
