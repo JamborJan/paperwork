@@ -360,13 +360,16 @@ opt/app/frontend/public/css/loading-bar.css
 opt/app/frontend/public/css/themes/paperwork-v1.min.css
 opt/app/frontend/public/css/typeahead.min.css
 opt/app/frontend/public/favicon.ico
+opt/app/frontend/public/fonts/Lato-Bold.ttf
 opt/app/frontend/public/fonts/Lato-Bold.woff
 opt/app/frontend/public/fonts/Lato-Italic.woff
 opt/app/frontend/public/fonts/Lato-Light.woff
 opt/app/frontend/public/fonts/Lato-Medium.woff
 opt/app/frontend/public/fonts/Lato-Regular.woff
+opt/app/frontend/public/fonts/Lato-Semibold.ttf
 opt/app/frontend/public/fonts/Lato-Semibold.woff
 opt/app/frontend/public/fonts/Lato-Thin.woff
+opt/app/frontend/public/fonts/fontawesome-webfont.ttf
 opt/app/frontend/public/fonts/fontawesome-webfont.woff
 opt/app/frontend/public/images/404-logo.png
 opt/app/frontend/public/images/freqselector/default/arrow.png
