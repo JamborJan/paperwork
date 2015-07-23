@@ -17,7 +17,7 @@ server {
     index index.php index.html index.htm;
 
     server_name 127.0.0.1;
-    client_max_body_size 100M;
+    client_max_body_size 20M;
 
     location / {
         try_files \$uri \$uri/ /index.php?\$query_string;
@@ -49,8 +49,10 @@ sed --in-place='' \
         /etc/php5/fpm/php-fpm.conf
 # patch /etc/php5/fpm/php.ini to allow backup uploads up to 100MB in Paperwork
 sed --in-place='' \
-        --expression='s/^post_max_size =.*/post_max_size = 100M/' \
-        --expression='s/^upload_max_filesize =.*/upload_max_filesize = 100M/' \
+        --expression='s/^post_max_size =.*/post_max_size = 20M/' \
+        --expression='s/^upload_max_filesize =.*/upload_max_filesize = 20M/' \
+        --expression='s/^max_execution_time =.*/max_execution_time = 300/' \
+        --expression='s/^max_input_time =.*/max_input_time = 360/' \
         /etc/php5/fpm/php.ini
 # patch mysql conf to not change uid
 sed --in-place='' \
