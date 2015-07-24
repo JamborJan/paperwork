@@ -8,7 +8,7 @@ return array(
 	'note_version_info' => 'You are previewing an older version of this note.',
 	'found_bug' => 'Found a bug? <a href="https://github.com/twostairs/paperwork/issues/new" target="_blank" title="Submit Issue">Submit it on GitHub!</a>',
 	'new_version_available' => 'Found a bug? It seems like you are not running the latest version of Paperwork. Please consider updating before submitting an issue. ',
-	'error_version_check' => 'Found a bug? Paperwork cannot check whether your version is the latest. Please make sure you are running the latest version before reporting any issues. ', 
+	'error_version_check' => 'Found a bug? Paperwork cannot check whether your version is the latest. Please make sure you are running the latest version before reporting any issues. ',
 	'error_message' => 'Whooops!',
 	'onbeforeunload_info' => 'Data will be lost if you leave the page, are you sure?',
 	'user' => array(
@@ -26,11 +26,11 @@ return array(
 				'scan' => 'Escanear este código QR con la aplicación de su teléfono para configurar automáticamente su cuenta de Paperwork.'
 			),
 			'import' => array(
-				'evernotexml' => 'XML de Evernote:',
+				'evernotexml' => 'Importación XML de Evernote:',
 				'upload_evernotexml' => 'Suba el archivo XML de Evernote aquí para importar las notas de dicho servicio a Paperworks.'
 			),
 			'export' => array(
-				'evernotexml' => 'XML de Evernote:',
+				'evernotexml' => 'Exportación XML de Evernote:',
 				'download_evernotexml' => 'Descargue un archivo ENEX compatible con Evernote para exportar las notas de Paperwork a dicho servicio.'
 			)
 		)
