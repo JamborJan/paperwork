@@ -31,15 +31,6 @@ done
 # Ensure mysql tables created
 HOME=/etc/mysql /usr/bin/mysql_install_db --force
 
-# Update V3 to V4 mysqld.sock
-# minimize mysql allocations
-# echo '[mysqld]\ninnodb_data_file_path = ibdata1:10M:autoextend\ninnodb_log_file_size = 10KB\ninnodb_file_per_table = 1' > /etc/mysql/conf.d/small.cnf
-# sed -i 's_^socket\s*=.*_socket = /tmp/mysqld.sock_g' /etc/mysql/*.cnf
-# ln -s /tmp/mysqld.sock /var/run/mysqld/mysqld.sock
-# rm -rf /var/lib/mysql/*
-# mysql_install_db
-# chown -R mysql: /var/lib/mysql
-
 # Spawn mysqld, php
 HOME=/etc/mysql /usr/sbin/mysqld &
 /usr/sbin/php5-fpm --nodaemonize --fpm-config /etc/php5/fpm/php-fpm.conf &

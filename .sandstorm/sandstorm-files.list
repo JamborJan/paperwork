@@ -323,6 +323,7 @@ opt/app/frontend/app/views/templates/client.blade.php
 opt/app/frontend/app/views/templates/paperwork404.blade.php
 opt/app/frontend/app/views/templates/paperworkNoteEdit.blade.php
 opt/app/frontend/app/views/templates/paperworkNoteShow.blade.php
+opt/app/frontend/app/views/user/debug.blade.php
 opt/app/frontend/app/views/user/help.blade.php
 opt/app/frontend/app/views/user/settings.blade.php
 opt/app/frontend/app/views/user/settings/import.blade.php
@@ -524,6 +525,7 @@ opt/app/frontend/vendor/laravel/framework/src/Illuminate/Database/Query/Grammars
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Database/Query/JoinClause.php
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Database/Query/Processors/MySqlProcessor.php
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Database/Query/Processors/Processor.php
+opt/app/frontend/vendor/laravel/framework/src/Illuminate/Database/QueryException.php
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Database/Schema/Blueprint.php
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Database/Schema/Builder.php
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Database/Schema/Grammars/Grammar.php
@@ -829,12 +831,15 @@ proc/cpuinfo
 sandstorm-http-bridge
 sandstorm-http-bridge-config
 sandstorm-manifest
+usr/bin/find
 usr/bin/my_print_defaults
 usr/bin/mysql
 usr/bin/mysql_install_db
+usr/bin/npm
 usr/bin/php
 usr/bin/php5
 usr/bin/tail
+usr/bin/tee
 usr/lib/libmcrypt.so.4
 usr/lib/libmcrypt.so.4.4.8
 usr/lib/libqdbm.so.14
