@@ -9,6 +9,10 @@
 | The user then has to export the data and import it again in an empty
 | instance.
 |
+| This hack also requires this change in the not git monitored file
+| /opt/app/frontend/vendor/laravel/framework/src/Illuminate/Database/Migrations/Migrator.php
+| https://gist.github.com/JamborJan/767f1dc8bede9f97dd53#file-migrator-php-L108
+|
 */
 ?>
 
