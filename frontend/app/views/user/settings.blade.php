@@ -13,6 +13,11 @@
     [[ Session::get("status") ]]
   </div>
 @endif
+@if ($errors->first('enex_file')!=null)
+  <div class="alert alert-danger" role="alert">
+    [[ $errors->first('enex_file') ]]
+  </div>
+@endif
 
 <ul class="nav nav-tabs nav-tabs-margin" role="tablist">
 	<li class="active"><a href="#language" role="tab" data-toggle="tab">[[ Lang::get('messages.user.settings.language_label') ]]</a></li>
