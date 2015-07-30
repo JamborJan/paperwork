@@ -209,7 +209,22 @@ class UserController extends BaseController
       if (Auth::attempt($credentials)) {
         $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
         Session::put('ui_language', $settings->ui_language);
-        return Redirect::route("/");
+
+        /*
+        |
+        | This is part of a bloody hack for
+        | https://github.com/JamborJan/paperwork/issues/13
+        |
+        | We show an export option in when we detect that an update is due
+        | from the Paperwork Sandstorm package V3 to V5 (V4 never existed)
+        |
+        */
+
+        if (DB::table('migrations')->count() == 4) {
+          return View::make('user.upgrade');
+        } else {
+          return Redirect::route("/");
+        }
       }
     }
 
@@ -499,25 +514,52 @@ class UserController extends BaseController
         $file_content = "";
         $noteNumber   = 0;
 
-        $notes = DB::table('notes')
-                   ->join('note_user', function ($join) {
-                       $join->on('notes.id', '=', 'note_user.note_id')
-                            ->where('note_user.user_id', '=', Auth::user()->id)
-                            ->where('note_user.umask', '=', '7');
-                   })
-                   ->join('notebooks', function ($join) {
-                       $join->on('notes.notebook_id', '=', 'notebooks.id');
-                   })
-                   ->join('versions', function ($join) {
-                       $join->on('notes.version_id', '=', 'versions.id');
-                   })
-                   ->select('notes.id', 'notebooks.title as notebook_title',
-                     'versions.id as version_id', 'versions.title',
-                     'versions.content', 'notes.created_at',
-                     'notes.updated_at')
-                   ->whereNull('notes.deleted_at')
-                   ->whereNull('notebooks.deleted_at')
-                   ->get();
+        /*
+        |
+        | This is part of a bloody hack for
+        | https://github.com/JamborJan/paperwork/issues/13
+        |
+        | We must export all to be save in case we running the migration
+        | from the Paperwork Sandstorm package V3 to V5 (V4 never existed)
+        |
+        */
+
+        if (DB::table('migrations')->count() == 4) {
+            $notes = DB::table('notes')
+                       ->join('notebooks', function ($join) {
+                           $join->on('notes.notebook_id', '=', 'notebooks.id');
+                       })
+                       ->join('versions', function ($join) {
+                           $join->on('notes.version_id', '=', 'versions.id');
+                       })
+                       ->select('notes.id', 'notebooks.title as notebook_title',
+                         'versions.id as version_id', 'versions.title',
+                         'versions.content', 'notes.created_at',
+                         'notes.updated_at')
+                       ->whereNull('notes.deleted_at')
+                       ->whereNull('notebooks.deleted_at')
+                       ->get();
+        } else {
+            $notes = DB::table('notes')
+                       ->join('note_user', function ($join) {
+                           $join->on('notes.id', '=', 'note_user.note_id')
+                                ->where('note_user.user_id', '=', Auth::user()->id)
+                                ->where('note_user.umask', '=', '7');
+                       })
+                       ->join('notebooks', function ($join) {
+                           $join->on('notes.notebook_id', '=', 'notebooks.id');
+                       })
+                       ->join('versions', function ($join) {
+                           $join->on('notes.version_id', '=', 'versions.id');
+                       })
+                       ->select('notes.id', 'notebooks.title as notebook_title',
+                         'versions.id as version_id', 'versions.title',
+                         'versions.content', 'notes.created_at',
+                         'notes.updated_at')
+                       ->whereNull('notes.deleted_at')
+                       ->whereNull('notebooks.deleted_at')
+                       ->get();
+        }
 
         $noteCount = count($notes);
         foreach ($notes as $note) {
