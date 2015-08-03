@@ -220,8 +220,8 @@ class UserController extends BaseController
         |
         */
 
-        if (DB::table('migrations')->count() == 4) {
-          return View::make('user.upgrade');
+        if (Config::get('paperwork.emergency_export') && ((DB::table('migrations')->select(DB::raw('count(*) as migrations_count, batch'))->where('batch', '=', 1)->get()) == Config::get('paperwork.emergency_export_count'))) {
+          return View::make('user.emergency_export');
         } else {
           return Redirect::route("/");
         }

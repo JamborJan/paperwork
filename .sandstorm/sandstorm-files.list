@@ -6,12 +6,14 @@ bin/bash
 bin/cat
 bin/chmod
 bin/dash
+bin/grep
 bin/hostname
 bin/mkdir
 bin/rm
 bin/sed
 bin/sh
 bin/sleep
+bin/stty
 etc/alternatives/php
 etc/bindresvport.blacklist
 etc/default/nss
@@ -324,8 +326,10 @@ opt/app/frontend/app/views/templates/paperwork404.blade.php
 opt/app/frontend/app/views/templates/paperworkNoteEdit.blade.php
 opt/app/frontend/app/views/templates/paperworkNoteShow.blade.php
 opt/app/frontend/app/views/user/debug.blade.php
+opt/app/frontend/app/views/user/emergency_export.blade.php
 opt/app/frontend/app/views/user/help.blade.php
 opt/app/frontend/app/views/user/settings.blade.php
+opt/app/frontend/app/views/user/settings/export_file.blade.php
 opt/app/frontend/app/views/user/settings/import.blade.php
 opt/app/frontend/app/views/user/settings/language.blade.php
 opt/app/frontend/artisan
