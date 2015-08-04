@@ -105,124 +105,119 @@ class UserController extends BaseController
 
     public function checkSandstormUsers()
     {
-      // get permission via HTTP_X_SANDSTORM header
-      $sandstorm_permissions = $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'];
-
-      // Only when we are admin, we check and create users
-      if ($sandstorm_permissions == "admin,write,read") {
-        // check for admin user
-        if (User::where('username', '=', 'sandstorm_admin')->count() == 0) {
-          $sandstorm_admin = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
-          if ($sandstorm_admin) {
-            //make the first user an admin
-            $sandstorm_admin->firstname = "sandstorm_admin";
-            $sandstorm_admin->lastname  = " ";
-            $sandstorm_admin->username = "sandstorm_admin";
-            $sandstorm_admin->password = "sandstorm_admin";
-            $sandstorm_admin->is_admin = 1;
-            $sandstorm_admin->save();
-            $setting_sandstorm_admin = Setting::create(['ui_language' => 'en' , 'user_id' => $sandstorm_admin->id]);
-          }
-        } else {
-          $sandstorm_admin = User::where('username', '=', 'sandstorm_admin');
-        }
-
-        // Then the read & write  user
-        if (User::where('username', '=', 'sandstorm_readwrite')->count() == 0) {
-          $sandstorm_readwrite = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
-          if ($sandstorm_readwrite) {
-            $sandstorm_readwrite->firstname = "sandstorm_readwrite";
-            $sandstorm_readwrite->lastname  = " ";
-            $sandstorm_readwrite->username = "sandstorm_readwrite";
-            $sandstorm_readwrite->password = "sandstorm_readwrite";
-            $sandstorm_readwrite->save();
-            $setting_sandstorm_readwrite = Setting::create(['ui_language' => 'en' , 'user_id' => $sandstorm_readwrite->id]);
-          }
-        } else {
-          $sandstorm_readwrite = User::where('username', '=', 'sandstorm_readwrite');
-        }
-
-        // Then the read only  user
-        if (User::where('username', '=', 'sandstorm_readonly')->count() == 0) {
-          $sandstorm_readonly = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
-          if ($sandstorm_readonly) {
-            $sandstorm_readonly->firstname = "sandstorm_readonly";
-            $sandstorm_readonly->lastname  = " ";
-            $sandstorm_readonly->username = "sandstorm_readonly";
-            $sandstorm_readonly->password = "sandstorm_readonly";
-            $sandstorm_readonly->save();
-            $setting_sandstorm_readonly = Setting::create(['ui_language' => 'en' , 'user_id' => $sandstorm_readonly->id]);
-          }
-        } else {
-          $sandstorm_readonly = User::where('username', '=', 'sandstorm_readonly');
-        }
-      }
-
-      // Now that the required users are there we create the default
-      if ((Notebook::all()->count() == 0) && (Tag::all()->count() == 0) && (Note::all()->count() == 0)) {
-        // Notebook ...
-        $notebookCreate = new Notebook();
-        $notebookCreate->title = Lang::get('notebooks.welcome_notebook_title');
-        $notebookCreate->save();
-        $notebookCreate->users()->attach($sandstorm_readonly->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
-        $notebookCreate->users()->attach($sandstorm_readwrite->id, ['umask' => PaperworkHelpers::UMASK_READWRITE]);
-        $notebookCreate->users()->attach($sandstorm_admin->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
-
-        // Tag ...
-        $tagCreate = new Tag();
-        $tagCreate->title = Lang::get('notebooks.welcome_note_tag');
-        $tagCreate->visibility = 1;
-        $tagCreate->user_id=$sandstorm_admin->id;
-        $tagCreate->save();
-
-        // Note ...
-        $noteCreate = new Note;
-        $versionCreate = new Version([
-          'title'           => Lang::get('notebooks.welcome_note_title'),
-          'content'         => Lang::get('notebooks.welcome_note_content'),
-          'content_preview' => mb_substr(strip_tags(Lang::get('notebooks.welcome_note_content')), 0, 255),
-          'user_id'         => $sandstorm_admin->id
-        ]);
-        $versionCreate->save();
-        $noteCreate->version()->associate($versionCreate);
-        $noteCreate->notebook_id = $notebookCreate->id;
-        $noteCreate->save();
-        $noteCreate->users()->attach($sandstorm_readonly->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
-        $noteCreate->users()->attach($sandstorm_readwrite->id, ['umask' => PaperworkHelpers::UMASK_READWRITE]);
-        $noteCreate->users()->attach($sandstorm_admin->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
-        $noteCreate->tags()->sync([$tagCreate->id]);
-      }
-
-      // login
-      if ($sandstorm_permissions == "read") {
-        $credentials = ["username" => "sandstorm_readonly", "password" => "sandstorm_readonly"];
-      }
-
-      if ($sandstorm_permissions == "write,read") {
-        $credentials = ["username" => "sandstorm_readwrite", "password" => "sandstorm_readwrite"];
-      }
-
-      if ($sandstorm_permissions == "admin,write,read") {
-        $credentials = ["username" => "sandstorm_admin", "password" => "sandstorm_admin"];
-      }
-
-      if (Auth::attempt($credentials)) {
-        $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
-        Session::put('ui_language', $settings->ui_language);
-
-        /*
-        |
-        | This is part of a bloody hack for
-        | https://github.com/JamborJan/paperwork/issues/13
-        |
-        | We show an export option in when we detect that an update is due
-        | from the Paperwork Sandstorm package V3 to V5 (V4 never existed)
-        |
-        */
-
-        if (Config::get('paperwork.emergency_export') && ((DB::table('migrations')->select(DB::raw('count(*) as migrations_count, batch'))->where('batch', '=', 1)->get()) == Config::get('paperwork.emergency_export_count'))) {
+      if (Config::get('paperwork.emergency_export') && ((DB::table('migrations')->where('batch', '=', 1)->count()) == Config::get('paperwork.emergency_export_count'))) {
+    	  $credentials = ["username" => "sandstorm_dummy", "password" => "sandstorm_dummy"];
+        if (Auth::attempt($credentials)) {
+          $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
+          Session::put('ui_language', $settings->ui_language);
           return View::make('user.emergency_export');
-        } else {
+        }
+      } else {
+        // get permission via HTTP_X_SANDSTORM header
+        $sandstorm_permissions = $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'];
+
+        // Only when we are admin, we check and create users
+        if ($sandstorm_permissions == "admin,write,read") {
+          // check for admin user
+          if (User::where('username', '=', 'sandstorm_admin')->count() == 0) {
+            $sandstorm_admin = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
+            if ($sandstorm_admin) {
+              //make the first user an admin
+              $sandstorm_admin->firstname = "sandstorm_admin";
+              $sandstorm_admin->lastname  = " ";
+              $sandstorm_admin->username = "sandstorm_admin";
+              $sandstorm_admin->password = "sandstorm_admin";
+              $sandstorm_admin->is_admin = 1;
+              $sandstorm_admin->save();
+              $setting_sandstorm_admin = Setting::create(['ui_language' => 'en' , 'user_id' => $sandstorm_admin->id]);
+            }
+          } else {
+            $sandstorm_admin = User::where('username', '=', 'sandstorm_admin');
+          }
+
+          // Then the read & write  user
+          if (User::where('username', '=', 'sandstorm_readwrite')->count() == 0) {
+            $sandstorm_readwrite = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
+            if ($sandstorm_readwrite) {
+              $sandstorm_readwrite->firstname = "sandstorm_readwrite";
+              $sandstorm_readwrite->lastname  = " ";
+              $sandstorm_readwrite->username = "sandstorm_readwrite";
+              $sandstorm_readwrite->password = "sandstorm_readwrite";
+              $sandstorm_readwrite->save();
+              $setting_sandstorm_readwrite = Setting::create(['ui_language' => 'en' , 'user_id' => $sandstorm_readwrite->id]);
+            }
+          } else {
+            $sandstorm_readwrite = User::where('username', '=', 'sandstorm_readwrite');
+          }
+
+          // Then the read only  user
+          if (User::where('username', '=', 'sandstorm_readonly')->count() == 0) {
+            $sandstorm_readonly = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
+            if ($sandstorm_readonly) {
+              $sandstorm_readonly->firstname = "sandstorm_readonly";
+              $sandstorm_readonly->lastname  = " ";
+              $sandstorm_readonly->username = "sandstorm_readonly";
+              $sandstorm_readonly->password = "sandstorm_readonly";
+              $sandstorm_readonly->save();
+              $setting_sandstorm_readonly = Setting::create(['ui_language' => 'en' , 'user_id' => $sandstorm_readonly->id]);
+            }
+          } else {
+            $sandstorm_readonly = User::where('username', '=', 'sandstorm_readonly');
+          }
+        }
+
+        // Now that the required users are there we create the default
+        if ((Notebook::all()->count() == 0) && (Tag::all()->count() == 0) && (Note::all()->count() == 0)) {
+          // Notebook ...
+          $notebookCreate = new Notebook();
+          $notebookCreate->title = Lang::get('notebooks.welcome_notebook_title');
+          $notebookCreate->save();
+          $notebookCreate->users()->attach($sandstorm_readonly->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
+          $notebookCreate->users()->attach($sandstorm_readwrite->id, ['umask' => PaperworkHelpers::UMASK_READWRITE]);
+          $notebookCreate->users()->attach($sandstorm_admin->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
+
+          // Tag ...
+          $tagCreate = new Tag();
+          $tagCreate->title = Lang::get('notebooks.welcome_note_tag');
+          $tagCreate->visibility = 1;
+          $tagCreate->user_id=$sandstorm_admin->id;
+          $tagCreate->save();
+
+          // Note ...
+          $noteCreate = new Note;
+          $versionCreate = new Version([
+            'title'           => Lang::get('notebooks.welcome_note_title'),
+            'content'         => Lang::get('notebooks.welcome_note_content'),
+            'content_preview' => mb_substr(strip_tags(Lang::get('notebooks.welcome_note_content')), 0, 255),
+            'user_id'         => $sandstorm_admin->id
+          ]);
+          $versionCreate->save();
+          $noteCreate->version()->associate($versionCreate);
+          $noteCreate->notebook_id = $notebookCreate->id;
+          $noteCreate->save();
+          $noteCreate->users()->attach($sandstorm_readonly->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
+          $noteCreate->users()->attach($sandstorm_readwrite->id, ['umask' => PaperworkHelpers::UMASK_READWRITE]);
+          $noteCreate->users()->attach($sandstorm_admin->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
+          $noteCreate->tags()->sync([$tagCreate->id]);
+        }
+
+        // login
+        if ($sandstorm_permissions == "read") {
+          $credentials = ["username" => "sandstorm_readonly", "password" => "sandstorm_readonly"];
+        }
+
+        if ($sandstorm_permissions == "write,read") {
+          $credentials = ["username" => "sandstorm_readwrite", "password" => "sandstorm_readwrite"];
+        }
+
+        if ($sandstorm_permissions == "admin,write,read") {
+          $credentials = ["username" => "sandstorm_admin", "password" => "sandstorm_admin"];
+        }
+
+        if (Auth::attempt($credentials)) {
+          $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
+          Session::put('ui_language', $settings->ui_language);
+
           return Redirect::route("/");
         }
       }
@@ -524,21 +519,26 @@ class UserController extends BaseController
         |
         */
 
-        if (DB::table('migrations')->count() == 4) {
+        if (Config::get('paperwork.emergency_export') && ((DB::table('migrations')->where('batch', '=', 1)->count()) == Config::get('paperwork.emergency_export_count'))) {
             $notes = DB::table('notes')
-                       ->join('notebooks', function ($join) {
-                           $join->on('notes.notebook_id', '=', 'notebooks.id');
-                       })
-                       ->join('versions', function ($join) {
-                           $join->on('notes.version_id', '=', 'versions.id');
-                       })
-                       ->select('notes.id', 'notebooks.title as notebook_title',
-                         'versions.id as version_id', 'versions.title',
-                         'versions.content', 'notes.created_at',
-                         'notes.updated_at')
-                       ->whereNull('notes.deleted_at')
-                       ->whereNull('notebooks.deleted_at')
-                       ->get();
+                      ->join('note_user', function ($join) {
+                          $join->on('notes.id', '=', 'note_user.note_id')
+                              ->where('note_user.user_id', '=', Auth::user()->id)
+                              ->where('note_user.umask', '=', '4');
+                      })
+                      ->join('notebooks', function ($join) {
+                          $join->on('notes.notebook_id', '=', 'notebooks.id');
+                      })
+                      ->join('versions', function ($join) {
+                          $join->on('notes.version_id', '=', 'versions.id');
+                      })
+                      ->select('notes.id', 'notebooks.title as notebook_title',
+                        'versions.id as version_id', 'versions.title',
+                        'versions.content', 'notes.created_at',
+                        'notes.updated_at')
+                      ->whereNull('notes.deleted_at')
+                      ->whereNull('notebooks.deleted_at')
+                      ->get();
         } else {
             $notes = DB::table('notes')
                        ->join('note_user', function ($join) {

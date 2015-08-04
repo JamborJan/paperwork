@@ -17,7 +17,7 @@ class AddVersionUserRelation extends Migration
             $table->char('user_id', 36);
         });
 
-        if (Config::get('paperwork.emergency_export') && ((DB::table('migrations')->select(DB::raw('count(*) as migrations_count, batch'))->where('batch', '=', 1)->get()) > Config::get('paperwork.emergency_export_count'))) {
+        if (Config::get('paperwork.emergency_export') && ((DB::table('migrations')->where('batch', '=', 1)->count()) == Config::get('paperwork.emergency_export_count'))) {
           // we skip this
         } else {
           Schema::table('versions', function (Blueprint $table) {

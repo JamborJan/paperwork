@@ -19,7 +19,7 @@ class ModifyTagUserRelation extends Migration
             $table->char('user_id', 36);
         });
 
-        if (Config::get('paperwork.emergency_export') && (DB::table('migrations')->where('batch', '=', 1)->count() == Config::get('paperwork.emergency_export_count'))) {
+        if (Config::get('paperwork.emergency_export') && ((DB::table('migrations')->where('batch', '=', 1)->count()) == Config::get('paperwork.emergency_export_count'))) {
           // we skip this
         } else {
           Schema::table('tags', function (Blueprint $table) {
