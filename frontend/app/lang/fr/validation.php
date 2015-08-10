@@ -1,17 +1,5 @@
 <?php
 
-$allowed_name_chars = Config::get('paperwork.nameCharactersAllowed');
-$name_error_message = "The :attribute may only contain";
-$name_error_message.= $allowed_name_chars['alpha']      ? ' letters,'    : '';
-$name_error_message.= $allowed_name_chars['hyphen']     ? ' hyphens,'    : '';
-$name_error_message.= $allowed_name_chars['num']        ? ' numbers,'    : '';
-$name_error_message.= $allowed_name_chars['underscore'] ? ' underscores,': '';
-$name_error_message.= $allowed_name_chars['apostrophe'] ? ' apostrophes,': '';
-$name_error_message.= $allowed_name_chars['space']      ? ' spaces,'     : '';
-//replace last , with a .
-$name_error_message = substr($name_error_message, 0, -1).'.';
-
-
 return array(
 
 	/*
@@ -30,7 +18,6 @@ return array(
 	"after"                => "The :attribute must be a date after :date.",
 	"alpha"                => "The :attribute may only contain letters.",
 	"alpha_dash"           => "The :attribute may only contain letters, numbers, and dashes.",
-	"alpha_dash_spaces"    => "The :attribute may only contain letters, numbers, dashes, apostrophes, and spaces.",
 	"alpha_num"            => "The :attribute may only contain letters and numbers.",
 	"array"                => "The :attribute must be an array.",
 	"before"               => "The :attribute must be a date before :date.",
@@ -54,19 +41,18 @@ return array(
 	"integer"              => "The :attribute must be an integer.",
 	"ip"                   => "The :attribute must be a valid IP address.",
 	"max"                  => array(
-		"numeric" => "The :attribute must be between :min and :max.",
-		"file"    => "The :attribute must be between :min and :max kilobytes.",
-		"string"  => "The :attribute must be between :min and :max characters.",
-		"array"   => "The :attribute must have between :min and :max items.",
+		"numeric" => "The :attribute may not be greater than :max.",
+		"file"    => "The :attribute may not be greater than :max kilobytes.",
+		"string"  => "The :attribute may not be greater than :max characters.",
+		"array"   => "The :attribute may not have more than :max items.",
 	),
 	"mimes"                => "The :attribute must be a file of type: :values.",
 	"min"                  => array(
-		"numeric" => "The :attribute must be between :min and :max.",
-		"file"    => "The :attribute must be between :min and :max kilobytes.",
-		"string"  => "The :attribute must be between :min and :max characters.",
-		"array"   => "The :attribute must have between :min and :max items.",
+		"numeric" => "The :attribute must be at least :min.",
+		"file"    => "The :attribute must be at least :min kilobytes.",
+		"string"  => "The :attribute must be at least :min characters.",
+		"array"   => "The :attribute must have at least :min items.",
 	),
-	"name_validator"       => $name_error_message,
 	"not_in"               => "The selected :attribute is invalid.",
 	"numeric"              => "The :attribute must be a number.",
 	"regex"                => "The :attribute format is invalid.",
@@ -78,10 +64,10 @@ return array(
 	"required_without_all" => "The :attribute field is required when none of :values are present.",
 	"same"                 => "The :attribute and :other must match.",
 	"size"                 => array(
-		"numeric" => "The :attribute must be between :min and :max.",
-		"file"    => "The :attribute must be between :min and :max kilobytes.",
-		"string"  => "The :attribute must be between :min and :max characters.",
-		"array"   => "The :attribute must have between :min and :max items.",
+		"numeric" => "The :attribute must be :size.",
+		"file"    => "The :attribute must be :size kilobytes.",
+		"string"  => "The :attribute must be :size characters.",
+		"array"   => "The :attribute must contain :size items.",
 	),
 	"unique"               => "The :attribute has already been taken.",
 	"url"                  => "The :attribute format is invalid.",

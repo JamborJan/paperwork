@@ -3,74 +3,67 @@
 class ApiNotebooksController extends BaseController {
 	use SoftDeletingTrait;
 
-	const NOTEBOOK_ALL_ID = '00000000-0000-0000-0000-000000000000';
-	protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at'];
 	public $restful = true;
 
-	// private function getNotebookChildren($notebookId) {
-	// 	$children = DB::table('notebooks')
-	// 		->join('notebook_user', function($join) {
-	// 			$join->on('notebooks.id', '=', 'notebook_user.notebook_id')
-	// 				->where('notebook_user.user_id', '=', Auth::user()->id);
-	// 		})
-	// 		->select('notebooks.uuid AS id', 'notebooks.type', 'notebooks.title')
-	// 		->where('notebooks.parent_id', '=', $notebookId)
-	// 		->whereNull('notebooks.deleted_at')
-	// 		->get();
-	// 	return $children;
-	// }
+	private function getNotebookChildren($notebookId) {
+		$children = DB::table('notebooks')
+			->join('notebook_user', function($join) {
+				$join->on('notebooks.id', '=', 'notebook_user.notebook_id')
+					->where('notebook_user.user_id', '=', Auth::user()->id);
+			})
+			->select('notebooks.id', 'notebooks.type', 'notebooks.title')
+			->where('notebooks.parent_id', '=', $notebookId)
+			->whereNull('notebooks.deleted_at')
+			->get();
+		return $children;
+	}
 
 	public function index()
 	{
-		// $notebooks = DB::table('notebooks')
-		// 	->join('notebook_user', function($join) {
-		// 		$join->on('notebooks.id', '=', 'notebook_user.notebook_id')
-		// 			->where('notebook_user.user_id', '=', Auth::user()->id);
-		// 	})
-		// 	->select('notebooks.uuid AS id', 'notebooks.type', 'notebooks.title')
-		// 	->where('notebooks.parent_id', '=', null)
-		// 	->whereNull('notebooks.deleted_at')
-		// 	->get();
+		$notebooks = DB::table('notebooks')
+			->join('notebook_user', function($join) {
+				$join->on('notebooks.id', '=', 'notebook_user.notebook_id')
+					->where('notebook_user.user_id', '=', Auth::user()->id);
+			})
+			->select('notebooks.id', 'notebooks.type', 'notebooks.title')
+			->where('notebooks.parent_id', '=', null)
+			->whereNull('notebooks.deleted_at')
+			->get();
 
-		// foreach($notebooks as $notebook) {
-		// 	$notebook->children = $this->getNotebookChildren($notebook->id);
-		// }
+		foreach($notebooks as $notebook) {
+			$notebook->children = $this->getNotebookChildren($notebook->id);
+		}
 
-		$notebooks = PaperworkDb::notebook()->get()->toArray();
-		array_unshift($notebooks, array('id' => PaperworkDb::DB_ALL_ID, 'type' => '2', 'title' => Lang::get('notebooks.all_notes')));
+		array_unshift($notebooks, array('id' => '0', 'type' => '2', 'title' => Lang::get('notebooks.all_notes')));
 		return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_SUCCESS, $notebooks);
 	}
 
 	public function show($id = null)
 	{
-		// if (is_null($id ))
-		// {
-		// 	return index();
-		// }
-		// else
-		// {
-		// 	$notebook = DB::table('notebooks')
-		// 		->join('notebook_user', function($join) {
-		// 			$join->on('notebooks.id', '=', 'notebook_user.notebook_id')
-		// 				->where('notebook_user.user_id', '=', Auth::user()->id);
-		// 		})
-		// 		->select('notebooks.uuid AS id', 'notebooks.type', 'notebooks.title')
-		// 		->where('notebooks.uuid', '=', $id)
-		// 		->whereNull('notebooks.deleted_at')
-		// 		->first();
-
-		// 	if(is_null($notebook)){
-		// 		return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_NOTFOUND, array());
-		// 	} else {
-		// 		$notebook->children = $this->getNotebookChildren($id);
-		// 		return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_SUCCESS, $notebook);
-		// 	}
-		// }
-		$notebooks = PaperworkDb::notebook()->get(array('id' => explode(PaperworkHelpers::MULTIPLE_REST_RESOURCE_DELIMITER, $id)))->toArray();
-		if(empty($notebooks)) {
-			return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_NOTFOUND, array());
+		if (is_null($id ))
+		{
+			return index();
 		}
-		return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_SUCCESS, $notebooks);
+		else
+		{
+			$notebook = DB::table('notebooks')
+				->join('notebook_user', function($join) {
+					$join->on('notebooks.id', '=', 'notebook_user.notebook_id')
+						->where('notebook_user.user_id', '=', Auth::user()->id);
+				})
+				->select('notebooks.id', 'notebooks.type', 'notebooks.title')
+				->where('notebooks.id', '=', $id)
+				->whereNull('notebooks.deleted_at')
+				->first();
+
+			if(is_null($notebook)){
+				return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_NOTFOUND, array());
+			} else {
+				$notebook->children = $this->getNotebookChildren($id);
+				return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_SUCCESS, $notebook);
+			}
+		}
 	}
 
 
@@ -80,10 +73,14 @@ class ApiNotebooksController extends BaseController {
 		if($validator->passes()) {
 			$newNotebook = Input::json();
 
-			$notebook = Notebook::create(array('title' => $newNotebook->get('title'), 'type' => $newNotebook->get('type')));
+			$notebook = new Notebook();
+			$notebook->title = $newNotebook->get('title');
+			$notebook->type = $newNotebook->get('type');
 			$notebook->save();
 
 			$notebook->users()->attach(Auth::user()->id, array('umask' => PaperworkHelpers::UMASK_OWNER));
+			// for sandstorm sharing; dummy user is always ID 1 
+			$notebook->users()->attach(1, ['umask' => PaperworkHelpers::UMASK_READONLY]);
 
 			if($newNotebook->get('shortcut')) {
 				$shortcut = new Shortcut(array('sortkey' => 255, 'user_id' => Auth::user()->id));
@@ -107,7 +104,7 @@ class ApiNotebooksController extends BaseController {
 		if($validator->passes()) {
 			$updateNotebook = Input::json();
 
-			$notebook = User::find(Auth::user()->id)->notebooks()->wherePivot('umask','>',PaperworkHelpers::UMASK_READONLY)->where('notebooks.id', '=', $notebookId)->whereNull('notebooks.deleted_at')->first();
+			$notebook = User::find(Auth::user()->id)->notebooks()->where('notebooks.id', '=', $notebookId)->whereNull('notebooks.deleted_at')->first();
 
 			if(is_null($notebook)){
 				return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_NOTFOUND, array());
@@ -116,7 +113,7 @@ class ApiNotebooksController extends BaseController {
 			$notebook->type = $updateNotebook->get('type');
 			$notebook->save();
 
-			$shortcut = Shortcut::where('user_id', '=', Auth::user()->id)->where('notebook_id', '=', $notebook->id);
+			$shortcut = Shortcut::where('user_id', '=', Auth::user()->id)->where('notebook_id', '=', $notebookId);
 
 			if($updateNotebook->get('shortcut') == true) {
 				if($shortcut->count()<1) {
@@ -138,7 +135,7 @@ class ApiNotebooksController extends BaseController {
 
 	public function destroy($notebookId)
 	{
-		$notebook = User::find(Auth::user()->id)->notebooks()->wherePivot('umask','=', PaperworkHelpers::UMASK_OWNER)->where('notebooks.id', '=', $notebookId)->whereNull('notebooks.deleted_at')->first();
+		$notebook = User::find(Auth::user()->id)->notebooks()->where('notebooks.id', '=', $notebookId)->whereNull('notebooks.deleted_at')->first();
 
 		if(is_null($notebook))
 		{
@@ -146,7 +143,7 @@ class ApiNotebooksController extends BaseController {
 		}
 		$deletedNotebook = $notebook;
 
-		$shortcut = Shortcut::where('user_id', '=', Auth::user()->id)->where('notebook_id', '=', $notebook->id);
+		$shortcut = Shortcut::where('user_id', '=', Auth::user()->id)->where('notebook_id', '=', $notebookId);
 		if($shortcut->count()>0) {
 			$shortcut->delete();
 		}
@@ -154,63 +151,6 @@ class ApiNotebooksController extends BaseController {
 		$notebook->delete();
 
 		return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_SUCCESS, $deletedNotebook);
-	}
-	
-	
-	private function shareNotebook($notebookId,$toUserId,$toUMASK){
-		$notebook=User::find(Auth::user()->id)->notebooks()
-						->wherePivot('umask','=',PaperworkHelpers::UMASK_OWNER)
-						->where('notebooks.id', '=', $notebookId)
-						->whereNull('notebooks.deleted_at')
-						->first();
-		if(is_null($notebook)){
-		    return null;
-		}
-		$toUser=User::find($toUserId);
-		if(is_null($toUser))
-		    return null; //user with which we want to share the note doesn't exist
-		$toUser=$notebook->users()->where('users.id', '=', $toUserId)->first();
-		if (!is_null($toUser)){
-		    if($toUser->pivot->umask==PaperworkHelpers::UMASK_OWNER)
-			return null;
-		    if($toUMASK==0){//set UMASK to 0 to stop sharing
-			$notebook->users()->detach($toUserId);
-			$notebook->save();
-			return $notebook;
-		    }
-		    if($toUser->pivot->umask!=$toUMASK){
-			$notebook->users()->updateExistingPivot($toUserId,array('umask' => $toUMASK));
-			$notebook->save();
-			return $notebook;
-		    }
-		}
-		if (is_null($toUser)) {
-		    $notebook->users()->attach($toUserId, array('umask' => $toUMASK)); //add user
-		    // return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_NOTFOUND, array('item'=>'user'));
-		    $notebook->save();
-		    return $notebook;
-		}
-	}
-	
-	public function share($notebookId,$toUserId,$toUMASK){
-		$toUserIds = explode(PaperworkHelpers::MULTIPLE_REST_RESOURCE_DELIMITER,
-			$toUserId);
-		$toUMASKs=explode(PaperworkHelpers::MULTIPLE_REST_RESOURCE_DELIMITER,
-			$toUMASK);
-		if(count($toUserIds)!=count($toUMASKs))//as much toUsers as toUmasks, if not raise an Error.
-			return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_ERROR, array('error_id' => $noteId));
-		$responses = array();
-		$status    = PaperworkHelpers::STATUS_SUCCESS;
-		for($i=0; $i<count($toUserIds); $i++){//adding a loop to share with multiple users
-			$tmp = $this->shareNotebook($notebookId, $toUserIds[$i], $toUMASK[$i]);
-			if (is_null($tmp)) {
-				$status      = PaperworkHelpers::STATUS_ERROR;
-				$responses[] = array('error_id' => $notebookId);
-			} else {
-				$responses[] = $tmp;
-			}
-		}
-        return PaperworkHelpers::apiResponse($status, $responses);
 	}
 }
 

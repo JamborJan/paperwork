@@ -1,6 +1,7 @@
 angular.module('paperworkNotes').factory('MessageBoxService',
-  function($rootScope, $http, NetService) {
-    var paperworkMessageBoxFactory = {};
+  ['$rootScope', '$http', 'NetService',
+   function($rootScope, $http, netService) {
+     var paperworkMessageBoxFactory = {};
 
-    return paperworkMessageBoxFactory;
-  });
+     return paperworkMessageBoxFactory;
+   }]);

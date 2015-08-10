@@ -4,9 +4,8 @@ return array(
 
 	'admin_area' => 'Admin Area',
 	'admin_status' => 'Admin Status',
-	'deleted_at' => 'Gelöscht',
+	'deleted_at' => 'Deleted',
 	'email_address' => 'E-Mail Adresse',
-	'username' => 'Username',
 	'id' => 'ID',
 	'users' => 'Users',
 	'first_name' => 'Vorname',
@@ -23,8 +22,6 @@ return array(
 	'shortcuts' => 'Verknüpfungen',
 	'notebooks' => 'Notizbücher',
 	'tags' => 'Tags',
-	'manage_tags' => 'Tags verwalten',
-	'manage_notebooks' => 'Notizbücher verwalten',
 	'note' => 'Notiz',
 	'notebook' => 'Notizbuch',
 	'collection' => 'Kollektion',
@@ -34,17 +31,13 @@ return array(
 	'move_notes' => 'Notizen verschieben',
 	'delete_note' => 'Notiz löschen',
 	'delete_notes' => 'Notizen löschen',
-	'note_history' => 'Notiz History',
 	'note_info' => 'Notizinfo',
 	'note_title' => 'Notiztitel',
-	'share' => 'Teilen',
 	'new_notebook' => 'Neues Notizbuch',
 	'edit_notebook' => 'Notizbuch bearbeiten',
 	'delete_notebook' => 'Notizbuch löschen',
 	'delete_notebook_question' => 'Notizbuch löschen?',
 	'delete_notebook_message' => 'Das ausgewählte Notizbuch wird, samt aller Inhalte gelöscht. Sind Sie sicher?',
-	'delete_tag_question' => 'Tag löschen?',
-	'delete_tag_message' => 'Dies wird den ausgewählten Tag löschen. Sind Sie sicher?',
 	'new_collection' => 'Neue Kollektion',
 	'edit_collection' => 'Kollektion bearbeiten',
 	'delete_collection' => 'Kollektion löschen',
@@ -87,7 +80,6 @@ return array(
 	'not_implemented' => 'Diese Funktion ist noch nicht implementiert.',
 	'experimental' => 'experimentell',
 	'import' => 'Import',
-	'export' => 'Export',
-	'back' => 'Zurück'
+	'export' => 'Export'
 
 );

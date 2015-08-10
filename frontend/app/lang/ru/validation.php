@@ -1,17 +1,5 @@
 <?php
 
-$allowed_name_chars = Config::get('paperwork.nameCharactersAllowed');
-$name_error_message = "The :attribute may only contain";
-$name_error_message.= $allowed_name_chars['alpha']      ? ' letters,'    : '';
-$name_error_message.= $allowed_name_chars['hyphen']     ? ' hyphens,'    : '';
-$name_error_message.= $allowed_name_chars['num']        ? ' numbers,'    : '';
-$name_error_message.= $allowed_name_chars['underscore'] ? ' underscores,': '';
-$name_error_message.= $allowed_name_chars['apostrophe'] ? ' apostrophes,': '';
-$name_error_message.= $allowed_name_chars['space']      ? ' spaces,'     : '';
-//replace last , with a .
-$name_error_message = substr($name_error_message, 0, -1).'.';
-
-
 return array(
 
 	/*
@@ -30,7 +18,6 @@ return array(
 	"after"                => "The :attribute must be a date after :date.",
 	"alpha"                => "The :attribute may only contain letters.",
 	"alpha_dash"           => "The :attribute may only contain letters, numbers, and dashes.",
-	"alpha_dash_spaces"    => "The :attribute may only contain letters, numbers, dashes, apostrophes, and spaces.",
 	"alpha_num"            => "The :attribute may only contain letters and numbers.",
 	"array"                => "The :attribute must be an array.",
 	"before"               => "The :attribute must be a date before :date.",
@@ -66,7 +53,6 @@ return array(
 		"string"  => "Длина :attribute должна быть между :min и :max символов.",
 		"array"   => "Количество :attribute должно быть между :min и :max.",
 	),
-	"name_validator"       => $name_error_message,
 	"not_in"               => "The selected :attribute is invalid.",
 	"numeric"              => "The :attribute must be a number.",
 	"regex"                => "The :attribute format is invalid.",

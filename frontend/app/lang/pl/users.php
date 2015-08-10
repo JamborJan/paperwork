@@ -2,11 +2,11 @@
 
 return array(
 
-	'title_login' => 'Sign in',
-	'title_register' => 'Register',
-	'title_request' => 'Forgot password',
-	'title_reset' => 'Reset password',
-	'link_forgot_password' => 'Forgot your password?',
-	'label_remember_me' => 'Remember me',
-	'profile_change_password_info' => 'To change your account password, please enter a new password here:',
+	'title_login' => 'Zaloguj',
+	'title_register' => 'Zarejestruj się',
+	'title_request' => 'Zapomniałem hasła',
+	'title_reset' => 'Resetuj hasło',
+	'link_forgot_password' => 'Zapomniałeś hasła?',
+	'label_remember_me' => 'Zapamiętaj',
+	'profile_change_password_info' => 'Aby zmienić swoje hasło, podaj nowe haslo tutaj:',
 );

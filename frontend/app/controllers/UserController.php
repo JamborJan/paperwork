@@ -1,26 +1,14 @@
 <?php
 
-use \Paperwork\UserRegistrator;
-
 /**
  * Class UserController
  *
  * Provides user login and registration functionality.
- *
  * @todo provide documentation for every action.
  *       Clean up the commented legacy code. We use git for history.
  */
 class UserController extends BaseController
 {
-
-    private $userRegistrator;
-    private $isLdap;
-
-    public function __construct(UserRegistrator $userRegistrator)
-    {
-        $this->userRegistrator = $userRegistrator;
-        $this->isLdap          = PaperworkHelpers::isLdap();
-    }
 
     public function showRegistrationForm()
     {
@@ -37,38 +25,64 @@ class UserController extends BaseController
         $validator = $this->getRegistrationValidator();
 
         if ($validator->passes()) {
-            //only allow users to register who actually have a valid ldap account
-            if ($this->isLdap) {
-                $creds               = $this->getLoginCredentials();
-                $creds['isRegister'] = true;
-                if (!Auth::validate($creds)) {
-                    return Redirect::back()
-                                   ->withInput()
-                                   ->withErrors(["password" => [Lang::get('messages.invalid_credentials')]]);
-                }
-            }
-            //if we are using ldap and auto registration, the user will have been created in the Auth::attemp call above
-            //thus, we need to just load the user using eloquent and not create a new one.
-            if ($this->isLdap && Config::get('ldap.autoRegister')) {
-                $user = User::query()
-                            ->where('username', Input::get('username'))
-                            ->first();
-            } else {
-                $user =
-                  $this->userRegistrator->registerUser(Input::except('_token',
-                    'password_confirmation', 'ui_language'),
-                    Input::get('ui_language'));
-            }
+            // $credentials = $this->getRegistrationCredentials();
+
+            $user = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
             if ($user) {
+                //make the first user an admin
+                if (User::all()->count() <= 1) {
+                    $user->is_admin = 1;
+                }
+
+                // Trim trailing whitespace from user first and last name.
+                $user->firstname = trim($user->firstname);
+                $user->lastname  = trim($user->lastname);
+
+                $user->save();
+                $setting = Setting::create(['ui_language' => Input::get('ui_language'), 'user_id' => $user->id]);
+
+                /* Add welcome note to user - create notebook, tag and note */
+                //$notebookCreate = Notebook::create(array('title' => Lang::get('notebooks.welcome_notebook_title')));
+                $notebookCreate = new Notebook();
+
+                $notebookCreate->title = Lang::get('notebooks.welcome_notebook_title');
+                $notebookCreate->save();
+
+                $notebookCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
+
+                //$tagCreate = Tag::create(array('title' => Lang::get('notebooks.welcome_note_tag'), 'visibility' => 0));
+                $tagCreate = new Tag();
+
+                $tagCreate->title      = Lang::get('notebooks.welcome_note_tag');
+                $tagCreate->visibility = 0;
+                $tagCreate->save();
+                $tagCreate->users()->attach($user->id);
+
+                $noteCreate = new Note;
+
+                $versionCreate = new Version([
+                    'title'           => Lang::get('notebooks.welcome_note_title'),
+                    'content'         => Lang::get('notebooks.welcome_note_content'),
+                    'content_preview' => mb_substr(strip_tags(Lang::get('notebooks.welcome_note_content')), 0, 255)
+                ]);
+
+                $versionCreate->save();
+
+                $noteCreate->version()->associate($versionCreate);
+                $noteCreate->notebook_id = $notebookCreate->id;
+                $noteCreate->save();
+                $noteCreate->users()->attach($user->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
+                $noteCreate->tags()->sync([$tagCreate->id]);
+                // Commented code above does not work because no $fillable is in the model files
+
                 Auth::login($user);
 
-                Session::put('ui_language', Input::get('ui_language'));
+                Session::put('ui_language', $setting->ui_language);
 
                 return Redirect::route("/");
             }
 
-            return Redirect::back()
-                           ->withErrors(["password" => [Lang::get('messages.account_creation_failed')]]);
+            return Redirect::back()->withErrors(["password" => [Lang::get('messages.account_creation_failed')]]);
         } else {
             return Redirect::back()->withInput()->withErrors($validator);
         }
@@ -82,16 +96,14 @@ class UserController extends BaseController
             $credentials = $this->getLoginCredentials();
 
             if (Auth::attempt($credentials, Input::has('remember_me'))) {
-                $settings =
-                  Setting::where('user_id', '=', Auth::user()->id)->first();
+                $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
 
                 Session::put('ui_language', $settings->ui_language);
 
                 return Redirect::route("/");
             }
 
-            return Redirect::back()
-                           ->withErrors(["password" => [Lang::get('messages.invalid_credentials')]]);
+            return Redirect::back()->withErrors(["password" => [Lang::get('messages.invalid_credentials')]]);
 
         } else {
             return Redirect::back()->withInput()->withErrors($validator);
@@ -100,13 +112,13 @@ class UserController extends BaseController
 
     public function showLoginForm()
     {
-        return View::make('user/login');
+          return View::make('user/login');
     }
 
     public function checkSandstormUsers()
     {
       if (Config::get('paperwork.emergency_export') && ((DB::table('migrations')->where('batch', '=', 1)->count()) == Config::get('paperwork.emergency_export_count'))) {
-    	  $credentials = ["username" => "sandstorm_dummy", "password" => "sandstorm_dummy"];
+        $credentials = ["username" => "sandstorm_dummy", "password" => "sandstorm_dummy"];
         if (Auth::attempt($credentials)) {
           $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
           Session::put('ui_language', $settings->ui_language);
@@ -115,7 +127,6 @@ class UserController extends BaseController
       } else {
         // get permission via HTTP_X_SANDSTORM header
         $sandstorm_permissions = $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'];
-
         // Only when we are admin, we check and create users
         if ($sandstorm_permissions == "admin,write,read") {
           // check for admin user
@@ -134,7 +145,6 @@ class UserController extends BaseController
           } else {
             $sandstorm_admin = User::where('username', '=', 'sandstorm_admin');
           }
-
           // Then the read & write  user
           if (User::where('username', '=', 'sandstorm_readwrite')->count() == 0) {
             $sandstorm_readwrite = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
@@ -149,7 +159,6 @@ class UserController extends BaseController
           } else {
             $sandstorm_readwrite = User::where('username', '=', 'sandstorm_readwrite');
           }
-
           // Then the read only  user
           if (User::where('username', '=', 'sandstorm_readonly')->count() == 0) {
             $sandstorm_readonly = User::create(Input::except('_token', 'password_confirmation', 'ui_language'));
@@ -165,7 +174,6 @@ class UserController extends BaseController
             $sandstorm_readonly = User::where('username', '=', 'sandstorm_readonly');
           }
         }
-
         // Now that the required users are there we create the default
         if ((Notebook::all()->count() == 0) && (Tag::all()->count() == 0) && (Note::all()->count() == 0)) {
           // Notebook ...
@@ -175,21 +183,20 @@ class UserController extends BaseController
           $notebookCreate->users()->attach($sandstorm_readonly->id, ['umask' => PaperworkHelpers::UMASK_READONLY]);
           $notebookCreate->users()->attach($sandstorm_readwrite->id, ['umask' => PaperworkHelpers::UMASK_READWRITE]);
           $notebookCreate->users()->attach($sandstorm_admin->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
-
           // Tag ...
           $tagCreate = new Tag();
           $tagCreate->title = Lang::get('notebooks.welcome_note_tag');
           $tagCreate->visibility = 1;
-          $tagCreate->user_id=$sandstorm_admin->id;
           $tagCreate->save();
-
+          $tagCreate->users()->attach($sandstorm_readonly->id);
+          $tagCreate->users()->attach($sandstorm_readwrite->id);
+          $tagCreate->users()->attach($sandstorm_admin->id);
           // Note ...
           $noteCreate = new Note;
           $versionCreate = new Version([
             'title'           => Lang::get('notebooks.welcome_note_title'),
             'content'         => Lang::get('notebooks.welcome_note_content'),
-            'content_preview' => mb_substr(strip_tags(Lang::get('notebooks.welcome_note_content')), 0, 255),
-            'user_id'         => $sandstorm_admin->id
+            'content_preview' => mb_substr(strip_tags(Lang::get('notebooks.welcome_note_content')), 0, 255)
           ]);
           $versionCreate->save();
           $noteCreate->version()->associate($versionCreate);
@@ -200,24 +207,19 @@ class UserController extends BaseController
           $noteCreate->users()->attach($sandstorm_admin->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
           $noteCreate->tags()->sync([$tagCreate->id]);
         }
-
         // login
         if ($sandstorm_permissions == "read") {
           $credentials = ["username" => "sandstorm_readonly", "password" => "sandstorm_readonly"];
         }
-
         if ($sandstorm_permissions == "write,read") {
           $credentials = ["username" => "sandstorm_readwrite", "password" => "sandstorm_readwrite"];
         }
-
         if ($sandstorm_permissions == "admin,write,read") {
           $credentials = ["username" => "sandstorm_admin", "password" => "sandstorm_admin"];
         }
-
         if (Auth::attempt($credentials)) {
           $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
           Session::put('ui_language', $settings->ui_language);
-
           return Redirect::route("/");
         }
       }
@@ -232,12 +234,11 @@ class UserController extends BaseController
     {
         $attributes = ["username" => "email address"];
         $validator  = Validator::make(Input::all(), [
-          "username"              => $this->isLdap ? "required|unique:users" :
-            "required|email|unique:users",
-          "password"              => "required|min:5|confirmed",
-          "password_confirmation" => "required",
-          "firstname"             => "required|name_validator",
-          "lastname"              => "required|name_validator"
+            "username"              => "required|email|unique:users",
+            "password"              => "required|min:5|confirmed",
+            "password_confirmation" => "required",
+            "firstname"             => "required|name_validator",
+            "lastname"              => "required|name_validator"
         ]);
 
         $validator->setAttributeNames($attributes);
@@ -247,18 +248,15 @@ class UserController extends BaseController
 
     protected function getLoginValidator()
     {
-        return Validator::make(Input::all(), [
-          "username" => $this->isLdap ? "required" : "required|email",
-          "password" => "required"
-        ]);
+        return Validator::make(Input::all(), ["username" => "required|email", "password" => "required"]);
     }
 
     protected function getProfileValidator()
     {
         return Validator::make(Input::all(), [
-          "password"  => "min:5|confirmed",
-          "firstname" => "required|name_validator",
-          "lastname"  => "required|name_validator"
+            "password"  => "min:5|confirmed",
+            "firstname" => "required|name_validator",
+            "lastname"  => "required|name_validator"
         ]);
     }
 
@@ -269,10 +267,7 @@ class UserController extends BaseController
 
     protected function getLoginCredentials()
     {
-        return [
-          "username" => Input::get("username"),
-          "password" => Input::get("password")
-        ];
+        return ["username" => Input::get("username"), "password" => Input::get("password")];
     }
 
     public function profile()
@@ -293,8 +288,7 @@ class UserController extends BaseController
                 }
 
                 if (!$user->save()) {
-                    return Redirect::back()
-                                   ->withErrors(["password" => [Lang::get('messages.account_update_failed')]]);
+                    return Redirect::back()->withErrors(["password" => [Lang::get('messages.account_update_failed')]]);
                 }
             } else {
                 return Redirect::back()->withInput()->withErrors($validator);
@@ -317,15 +311,11 @@ class UserController extends BaseController
                 $document_languages    = Input::get('document_languages');
 
                 // TODO: I think this whole thing could be done nicer...
-                DB::Table('language_user')
-                  ->where('user_id', '=', $user->id)
-                  ->delete();
+                DB::Table('language_user')->where('user_id', '=', $user->id)->delete();
 
                 if (!is_null($document_languages)) {
                     foreach ($document_languages as $document_lang) {
-                        $foundLanguage =
-                          Language::where('language_code', '=', $document_lang)
-                                  ->first();
+                        $foundLanguage = Language::where('language_code', '=', $document_lang)->first();
                         if (!is_null($foundLanguage)) {
                             $user->languages()->save($foundLanguage);
                         }
@@ -345,9 +335,7 @@ class UserController extends BaseController
             $languages[$userDocumentLanguage->language_code] = true;
         }
 
-        return View::make("user/settings")
-                   ->with('settings', $settings)
-                   ->with('languages', $languages);
+        return View::make("user/settings")->with('settings', $settings)->with('languages', $languages);
 
         // TODO:
         // Think about whether we need to run an OCRing process in background, if document languages selection changed.
@@ -359,9 +347,7 @@ class UserController extends BaseController
             if ($this->isPostRequest()) {
                 $response = $this->getPasswordRemindResponse();
                 if ($this->isInvalidUser($response)) {
-                    return Redirect::back()
-                                   ->withInput()
-                                   ->with("error", Lang::get($response));
+                    return Redirect::back()->withInput()->with("error", Lang::get($response));
                 }
 
                 return Redirect::back()->with("status", Lang::get($response));
@@ -389,17 +375,13 @@ class UserController extends BaseController
     public function reset($token)
     {
         if ($this->isPostRequest()) {
-            $credentials =
-              Input::only("username", "password", "password_confirmation") +
-              compact("token");
+            $credentials = Input::only("username", "password", "password_confirmation") + compact("token");
             $response    = $this->resetPassword($credentials);
             if ($response === Password::PASSWORD_RESET) {
                 return Redirect::route("user/profile");
             }
 
-            return Redirect::back()
-                           ->withInput()
-                           ->with("error", Lang::get($response));
+            return Redirect::back()->withInput()->with("error", Lang::get($response));
         }
 
         return View::make("user/reset", compact("token"));
@@ -434,11 +416,8 @@ class UserController extends BaseController
     {
         $topic_clean = str_replace('.', '/', $topic);
 
-        $topic_path             =
-          app_path() . '/help/' . $topic_clean . '.' . App::getLocale() . '.md';
-        $topic_path_alternative =
-          app_path() . '/help/' . $topic_clean . '/index.' . App::getLocale() .
-          '.md';
+        $topic_path             = app_path() . '/help/' . $topic_clean . '.' . App::getLocale() . '.md';
+        $topic_path_alternative = app_path() . '/help/' . $topic_clean . '/index.' . App::getLocale() . '.md';
 
         if (File::exists($topic_path)) {
             return $topic_path;
@@ -454,19 +433,17 @@ class UserController extends BaseController
     {
         $content = File::get($path);
 
-        $conent_prepared =
-          preg_replace_callback('/(\@(help|image))((.[A-Za-z0-9]+)+)/',
-            function ($match) {
-                if (is_null($match) || count($match) < 4) {
-                    return $match;
-                }
-                $topic = ltrim($match[3], '.');
-                if ($match[1] === "@help") {
-                    return URL::route("user/help", $topic);
-                } elseif ($match[1] === "@image") {
-                    return url('/images/help/' . $topic);
-                }
-            }, $content);
+        $conent_prepared = preg_replace_callback('/(\@(help|image))((.[A-Za-z0-9]+)+)/', function ($match) {
+            if (is_null($match) || count($match) < 4) {
+                return $match;
+            }
+            $topic = ltrim($match[3], '.');
+            if ($match[1] === "@help") {
+                return URL::route("user/help", $topic);
+            } elseif ($match[1] === "@image") {
+                return url('/images/help/' . $topic);
+            }
+        }, $content);
 
         $pdown = new Parsedown();
 
@@ -481,85 +458,28 @@ class UserController extends BaseController
         return Redirect::route("user/login");
     }
 
-    public function import()
-    {
-        if ($this->isPostRequest()) {
-            if(Input::hasFile('enex')) {
-                $notebookId = with(new \Paperwork\Import\EvernoteImport())->import(Input::file('enex'));
-                if($notebookId) {
-                    return Redirect::route("/");
-                }
-                else {
-                    return Redirect::route("user/settings")
-                                   ->withErrors(["enex_file" => "Error during import!"]);
-                                   // ->withErrors(["enex_file" => [Lang::get('messages.invalid_credentials')]]);
-                }
-            } else {
-              return Redirect::route("user/settings")
-                            ->withErrors(["enex_file" => "You must choose a ENEX file!"]);
-            }
-        } else {
-          return Redirect::route("user/settings")
-                        ->withErrors(["enex_file" => "Nothing selected!"]);
-        }
-    }
-
     public function export()
     {
         $file_content = "";
         $noteNumber   = 0;
 
-        /*
-        |
-        | This is part of a bloody hack for
-        | https://github.com/JamborJan/paperwork/issues/13
-        |
-        | We must export all to be save in case we running the migration
-        | from the Paperwork Sandstorm package V3 to V5 (V4 never existed)
-        |
-        */
-
-        if (Config::get('paperwork.emergency_export') && ((DB::table('migrations')->where('batch', '=', 1)->count()) == Config::get('paperwork.emergency_export_count'))) {
-            $notes = DB::table('notes')
-                      ->join('note_user', function ($join) {
-                          $join->on('notes.id', '=', 'note_user.note_id')
-                              ->where('note_user.user_id', '=', Auth::user()->id)
-                              ->where('note_user.umask', '=', '4');
-                      })
-                      ->join('notebooks', function ($join) {
-                          $join->on('notes.notebook_id', '=', 'notebooks.id');
-                      })
-                      ->join('versions', function ($join) {
-                          $join->on('notes.version_id', '=', 'versions.id');
-                      })
-                      ->select('notes.id', 'notebooks.title as notebook_title',
-                        'versions.id as version_id', 'versions.title',
-                        'versions.content', 'notes.created_at',
-                        'notes.updated_at')
-                      ->whereNull('notes.deleted_at')
-                      ->whereNull('notebooks.deleted_at')
-                      ->get();
-        } else {
-            $notes = DB::table('notes')
-                       ->join('note_user', function ($join) {
-                           $join->on('notes.id', '=', 'note_user.note_id')
-                                ->where('note_user.user_id', '=', Auth::user()->id)
-                                ->where('note_user.umask', '=', '7');
-                       })
-                       ->join('notebooks', function ($join) {
-                           $join->on('notes.notebook_id', '=', 'notebooks.id');
-                       })
-                       ->join('versions', function ($join) {
-                           $join->on('notes.version_id', '=', 'versions.id');
-                       })
-                       ->select('notes.id', 'notebooks.title as notebook_title',
-                         'versions.id as version_id', 'versions.title',
-                         'versions.content', 'notes.created_at',
-                         'notes.updated_at')
-                       ->whereNull('notes.deleted_at')
-                       ->whereNull('notebooks.deleted_at')
-                       ->get();
-        }
+        $notes = DB::table('notes')
+                   ->join('note_user', function ($join) {
+                       $join->on('notes.id', '=', 'note_user.note_id')
+                            ->where('note_user.user_id', '=', Auth::user()->id)
+                            ->where('note_user.umask', '=', '0');
+                   })
+                   ->join('notebooks', function ($join) {
+                       $join->on('notes.notebook_id', '=', 'notebooks.id');
+                   })
+                   ->join('versions', function ($join) {
+                       $join->on('notes.version_id', '=', 'versions.id');
+                   })
+                   ->select('notes.id', 'notebooks.title as notebook_title', 'versions.id as version_id', 'versions.title', 'versions.content', 'notes.created_at',
+                       'notes.updated_at')
+                   ->whereNull('notes.deleted_at')
+                   ->whereNull('notebooks.deleted_at')
+                   ->get();
 
         $noteCount = count($notes);
         foreach ($notes as $note) {
@@ -568,27 +488,21 @@ class UserController extends BaseController
             $noteid    = $note->id;
 
             $noteArray = [
-              'title'   => $note->title,
-              'content' => $note->content,
-              'created' => date('omd', strtotime($note->created_at)) . 'T' .
-                           date('His', strtotime($note->created_at)) . 'Z',
-              'updated' => date('omd', strtotime($note->updated_at)) . 'T' .
-                           date('His', strtotime($note->updated_at)) . 'Z'
+                'title'   => $note->title,
+                'content' => $note->content,
+                'created' => date('omd', strtotime($note->created_at)) . 'T' . date('His', strtotime($note->created_at)) . 'Z',
+                'updated' => date('omd', strtotime($note->updated_at)) . 'T' . date('His', strtotime($note->updated_at)) . 'Z'
             ];
 
             $attachments = DB::table('attachment_version')
-                             ->join('versions',
-                               function ($join) use (&$versionId) {
-                                   $join->on('attachment_version.version_id',
-                                     '=', 'versions.id')
-                                        ->where('versions.id', '=', $versionId);
-                               })
-                             ->join('attachments', function ($join) {
-                                 $join->on('attachment_version.attachment_id',
-                                   '=', 'attachments.id');
+                             ->join('versions', function ($join) use (&$versionId) {
+                                 $join->on('attachment_version.version_id', '=', 'versions.id')
+                                      ->where('versions.id', '=', $versionId);
                              })
-                             ->select('attachments.id', 'attachments.filename',
-                               'attachments.mimetype')
+                             ->join('attachments', function ($join) {
+                                 $join->on('attachment_version.attachment_id', '=', 'attachments.id');
+                             })
+                             ->select('attachments.id', 'attachments.filename', 'attachments.mimetype')
                              ->whereNull('attachments.deleted_at')
                              ->get();
 
@@ -608,37 +522,31 @@ class UserController extends BaseController
             $noteArray['lastname']  = Auth::user()->lastname;
 
             foreach ($attachments as $attachment) {
-                $attachments_directory =
-                  Config::get('paperwork.attachmentsDirectory');
-                $path                  =
-                  $attachments_directory . "/" . $attachment->id . "/" .
-                  $attachment->filename;
+                $attachments_directory = Config::get('paperwork.attachmentsDirectory');
+                $path                  = $attachments_directory . "/" . $attachment->id . "/" . $attachment->filename;
                 $file_contents         = File::get($path);
                 $data                  = base64_encode($file_contents);
 
                 $noteArray['attachments'][] = [
-                  'hash'     => md5($file_contents),
-                  'filename' => $attachment->filename,
-                  'mimetype' => $attachment->mimetype,
-                  'encoded'  => $data
+                    'hash'     => md5($file_contents),
+                    'filename' => $attachment->filename,
+                    'mimetype' => $attachment->mimetype,
+                    'encoded'  => $data
                 ];
             }
 
             if ($noteNumber == 1) {
                 $noteArray['start'] = 1;
-            }
-
-            if ($noteNumber == $noteCount) {
+            } elseif ($noteNumber == $noteCount) {
                 $noteArray['end'] = 1;
             }
 
-            $file_content .= View::make('user/settings/export_file', $noteArray)
-                                 ->render();
+            $file_content .= View::make('user/settings/export_file', $noteArray)->render();
         }
 
         $headers = [
-          "Content-Type"        => "application/xml",
-          "Content-Disposition" => "attachment; filename=\"export.enex\""
+            "Content-Type"        => "application/xml",
+            "Content-Disposition" => "attachment; filename=\"export.enex\""
         ];
 
         return Response::make(rtrim($file_content, "\r\n"), 200, $headers);

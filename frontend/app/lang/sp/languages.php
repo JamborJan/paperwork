@@ -48,7 +48,6 @@ return array(
 	'mkd'=> 'Macedonio',
 	'mlt'=> 'Maltés',
 	'msa'=> 'Malayo',
-	'nl'=> 'Holandés',
 	'nld'=> 'Holandés',
 	'nor'=> 'Noruego',
 	'pol'=> 'Polaco',
@@ -56,10 +55,8 @@ return array(
 	'por'=> 'Portugués',
 	'ron'=> 'Rumano',
 	'rus'=> 'Ruso',
-	'ru'=> 'Ruso',
 	'slk'=> 'Eslovaco',
 	'slv'=> 'Esloveno',
-	'sp'=> 'Español',
 	'spa'=> 'Español',
 	'sqi'=> 'Albano',
 	'srp'=> 'Serbo',
@@ -72,7 +69,6 @@ return array(
 	'tha'=> 'Tailandés',
 	'tur'=> 'Turco',
 	'ukr'=> 'Ucraniano',
-	'uk'=> 'Ucraniano',
 	'vie'=> 'Vietnamita',
 
 );

@@ -1,10 +1,9 @@
 <?php
 
-class Note extends PaperworkModel {
+class Note extends Eloquent {
 	use SoftDeletingTrait;
 	protected $softDelete = true;
 	protected $table = 'notes';
-	protected $fillable = array('notebook_id', 'version_id');
 
 	public function version()
 	{
@@ -23,7 +22,7 @@ class Note extends PaperworkModel {
 
 	public function users()
 	{
-	  return $this->belongsToMany('User')->withPivot('umask');
+	  return $this->belongsToMany('User');
 	}
 }
 

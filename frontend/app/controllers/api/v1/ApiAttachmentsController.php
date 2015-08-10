@@ -6,32 +6,24 @@ class ApiAttachmentsController extends BaseController {
     protected $dates = ['deleted_at'];
 	public $restful = true;
 
-    /**
-     * @param $notebookId
-     * @param $noteId
-     * @return \Illuminate\Database\Eloquent\Model|null|static
-     */
-	protected static function getNote($notebookId, $noteId, $versionId)
-	{
-		$note = User::find(Auth::user()->id)->notes()->with(
-			array(
-				'notebook' => function ($query) use ($notebookId) {
-					$query->where('notebooks.id', ($notebookId > 0 ? '=' : '>'), ($notebookId > 0 ? $notebookId : '0'));
-				},
-				'version' => function ($query) use ($versionId) {
-                   // Reserved for future use.
-                   // $query->where('id', $versionId);
-				}
-			)
-		)->where('notes.id', '=', $noteId)->whereNull('deleted_at')->first();
-
-		return $note;
-	}
-
 	public function index($notebookId, $noteId, $versionId)
 	{
 		// This is the same source as used in ApiVersionsController@show
-        $note = self::getNote($notebookId, $noteId, $versionId);
+		// -> TODO: DRY it.
+
+		$note = Note::with(
+			array(
+			'users' => function($query) {
+				$query->where('note_user.user_id', '=', Auth::user()->id);
+			},
+			'notebook' => function($query) use( &$notebookId) {
+				$query->where('id', ($notebookId>0 ? '=' : '>'), ($notebookId>0 ? $notebookId : '0'));
+			},
+			'version' => function($query) {
+			}
+			)
+		)->where('id', '=', $noteId)->whereNull('deleted_at')->first();
+
 
 		$tmp = $note->version()->first();
 		$version = null;
@@ -53,7 +45,21 @@ class ApiAttachmentsController extends BaseController {
 
 	public function show($notebookId, $noteId, $versionId, $attachmentId)
 	{
-        $note = self::getNote($notebookId, $noteId);
+		// This is the same source as used in ApiVersionsController@show
+		// -> TODO: DRY it.
+
+		$note = Note::with(
+			array(
+			'users' => function($query) {
+				$query->where('note_user.user_id', '=', Auth::user()->id);
+			},
+			'notebook' => function($query) use(&$notebookId) {
+				$query->where('id', ($notebookId>0 ? '=' : '>'), ($notebookId>0 ? $notebookId : '0'));
+			},
+			'version' => function($query) {
+			}
+			)
+		)->where('id', '=', $noteId)->whereNull('deleted_at')->first();
 
 		$tmp = $note->version()->first();
 		$version = null;
@@ -78,10 +84,6 @@ class ApiAttachmentsController extends BaseController {
 
 	public function store($notebookId, $noteId, $versionId)
 	{
-		$note=self::getNote($notebookId,$noteId,$versionId);
-		if($note->pivot->umask < PaperworkHelpers::UMASK_READWRITE){
-			return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_ERROR, array('message' => 'Permission Error'));
-		}
 		if((Input::hasFile('file') && Input::file('file')->isValid()) || (Input::json() != null && Input::json() != "")) {
 			$fileUpload = null;
 			$newAttachment = null;
@@ -118,9 +120,25 @@ class ApiAttachmentsController extends BaseController {
 			}
 
 			// Get Version with versionId
-			//$note = self::getNote($notebookId, $noteId, $versionId);
+			// This code is pretty much the same as in ApiVersionsController@show
+			// -> TODO: DRY it.
 
-			$tmp = $note ? $note->version()->first() : null;
+			$note = Note::with(
+				array(
+				'users' => function($query) {
+					$query->where('note_user.user_id', '=', Auth::user()->id);
+				},
+				'notebook' => function($query) use( &$notebookId) {
+					$query->where('id', ($notebookId>0 ? '=' : '>'), ($notebookId>0 ? $notebookId : '0'));
+				},
+				'version' => function($query) {
+
+				}
+				)
+			)->where('id', '=', $noteId)->whereNull('deleted_at')->first();
+
+
+			$tmp = $note->version()->first();
 			$version = null;
 
 			if(is_null($tmp)) {
@@ -168,10 +186,22 @@ class ApiAttachmentsController extends BaseController {
 
 	public function destroy($notebookId, $noteId, $versionId, $attachmentId)
 	{
-        $note = self::getNote($notebookId, $noteId, $versionId);
-		if($note->pivot->umask < PaperworkHelpers::UMASK_READWRITE){
-			return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_ERROR, array('message' => 'Permission Error'));
-		}
+		// This is the same source as used in ApiVersionsController@show
+		// -> TODO: DRY it.
+
+		$note = Note::with(
+			array(
+			'users' => function($query) {
+				$query->where('note_user.user_id', '=', Auth::user()->id);
+			},
+			'notebook' => function($query) use(&$notebookId) {
+				$query->where('id', ($notebookId>0 ? '=' : '>'), ($notebookId>0 ? $notebookId : '0'));
+			},
+			'version' => function($query) {
+			}
+			)
+		)->where('id', '=', $noteId)->whereNull('deleted_at')->first();
+
 		$tmp = $note->version()->first();
 		$version = null;
 
@@ -202,7 +232,21 @@ class ApiAttachmentsController extends BaseController {
 
 
 	public function raw ($notebookId, $noteId, $versionId, $attachmentId) {
-        $note = self::getNote($notebookId, $noteId, $versionId);
+		// This is the same source as used in ApiVersionsController@show
+		// -> TODO: DRY it.
+
+		$note = Note::with(
+			array(
+			'users' => function($query) {
+				$query->where('note_user.user_id', '=', Auth::user()->id);
+			},
+			'notebook' => function($query) use(&$notebookId) {
+				$query->where('id', ($notebookId>0 ? '=' : '>'), ($notebookId>0 ? $notebookId : '0'));
+			},
+			'version' => function($query) {
+			}
+			)
+		)->where('id', '=', $noteId)->whereNull('deleted_at')->first();
 
 		$tmp = $note->version()->first();
 		$version = null;
@@ -233,11 +277,15 @@ class ApiAttachmentsController extends BaseController {
 			'Content-Transfer-Encoding' => 'binary',
 			'Content-Disposition' 		=> 'inline; filename="' . $attachment->filename . '"',
 			'Expires'                   => 0,
-			'Cache-Control'             => 'private',//'must-revalidate, post-check=0, pre-check=0',
+			'Cache-Control'             => 'must-revalidate, post-check=0, pre-check=0',
 			'Pragma'                    => 'public',
 			'Content-Length'	=> $attachment->filesize
 		);
 
-		return Response::make(file_get_contents($destinationFolder . '/' . $attachment->filename),200,$headers);
+		// $headers are not being set correctly and I don't really know why. Workaround:
+		header('Content-Type: ' . $attachment->mimetype);
+		return Response::make(readfile($destinationFolder . '/' . $attachment->filename), 200, $headers);
 	}
 }
+
+?>

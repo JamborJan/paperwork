@@ -5,14 +5,10 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 				<h4 class="modal-title" id="modalNotebookSelectLabel">
-					[[--Lang::get('keywords.select_notebook_title')--]]
-					{{ modalMessageBox.header }}
+					[[Lang::get('keywords.select_notebook_title')]]
 				</h4>
 			</div>
 			<div class="modal-body">
-			    <div ng-if="(modalMessageBox.description)">
-			        <p>{{ modalMessageBox.description }}</p> 
-			    </div>
 				<div class="container-scrollable">
 					<div class="container">
 						<form id="notebook-select" name="notebook-select">

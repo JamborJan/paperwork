@@ -1,5 +1,12 @@
 <?php
 
+/*
+|--------------------------------------------------------------------------
+| Get the Sandstorm base path
+|--------------------------------------------------------------------------
+|
+*/
+
 return array(
 	/*
 	|--------------------------------------------------------------------------
@@ -25,8 +32,8 @@ return array(
 		'external' => array(
 			'dns'	=> array_key_exists('HTTP_X_SANDSTORM_BASE_PATH', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_BASE_PATH'] : 'localhost',
 			'ports' => array(
-				'http'		 => 8000,
-				'https' 	 => 8000,
+				'http'		 => 33411,
+				'https' 	 => 33411,
 				'forceHttps' => true
 			)
 		),
@@ -41,37 +48,6 @@ return array(
 			)
 		)
 	),
-
-	/*
-	|--------------------------------------------------------------------------
-	| Sandstorm.io mode
-	|--------------------------------------------------------------------------
-	|
-	| Sandstorm.io allows users to host their own servers and install apps
-	| like on a mobile phone via an appstore. If you enable this option you
-	| prepare the system for building a spk package for Sandstorm.
-	|
-	| The debug option shows Sandstorm permissions in the left sidebar
-	|
-	*/
-	'sandstorm' => true,
-	'sandstorm_debug' => true,
-
-	/*
-	|--------------------------------------------------------------------------
-	| Emergency export
-	|--------------------------------------------------------------------------
-	|
-	| As Paperworks database migration was not so stable it was necessairy
-	| to add an emergency export feature which allows users with not
-	| upgradeable databases to upgrade their data and reimport it in  a
-	| fresh instance. This is mainly used in the Sandstorm package
-	|
-	|
-	*/
-
-	'emergency_export' => true,
-	'emergency_export_count' => 4,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -202,6 +178,5 @@ return array(
 	|
 	*/
 	'tagsPublicPrefixCharacter' => '+',
-  	'purgeTagList' => ['script'],
 
 );

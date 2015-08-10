@@ -13,7 +13,7 @@
     [[ HTML::style('css/typeahead.min.css') ]]
 
     [[ HTML::style('css/mathquill.css')]]
-    
+
     [[ HTML::style('css/loading-bar.css') ]]
 
     [[ HTML::style('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css') ]]
@@ -65,10 +65,12 @@
 
 @yield("content")
 
-<div class="container-fluid">
-    <div class="footer footer-issue [[ Config::get('paperwork.showIssueReportingLink') ? '' : 'hide' ]]">
-        @include('partials/error-reporting-footer')
+<div class="footer footer-issue [[ Config::get('paperwork.showIssueReportingLink') ? '' : 'hide' ]]">
+  <div class="">
+    <div class="alert alert-warning" role="alert">
+      <p>[[Lang::get('messages.found_bug')]]</p>
     </div>
+  </div>
 </div>
 
 [[ HTML::script('js/jquery.min.js') ]]

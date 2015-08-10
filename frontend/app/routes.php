@@ -6,9 +6,9 @@
 |--------------------------------------------------------------------------
 |
 | See: https://github.com/twostairs/paperwork/issues/281
-| See: https://github.com/JamborJan/paperwork/issues/20
 |
 */
+
 if ((array_key_exists('HTTP_X_FORWARDED_PROTO', $_SERVER) ? $_SERVER[ 'HTTP_X_FORWARDED_PROTO'] : 'HTTP_X_FORWARDED_PROTO not set') == "https") {
 	$_SERVER['HTTPS'] = "on";
 	URL::forceSchema('https');
@@ -27,71 +27,65 @@ if ((array_key_exists('HTTP_X_FORWARDED_PROTO', $_SERVER) ? $_SERVER[ 'HTTP_X_FO
 
 Blade::setContentTags('[[', ']]');
 Blade::setEscapedContentTags('[[[', ']]]');
-App::missing(function ($exception) {
+App::missing(function($exception)
+{
     return Response::view('404', array(), 404);
 });
 
-if (Config::get('paperwork.sandstorm')) {
+if (Config::get('sandstorm.sandstorm')) {
   Route::get('/login', ["as" => "user/login", "uses" => "UserController@checkSandstormUsers"]);
 } else {
   Route::get('/login', ["as" => "user/login", "uses" => "UserController@showLoginForm"]);
   Route::post('/login', ["as" => "user/login", "uses" => "UserController@login"]);
 }
 
-if (Config::get('paperwork.registration')) {
-    Route::get("/register", ["as" => "user/register", "uses" => "UserController@showRegistrationForm"]);
-    Route::post("/register", ["as" => "user/register", "uses" => "UserController@register"]);
+if(Config::get('paperwork.registration')) {
+    Route::get("/register",["as" => "user/register","uses" => "UserController@showRegistrationForm"]);
+    Route::post("/register",["as" => "user/register","uses" => "UserController@register"]);
 }
 
-if (Config::get('paperwork.forgot_password')) {
-    Route::any("/request", ["as" => "user/request", "uses" => "UserController@request"]);
-    Route::any("/reset/{token}", ["as" => "user/reset", "uses" => "UserController@reset"]);
-}
+Route::any("/request",["as" => "user/request","uses" => "UserController@request"]);
+Route::any("/reset/{token}",[ "as" => "user/reset","uses" => "UserController@reset"]);
 
 //Authorized Users
-Route::group(["before" => "auth"], function () {
+Route::group(["before" => "auth"],function(){
     App::setLocale(PaperworkHelpers::getUiLanguageFromSession());
-    Route::any("/profile", ["as" => "user/profile", "uses" => "UserController@profile"]);
-    Route::any("/settings", ["as" => "user/settings", "uses" => "UserController@settings"]);
-    Route::any("/help/{topic?}", ["as" => "user/help", "uses" => "UserController@help"]);
-    Route::any("/logout", ["as" => "user/logout", "uses" => "UserController@logout"]);
-    Route::any("/settings/export", ["as" => "user/settings/export", "uses" => "UserController@export"]);
-    Route::any("/settings/import", ["as" => "user/settings/import", "uses" => "UserController@import"]);
-    Route::get('/', ["as" => "/", "uses" => "LibraryController@show"]);
+	Route::any("/profile",["as" => "user/profile","uses" => "UserController@profile"]);
+	Route::any("/settings",["as" => "user/settings","uses" => "UserController@settings"]);
+	Route::any("/help/{topic?}",["as" => "user/help","uses" => "UserController@help"]);
+	Route::any("/logout",["as" => "user/logout","uses" => "UserController@logout"]);
+	Route::any("/settings/export",["as" => "user/settings/export","uses" => "UserController@export"]);
+	Route::get('/',["as" => "/","uses" => "LibraryController@show"]);
 
     //Administrators
-    Route::group(['prefix' => 'admin', 'before' => ['admin']], function () {
+    Route::group(['prefix' => 'admin', 'before' => ['admin']], function()
+    {
         Route::get('/', ['as' => 'admin/console', 'uses' => 'AdminController@showConsole']);
     });
 });
 
 
-Route::get('/templates/{angularTemplate}', function ($angularTemplate) {
-    return View::make('templates/' . $angularTemplate);
+Route::get('/templates/{angularTemplate}', function($angularTemplate) {
+	return View::make('templates/' . $angularTemplate);
 });
 
-Route::group(array('prefix' => 'api/v1', 'before' => 'auth'), function () {
+Route::group(array('prefix' => 'api/v1', 'before' => 'auth'), function()
+{
     App::setLocale(PaperworkHelpers::getUiLanguageFromSession());
     // Route::any('notebook/{num?}', 'ApiNotebooksController@index')->where('num','([0-9]*)');
     Route::resource('notebooks', 'ApiNotebooksController');
-	Route::get('/notebooks/{notebookId}/share/{toUserId}/{toUMASK}', 'ApiNotebooksController@share');
     Route::resource('tags', 'ApiTagsController');
     Route::resource('notebooks.notes', 'ApiNotesController');
-    // I really don't know whether that's a great way to solve this...
-    Route::get('/notebooks/{notebookId}/notes/{noteId}/move/{toNotebookId}', 'ApiNotesController@move');
-    Route::get('/notebooks/{notebookId}/notes/{noteId}/tag/{toTagId}', 'ApiNotesController@tagNote');
-	Route::get('/notebooks/{notebookId}/notes/{noteId}/share/{toUserId}/{toUMASK}', 'ApiNotesController@share');
+        // I really don't know whether that's a great way to solve this...
+        Route::get('/notebooks/{notebookId}/notes/{noteId}/move/{toNotebookId}', 'ApiNotesController@move');
     Route::resource('notebooks.notes.versions', 'ApiVersionsController');
     Route::resource('notebooks.notes.versions.attachments', 'ApiAttachmentsController');
-    Route::get('/notebooks/{notebookId}/notes/{noteId}/versions/{versionId}/attachments/{attachmentId}/raw', 'ApiAttachmentsController@raw');
+        Route::get('/notebooks/{notebookId}/notes/{noteId}/versions/{versionId}/attachments/{attachmentId}/raw', 'ApiAttachmentsController@raw');
     Route::resource('shortcuts', 'ApiShortcutsController');
-    Route::get('/tags/{tagId}/{parentTagId}','ApiTagsController@nest');
     Route::resource('tags', 'ApiTagsController');
     Route::resource('i18n', 'ApiI18nController');
-    Route::get('/users/notebooks/{notebookId}', 'ApiUsersController@showNotebook');
     Route::resource('users', 'ApiUsersController');
     Route::resource('settings', 'ApiSettingsController');
-    Route::resource('calendar', 'ApiCalendarController');
 
     // Special routes
     Route::get('/tagged/{num}', 'ApiNotesController@tagged');

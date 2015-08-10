@@ -1,6 +1,6 @@
 <?php
 
-class Attachment extends PaperworkModel {
+class Attachment extends Eloquent {
 	use SoftDeletingTrait;
 	protected $softDelete = true;
 	protected $table = 'attachments';

@@ -1,10 +1,10 @@
 <?php
 
-class Version extends PaperworkModel {
+class Version extends Eloquent {
 	use SoftDeletingTrait;
 	protected $softDelete = true;
 	protected $table = 'versions';
-	protected $fillable = array('previous_id', 'next_id', 'title', 'content', 'content_preview','user_id');
+	protected $fillable = array('previous_id', 'next_id', 'title', 'content', 'content_preview');
 
 	public function notes() {
 		return $this->hasOne('Note');
@@ -20,9 +20,6 @@ class Version extends PaperworkModel {
 
 	public function attachments() {
 		return $this->belongsToMany('Attachment')->withTimestamps();
-	}
-	public function user(){
-	  return $this->belongsTo('User');
 	}
 }
 
