@@ -568,7 +568,7 @@ class UserController extends BaseController
             $noteid    = $note->id;
 
             $noteArray = [
-              'title'   => $note->title,
+              'title'   => htmlentities($note->title),
               'content' => $note->content,
               'created' => date('omd', strtotime($note->created_at)) . 'T' .
                            date('His', strtotime($note->created_at)) . 'Z',

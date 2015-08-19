@@ -34,9 +34,11 @@
 					<li>Click the export button below</li>
 					<li>Save the ENEX file on your local hard drive</li>
 					<li>Close this grain</li>
-					<li>Create a new grain</li>
+					<li>Install the latest version of the app via Sandstorm app store when not already done</li>
+					<li>Create a new grain with the new version of the app</li>
 					<li>In Paperwork go to Settings - Import/Export and import your data again</li>
 					<li>Now you have a fresh version of your grain with all your data.</li>
+					<li>Do the same with all old grains</li>
 				</ul>
 			</p>
 

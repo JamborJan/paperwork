@@ -663,6 +663,7 @@ opt/app/frontend/vendor/laravel/framework/src/Illuminate/Session/CommandsService
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Session/Console/SessionTableCommand.php
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Session/DatabaseSessionHandler.php
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Session/ExistenceAwareInterface.php
+opt/app/frontend/vendor/laravel/framework/src/Illuminate/Session/FileSessionHandler.php
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Session/Middleware.php
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Session/SessionInterface.php
 opt/app/frontend/vendor/laravel/framework/src/Illuminate/Session/SessionManager.php
