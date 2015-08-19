@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddVersionUserRelation extends Migration
+class AlterVersions extends Migration
 {
 
     /**
@@ -14,11 +14,15 @@ class AddVersionUserRelation extends Migration
     public function up()
     {
         Schema::table('versions', function (Blueprint $table) {
-            $table->char('user_id', 36);
+            $table->mediumText('content_new');
         });
 
+        DB::update('update versions set content_new = content');
+
         Schema::table('versions', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->dropColumn('content');
+
+            $table->renameColumn('content_new', 'content');
         });
     }
 
@@ -30,7 +34,7 @@ class AddVersionUserRelation extends Migration
     public function down()
     {
         Schema::table('versions', function (Blueprint $table) {
-            $table->dropColumn('user_id');
+            $table->text('content')->change();
         });
     }
 

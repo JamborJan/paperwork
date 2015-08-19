@@ -54,24 +54,9 @@ return array(
 	| The debug option shows Sandstorm permissions in the left sidebar
 	|
 	*/
+	
 	'sandstorm' => true,
 	'sandstorm_debug' => true,
-
-	/*
-	|--------------------------------------------------------------------------
-	| Emergency export
-	|--------------------------------------------------------------------------
-	|
-	| As Paperworks database migration was not so stable it was necessairy
-	| to add an emergency export feature which allows users with not
-	| upgradeable databases to upgrade their data and reimport it in  a
-	| fresh instance. This is mainly used in the Sandstorm package
-	|
-	|
-	*/
-
-	'emergency_export' => true,
-	'emergency_export_count' => 4,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -82,6 +67,7 @@ return array(
 	| no new users will be able to register.
 	|
 	*/
+
 	'registration' => false,
 
 	/*
@@ -92,6 +78,7 @@ return array(
 	| If set to true, forgot password link is enabled.
 	|
 	*/
+
 	'forgot_password' => false,
 
 	/*
@@ -104,6 +91,7 @@ return array(
 	| language set in app.php -> locale will be used.
 	|
 	*/
+
 	'userAgentLanguage' => true,
 
 	/*

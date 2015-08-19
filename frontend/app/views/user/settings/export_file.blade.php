@@ -21,13 +21,13 @@
     <created>[[ $created ]]</created>
     <updated>[[ $updated ]]</updated>
     @if(isset($tags))
-      @foreach ($tags as $tag)
-          <tag>[[ $tag['title'] ]]</tag>
-      @endforeach
+        @foreach ($tags as $tag)
+            <tag>[[ $tag['title'] ]]</tag>
+        @endforeach
     @endif
     <note-attributes>
-      <author>[[ $firstname ]] [[ $lastname ]]</author>
-      <reminder-order>0</reminder-order>
+        <author>[[ $firstname ]] [[ $lastname ]]</author>
+        <reminder-order>0</reminder-order>
     </note-attributes>
     @if(isset($attachments))
     @foreach ($attachments as $attachment)

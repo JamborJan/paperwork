@@ -5,7 +5,7 @@
 			"fa_icon" => "fa-book"
 		])
 
-	@if(Config::get('paperwork.sandstorm_debug') == false)
+	@if(Config::get('paperwork.sandstorm') == false)
 		@include("partials.navbar.navbar-link", [
 				"route" => URL::route("user/profile"),
 				"title" => Lang::get("keywords.profile"),
@@ -33,7 +33,7 @@
 			"fa_icon" => "fa-question"
 		])
 
-	@if(Config::get('paperwork.sandstorm_debug') == false)
+	@if(Config::get('paperwork.sandstorm') == false)
 		@include("partials.navbar.navbar-link", [
 				"route" => URL::route("user/logout"),
 				"title" => Lang::get("keywords.sign_out"),

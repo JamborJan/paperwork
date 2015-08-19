@@ -847,7 +847,6 @@ opt/app/frontend/vendor/symfony/security-core/Symfony/Component/Security/Core/Ut
 opt/app/frontend/vendor/symfony/security-core/Symfony/Component/Security/Core/Util/SecureRandomInterface.php
 opt/app/frontend/vendor/symfony/security-core/Symfony/Component/Security/Core/Util/StringUtils.php
 opt/app/frontend/vendor/symfony/translation/Symfony/Component/Translation/TranslatorInterface.php
-opt/app/frontend/vendor/webpatser/laravel-uuid/src/Webpatser/Uuid/Uuid.php
 proc/cpuinfo
 sandstorm-http-bridge
 sandstorm-http-bridge-config
