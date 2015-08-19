@@ -2,13 +2,7 @@
 
 This is the Sandstorm package of [Paperwork](http://paperwork.rocks/).
 
-# Status
-
-Version 3 - Currently on the Sandstorm app store, will soon be updated with V5. 
-
-Version 4 - has never been released.
-
-Version 5 - includes a ton of fixes and cleanup and also the latest pre-release of Paperwork. It should be available through the Sandstorm app store soon. ATTENTION: updating your existing Paperwork grains does not work!!!
+This version 3 of the app is deprecated, exports are not working. To retrieve your data you will have to update to Version 4 and then export your data.
 
 Please add issues and questions you have as Issue here on [Github](https://github.com/JamborJan/paperwork/issues).
 
@@ -34,6 +28,12 @@ You will need to install:
     vagrant-spk up
     vagrant-spk dev
 
-    visit http://localhost:6080 in a web browser
+    visit [http://local.sandstorm.io:6080/](http://local.sandstorm.io:6080/) in a web browser
 
     vagrant-spk pack paperwork.spk
+
+# Old versions & export of data
+
+Version 3 - This version is deprecated, exports are not working. To retrieve your data you will have to update to Version 4 and then export your data.
+
+Version 4 - This version is deprecated but can be installed as update to version 3 and will show you an export screen when it detects an old grain. Afterwards you should install version 5 of the app and import the data again.
