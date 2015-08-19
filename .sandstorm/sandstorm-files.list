@@ -172,6 +172,7 @@ opt/app/frontend/app/database/migrations/2015_06_30_125536_add_sessions_table.ph
 opt/app/frontend/app/database/migrations/2015_07_29_130508_alter_versions.php
 opt/app/frontend/app/filters.php
 opt/app/frontend/app/help/index.de.md
+opt/app/frontend/app/help/index.en.md
 opt/app/frontend/app/lang
 opt/app/frontend/app/lang/ach/keywords.php
 opt/app/frontend/app/lang/ach/languages.php
