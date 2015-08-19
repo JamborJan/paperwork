@@ -169,6 +169,7 @@ opt/app/frontend/app/database/migrations/2015_05_05_094021_modify_tag_user_relat
 opt/app/frontend/app/database/migrations/2015_05_22_220540_add_version_user_relation.php
 opt/app/frontend/app/database/migrations/2015_06_15_224221_add_tag_parent.php
 opt/app/frontend/app/database/migrations/2015_06_30_125536_add_sessions_table.php
+opt/app/frontend/app/database/migrations/2015_07_29_130508_alter_versions.php
 opt/app/frontend/app/filters.php
 opt/app/frontend/app/help/index.de.md
 opt/app/frontend/app/lang
@@ -367,7 +368,6 @@ opt/app/frontend/public/ckeditor/skins/bootstrapck/images/lock.png
 opt/app/frontend/public/ckeditor/skins/bootstrapck/images/refresh.png
 opt/app/frontend/public/ckeditor/styles.js
 opt/app/frontend/public/css/freqselector.min.css
-opt/app/frontend/public/css/loading-bar.css
 opt/app/frontend/public/css/themes/paperwork-v1.min.css
 opt/app/frontend/public/css/typeahead.min.css
 opt/app/frontend/public/favicon.ico
