@@ -2,8 +2,6 @@
 
 This is the Sandstorm package of [Paperwork](http://paperwork.rocks/).
 
-This version 3 of the app is deprecated, exports are not working. To retrieve your data you will have to update to Version 4 and then export your data.
-
 Please add issues and questions you have as Issue here on [Github](https://github.com/JamborJan/paperwork/issues).
 
 # How to
