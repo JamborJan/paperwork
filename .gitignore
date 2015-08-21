@@ -9,7 +9,6 @@ Thumbs.db
 .codekit-cache
 frontend/app/storage/attachments/*
 frontend/node_modules
-frontend/public/js
 frontend/npm-debug.log
 .sandstorm/.vagrant
 frontend/app/storage
