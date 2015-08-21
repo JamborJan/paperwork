@@ -10,6 +10,10 @@ Thumbs.db
 frontend/app/storage/attachments/*
 frontend/node_modules
 frontend/npm-debug.log
+frontend/public/css
+!frontend/public/css/bootstrap-editable.css
+frontend/public/js
+!frontend/public/js/bootstrap-editable.min.js
 .sandstorm/.vagrant
 frontend/app/storage
 frontend/install.sh
