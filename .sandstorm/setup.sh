@@ -36,6 +36,9 @@ ln -s /etc/nginx/sites-available/sandstorm-php /etc/nginx/sites-enabled/sandstor
 service nginx stop
 service php5-fpm stop
 service mysql stop
+systemctl disable nginx
+systemctl disable php5-fpm
+systemctl disable mysql
 # patch /etc/php5/fpm/pool.d/www.conf to not change uid/gid to www-data
 sed --in-place='' \
         --expression='s/^listen.owner = www-data/#listen.owner = www-data/' \
@@ -70,6 +73,8 @@ EOF
 sed --in-place='' \
         --expression 's/^user www-data/#user www-data/' \
         --expression 's#^pid /run/nginx.pid#pid /var/run/nginx.pid#' \
+        --expression 's/^\s*error_log.*/error_log stderr;/' \
+        --expression 's/^\s*access_log.*/access_log off;/' \
         /etc/nginx/nginx.conf
 # Add a conf snippet providing what sandstorm-http-bridge says the protocol is as var fe_https
 cat > /etc/nginx/conf.d/50sandstorm.conf << EOF
