@@ -54,9 +54,9 @@ return array(
 	| The debug option shows Sandstorm permissions in the left sidebar
 	|
 	*/
-	
+
 	'sandstorm' => true,
-	'sandstorm_debug' => true,
+	'sandstorm_debug' => false,
 
 	/*
 	|--------------------------------------------------------------------------
