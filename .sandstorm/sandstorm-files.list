@@ -328,7 +328,6 @@ opt/app/frontend/app/views/templates/paperwork404.blade.php
 opt/app/frontend/app/views/templates/paperworkNoteEdit.blade.php
 opt/app/frontend/app/views/templates/paperworkNoteShow.blade.php
 opt/app/frontend/app/views/user/debug.blade.php
-opt/app/frontend/app/views/user/emergency_export.blade.php
 opt/app/frontend/app/views/user/help.blade.php
 opt/app/frontend/app/views/user/settings.blade.php
 opt/app/frontend/app/views/user/settings/export_file.blade.php
@@ -369,6 +368,7 @@ opt/app/frontend/public/ckeditor/skins/bootstrapck/images/lock-open.png
 opt/app/frontend/public/ckeditor/skins/bootstrapck/images/lock.png
 opt/app/frontend/public/ckeditor/skins/bootstrapck/images/refresh.png
 opt/app/frontend/public/ckeditor/styles.js
+opt/app/frontend/public/css/bootstrap-editable.css
 opt/app/frontend/public/css/freqselector.min.css
 opt/app/frontend/public/css/libs.css
 opt/app/frontend/public/css/mathquill.css
@@ -407,6 +407,7 @@ opt/app/frontend/public/images/freqselector/default/ruler.png
 opt/app/frontend/public/images/navbar-logo.png
 opt/app/frontend/public/index.php
 opt/app/frontend/public/js/angular.min.js
+opt/app/frontend/public/js/bootstrap-editable.min.js
 opt/app/frontend/public/js/bootstrap.min.js
 opt/app/frontend/public/js/jquery.min.js
 opt/app/frontend/public/js/libraries.min.js

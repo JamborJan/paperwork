@@ -21,24 +21,53 @@ const pkgdef :Spk.PackageDefinition = (
 
     appVersion = 5,  # Increment this for every release.
 
-    appMarketingVersion = (defaultText = "5.0.alpha"),
+    appMarketingVersion = (defaultText = "2015.08.24"),
     # Human-readable representation of appVersion. Should match the way you
     # identify versions of your app in documentation and marketing.
 
     actions = [
       # Define your "new document" handlers here.
       ( title = (defaultText = "New Paperwork"),
+        nounPhrase = (defaultText = "note"),
         command = .myCommand
         # The command to run when starting for the first time. (".myCommand"
         # is just a constant defined at the bottom of the file.)
       )
     ],
 
-    continueCommand = .myCommand
+    continueCommand = .myCommand,
     # This is the command called to start your app back up after it has been
     # shut down for inactivity. Here we're using the same command as for
     # starting a new instance, but you could use different commands for each
     # case.
+
+    metadata = (
+       icons = (
+         appGrid = (svg = embed "app-graphics/paperwork-128.svg"),
+         grain = (svg = embed "app-graphics/paperwork-24.svg"),
+         market = (svg = embed "app-graphics/paperwork-150.svg"),
+       ),
+
+       website = "http://paperwork.rocks/",
+       codeUrl = "https://github.com/JamborJan/paperwork",
+       license = (openSource = mit),
+       categories = [productivity],
+
+       author = (
+         contactEmail = "jan@jambor.pro",
+         pgpSignature = embed "pgp-signature",
+         upstreamAuthor = "Twostairs",
+       ),
+       pgpKeyring = embed "pgp-keyring",
+
+       description = (defaultText = embed "description.md"),
+
+       screenshots = [
+         (width = 448, height = 249, png = embed "sandstorm-screenshot.png")
+       ],
+
+       changeLog = (defaultText = embed "CHANGELOG.md"),
+     ),
   ),
 
   sourceMap = (
