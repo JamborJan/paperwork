@@ -1,7 +1,7 @@
 #!/bin/bash
 # Checks if there's a composer.json, and if so, installs/runs composer.
 
-set -eu
+set -euo pipefail
 
 cd /opt/app/frontend
 
@@ -22,7 +22,7 @@ bower install
 # Run gulp to build static assets
 gulp
 
-# link storage folder 
+# link storage folder
 rm -rf /opt/app/frontend/app/storage
 rm -rf /var/storage
 ln -s /var/storage /opt/app/frontend/app

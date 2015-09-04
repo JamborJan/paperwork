@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -euo pipefail
+
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-dev php5-gd php5-mcrypt mysql-server nodejs nodejs-legacy git npm
