@@ -226,6 +226,7 @@ class ApiNotesController extends BaseController
                            'versions.title',
                            'versions.content_preview',
                            'versions.content',
+                           'versions.id as version_id',
                            'notes.created_at',
                            'notes.updated_at',
                            'note_user.umask'
@@ -240,6 +241,12 @@ class ApiNotesController extends BaseController
             foreach ($notes as $note) {
                 $note->tags     = $this->getNoteTags($note->id);
                 $note->versions = $this->getNoteVersionsBrief($note->id);
+                $note->version  = array(
+                  'content' => $note->content,
+                  'content_preview' => $note->content_preview,
+                  'title' => $note->title,
+                  'id' => $note->version_id
+                );
             }
             return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_SUCCESS,
                 $notes);
@@ -389,14 +396,14 @@ class ApiNotesController extends BaseController
             return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_NOTFOUND,
                 array('item' => 'note', 'id' => $noteId));
         }
-                    
-                    
+
+
        $tagIds = ApiTagsController::createOrGetTags($updateNote->get('tags'),$noteId,$note->pivot->umask);
 
         if (!is_null($tagIds)) {
             $note->tags()->sync($tagIds);
         }
-        
+
         if($note->pivot->umask<PaperworkHelpers::UMASK_READWRITE){
             return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_ERROR, array('message' => 'Permission error. The private tags have been saved though.'));
         }
@@ -516,7 +523,7 @@ class ApiNotesController extends BaseController
             // return PaperworkHelpers::apiResponse(PaperworkHelpers::STATUS_NOTFOUND, array('item'=>'notebook', 'id'=>$toNotebookId));
             return null;
         }
-    
+
         $note->notebook()->associate($toNotebook);
         $note->save();
 
@@ -584,7 +591,7 @@ class ApiNotesController extends BaseController
             $note->save();
             return $note;
         }
-        
+
     }
     public function share($notebookId, $noteId, $toUserId, $toUMASK){
         $noteIds   =
@@ -609,7 +616,7 @@ class ApiNotesController extends BaseController
                 }
             }
         }
-        return PaperworkHelpers::apiResponse($status, $responses);        
+        return PaperworkHelpers::apiResponse($status, $responses);
     }
 }
 
