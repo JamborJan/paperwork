@@ -3,8 +3,9 @@
 set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 apt-get update
-apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-dev php5-gd php5-mcrypt mysql-server nodejs nodejs-legacy git npm
+apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-dev php5-gd php5-mcrypt mysql-server nodejs git
 # Install bower and gulp
 npm install -g gulp bower
 # Enable mcrypt for PHP
