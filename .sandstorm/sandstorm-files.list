@@ -340,8 +340,11 @@ opt/app/frontend/bootstrap/start.php
 opt/app/frontend/public/ckeditor/ckeditor.js
 opt/app/frontend/public/ckeditor/config.js
 opt/app/frontend/public/ckeditor/lang/en.js
+opt/app/frontend/public/ckeditor/plugins/icons.png
+opt/app/frontend/public/ckeditor/plugins/icons_hidpi.png
 opt/app/frontend/public/ckeditor/plugins/about/dialogs/about.js
 opt/app/frontend/public/ckeditor/plugins/about/dialogs/logo_ckeditor.png
+opt/app/frontend/public/ckeditor/plugins/about/dialogs/hidpi/logo_ckeditor.png
 opt/app/frontend/public/ckeditor/plugins/autosave/css/autosave.min.css
 opt/app/frontend/public/ckeditor/plugins/autosave/js/extensions.min.js
 opt/app/frontend/public/ckeditor/plugins/clipboard/dialogs/paste.js
@@ -355,6 +358,7 @@ opt/app/frontend/public/ckeditor/plugins/fontawesome/font-awesome/fonts/fontawes
 opt/app/frontend/public/ckeditor/plugins/image2/dialogs/image2.js
 opt/app/frontend/public/ckeditor/plugins/link/dialogs/link.js
 opt/app/frontend/public/ckeditor/plugins/link/images/anchor.png
+opt/app/frontend/public/ckeditor/plugins/link/images/hidpi/anchor.png
 opt/app/frontend/public/ckeditor/plugins/pastefromword/filter/default.js
 opt/app/frontend/public/ckeditor/plugins/symbol/dialogs/lang/en.js
 opt/app/frontend/public/ckeditor/plugins/symbol/dialogs/symbol.js
@@ -363,10 +367,15 @@ opt/app/frontend/public/ckeditor/skins/bootstrapck/dialog.css
 opt/app/frontend/public/ckeditor/skins/bootstrapck/editor.css
 opt/app/frontend/public/ckeditor/skins/bootstrapck/editor_gecko.css
 opt/app/frontend/public/ckeditor/skins/bootstrapck/icons.png
+opt/app/frontend/public/ckeditor/skins/bootstrapck/icons_hidpi.png
 opt/app/frontend/public/ckeditor/skins/bootstrapck/images/close.png
 opt/app/frontend/public/ckeditor/skins/bootstrapck/images/lock-open.png
 opt/app/frontend/public/ckeditor/skins/bootstrapck/images/lock.png
 opt/app/frontend/public/ckeditor/skins/bootstrapck/images/refresh.png
+opt/app/frontend/public/ckeditor/skins/bootstrapck/images/hidpi/close.png
+opt/app/frontend/public/ckeditor/skins/bootstrapck/images/hidpi/lock-open.png
+opt/app/frontend/public/ckeditor/skins/bootstrapck/images/hidpi/lock.png
+opt/app/frontend/public/ckeditor/skins/bootstrapck/images/hidpi/refresh.png
 opt/app/frontend/public/ckeditor/styles.js
 opt/app/frontend/public/css/bootstrap-editable.css
 opt/app/frontend/public/css/freqselector.min.css
@@ -405,6 +414,7 @@ opt/app/frontend/public/images/freqselector/default/fadeout-left.png
 opt/app/frontend/public/images/freqselector/default/fadeout-right.png
 opt/app/frontend/public/images/freqselector/default/ruler.png
 opt/app/frontend/public/images/navbar-logo.png
+opt/app/frontend/public/images/navbar-logo@2x.png
 opt/app/frontend/public/index.php
 opt/app/frontend/public/js/angular.min.js
 opt/app/frontend/public/js/bootstrap-editable.min.js
