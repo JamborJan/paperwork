@@ -30,6 +30,8 @@ You will need to install:
 
     vagrant-spk pack paperwork.spk
 
+Note: when you want to fork this repo and create actual app packages for the app store you would need either the original app key or create a new one and make your own app.
+
 # Old versions & export of data
 
 Version 3 - This version is deprecated, exports are not working. To retrieve your data you will have to update to Version 4 and then export your data.

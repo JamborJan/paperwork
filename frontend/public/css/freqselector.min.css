@@ -46,7 +46,7 @@
 .freqselector .freqselector-background {
   height: 80px;
   width: 100%;
-  background: #ffffff url("../images/freqselector/default/background.png") repeat-x top left;
+  background: #fff url("../images/freqselector/default/background.png") repeat-x top left;
   overflow: hidden;
   position: absolute;
 }
