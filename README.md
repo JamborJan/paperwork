@@ -23,7 +23,7 @@ You will need to install:
     git clone https://github.com/JamborJan/paperwork
     export PATH=$(pwd)/vagrant-spk:$PATH
     cd paperwork
-    vagrant-spk up
+    vagrant-spk vm up
     vagrant-spk dev
 
     visit [http://local.sandstorm.io:6080/](http://local.sandstorm.io:6080/) in a web browser
