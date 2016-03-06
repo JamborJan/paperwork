@@ -476,14 +476,14 @@ class UserController extends BaseController
     {
         if ($this->isPostRequest()) {
             if(Input::hasFile('enex')) {
-                $notebookId = with(new \Paperwork\Import\EvernoteImport())->import(Input::file('enex'));
-                if($notebookId) {
-                    return Redirect::route("/");
+                $notebookNew = with(new \Paperwork\Import\EvernoteImport())->import(Input::file('enex'));
+                if($notebookNew[0]) {
+                    return Redirect::route("user/settings")
+                                   ->withErrors(["enex_file_success" => $notebookNew[1]]);
                 }
                 else {
                     return Redirect::route("user/settings")
-                                   ->withErrors(["enex_file" => "Error during import!"]);
-                                   // ->withErrors(["enex_file" => [Lang::get('messages.invalid_credentials')]]);
+                                   ->withErrors(["enex_file" => $notebookNew[1]]);
                 }
             } else {
               return Redirect::route("user/settings")

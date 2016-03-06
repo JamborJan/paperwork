@@ -16,6 +16,8 @@ return array(
 			'language_label' => 'Language',
 			'client_label' => 'Client',
 			'import_slash_export' => 'Import/Export',
+			'import_error' => 'Der Import war nicht erfolgreich. Die technische Fehlermeldung ist: ',
+			'import_success' => 'Die Notizen wurden in folgendes Notizbuch importiert: ',
 			'language' => array(
 				'ui_language' => 'Benutzeroberflächensprache',
 				'document_languages' => 'Dokumentensprachen',

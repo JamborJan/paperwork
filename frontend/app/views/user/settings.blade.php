@@ -15,7 +15,12 @@
 @endif
 @if ($errors->first('enex_file')!=null)
   <div class="alert alert-danger" role="alert">
-    [[ $errors->first('enex_file') ]]
+    [[ Lang::get('messages.user.settings.import_error') ]] [[ $errors->first('enex_file') ]]
+  </div>
+@endif
+@if ($errors->first('enex_file_success')!=null)
+  <div class="alert alert-success" role="alert">
+    [[ Lang::get('messages.user.settings.import_success') ]] [[ $errors->first('enex_file_success') ]]
   </div>
 @endif
 
