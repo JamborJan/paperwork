@@ -4,6 +4,8 @@ This is the Sandstorm package of [Paperwork](http://paperwork.rocks/).
 
 Please add issues and questions you have as Issue here on [Github](https://github.com/JamborJan/paperwork/issues).
 
+![Paperwork main view](.sandstorm/app-graphics/paperwork_example_01.png)
+
 # How to
 
 The package is done with [vagrant-spk](https://github.com/zarvox/vagrant-spk), a tool designed to help app developers package apps for [Sandstorm](https://sandstorm.io).

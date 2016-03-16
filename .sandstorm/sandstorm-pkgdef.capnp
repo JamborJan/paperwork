@@ -123,9 +123,9 @@ const pkgdef :Spk.PackageDefinition = (
        # Sizes are given in device-independent pixels, so if you took these
        # screenshots on a Retina-style high DPI screen, divide each dimension by two.
 
-       #(width = 746, height = 795, jpeg = embed "path/to/screenshot-1.jpeg"),
-       #(width = 640, height = 480, png = embed "path/to/screenshot-2.png"),
-       (width = 448, height = 249, png = embed "sandstorm-screenshot.png")
+       (width = 1166, height = 675, png = embed "app-graphics/paperwork_example_01.png"),
+       (width = 1166, height = 675, png = embed "app-graphics/paperwork_example_02.png"),
+       (width = 1166, height = 675, png = embed "app-graphics/paperwork_example_03.png")
        ],
        changeLog = (defaultText = embed "CHANGELOG.md"),
        # Documents the history of changes in Github-flavored markdown format (with the same restrictions
