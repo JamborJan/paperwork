@@ -50,4 +50,4 @@ echo "CREATE DATABASE IF NOT EXISTS paperwork DEFAULT CHARACTER SET utf8 COLLATE
 time php /opt/app/frontend/artisan migrate --force
 
 # Start nginx.
-/usr/sbin/nginx -g "daemon off;"
+/usr/sbin/nginx -c /opt/app/.sandstorm/service-config/nginx.conf -g "daemon off;"

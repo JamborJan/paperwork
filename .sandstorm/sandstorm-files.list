@@ -26,13 +26,10 @@ etc/mysql/conf.d/mysqld_safe_syslog.cnf
 etc/mysql/conf.d/sandstorm.cnf
 etc/mysql/my.cnf
 etc/nginx/conf.d
-etc/nginx/conf.d/50sandstorm.conf
 etc/nginx/fastcgi_params
 etc/nginx/mime.types
 etc/nginx/nginx.conf
-etc/nginx/sites-available/sandstorm-php
 etc/nginx/sites-enabled
-etc/nginx/sites-enabled/sandstorm-php
 etc/php5/cli/conf.d
 etc/php5/cli/conf.d/05-opcache.ini
 etc/php5/cli/conf.d/10-pdo.ini
@@ -136,6 +133,8 @@ lib/x86_64-linux-gnu/libz.so.1
 lib/x86_64-linux-gnu/libz.so.1.2.8
 lib64/ld-linux-x86-64.so.2
 opt/app/.sandstorm/launcher.sh
+opt/app/.sandstorm/service-config/mime.types
+opt/app/.sandstorm/service-config/nginx.conf
 opt/app/frontend/app/commands/AbstractPaperworkCommand.php
 opt/app/frontend/app/commands/PaperworkInstall.php
 opt/app/frontend/app/commands/PaperworkUpdate.php
