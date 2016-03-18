@@ -53,3 +53,12 @@ innodb_log_file_size = 1048576
 # Set the main data file to grow by 1MB at a time, rather than 8MB at a time.
 innodb_autoextend_increment = 1
 EOF
+
+# Go to app directory
+cd /opt/app/
+# Purge git repository just in case it is there
+rm -rf /opt/app/paperwork
+# Clone git repository
+git clone https://github.com/twostairs/paperwork
+
+exit 0

@@ -1,0 +1,4 @@
+debug: false
+registration: false
+forgot_password: false
+showIssueReportingLink: false
