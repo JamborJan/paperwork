@@ -42,3 +42,4 @@ cp /opt/app/changedfiles/main.blade.php /opt/app/paperwork/frontend/app/views/ma
 # Remove buttons we don't need in Sandstorm mode
 cp /opt/app/changedfiles/navigation-main.blade.php /opt/app/paperwork/frontend/app/views/partials/navigation-main.blade.php
 cp /opt/app/changedfiles/menu-main.blade.php /opt/app/paperwork/frontend/app/views/partials/menu-main.blade.php
+cp /opt/app/changedfiles/paperworkNoteShow.blade.php /opt/app/paperwork/frontend/app/views/templates/paperworkNoteShow.blade.php
