@@ -222,6 +222,7 @@ opt/app/paperwork/frontend/app/controllers/api/v1/ApiNotebooksController.php
 opt/app/paperwork/frontend/app/controllers/api/v1/ApiNotesController.php
 opt/app/paperwork/frontend/app/controllers/api/v1/ApiShortcutsController.php
 opt/app/paperwork/frontend/app/controllers/api/v1/ApiTagsController.php
+opt/app/paperwork/frontend/app/controllers/api/v1/ApiUsersController.php
 opt/app/paperwork/frontend/app/controllers/api/v1/ApiVersionsController.php
 opt/app/paperwork/frontend/app/database/migrations
 opt/app/paperwork/frontend/app/database/migrations/2014_07_22_194050_initialize.php
