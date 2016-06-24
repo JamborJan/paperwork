@@ -12,14 +12,9 @@ rm -rf /var/run
 mkdir -p /var/run
 mkdir -p /var/run/mysqld
 
-# move storage folders which must be writable to /var
-mkdir -p /var/storage
-mkdir -p /var/storage/attachments
-mkdir -p /var/storage/cache
-mkdir -p /var/storage/logs
-mkdir -p /var/storage/meta
-mkdir -p /var/storage/sessions
-mkdir -p /var/storage/views
+# copy storage folders which must be writable to /var
+cp -ar /opt/app/changedfiles/frontend/app/storage /var
+mkdir -p /var/storage/config/setup
 
 # Cleanup log files
 FILES="$(find /var/log -name '*.log')"

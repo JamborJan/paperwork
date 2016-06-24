@@ -3,6 +3,7 @@
 
 set -euo pipefail
 
+# Setup composer
 cd /opt/app/paperwork/frontend
 
 if [ -f /opt/app/paperwork/frontend/composer.json ] ; then

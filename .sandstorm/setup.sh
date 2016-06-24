@@ -60,5 +60,8 @@ cd /opt/app/
 rm -rf /opt/app/paperwork
 # Clone git repository
 git clone https://github.com/twostairs/paperwork
+# Check out develpoment branch
+cd /opt/app/paperwork/
+git checkout develop
 
 exit 0

@@ -1,0 +1,6 @@
+{
+    "registration": false,
+    "forgot_password": false,
+    "showIssueReportingLink": false,
+    "userAgentLanguage": true
+}
