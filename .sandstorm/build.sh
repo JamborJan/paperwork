@@ -35,8 +35,10 @@ cp /opt/app/changedfiles/paperwork.php /opt/app/paperwork/frontend/app/config/pa
 cp /opt/app/changedfiles/routes.php /opt/app/paperwork/frontend/app/routes.php
 # This adds Dummy users in Sandstorm mode
 cp /opt/app/changedfiles/UserController.php /opt/app/paperwork/frontend/app/controllers/UserController.php
-# These two things are used for debugging:
+# These things are used for debugging:
 cp /opt/app/changedfiles/debug-main.blade.php /opt/app/paperwork/frontend/app/views/partials/debug-main.blade.php
 cp /opt/app/changedfiles/debug.blade.php /opt/app/paperwork/frontend/app/views/user/debug.blade.php
+cp /opt/app/changedfiles/main.blade.php /opt/app/paperwork/frontend/app/views/main.blade.php
 # Remove buttons we don't need in Sandstorm mode
 cp /opt/app/changedfiles/navigation-main.blade.php /opt/app/paperwork/frontend/app/views/partials/navigation-main.blade.php
+cp /opt/app/changedfiles/menu-main.blade.php /opt/app/paperwork/frontend/app/views/partials/menu-main.blade.php

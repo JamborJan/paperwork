@@ -8,14 +8,16 @@
 @include('modal/manageNotebooks')
 @include('modal/usersSelect')
 @include('modal/usersNotebookSelect')
+@include('modal/collection')
+@include('modal/notebookDelete')
 
 <div class="container-fluid">
 	<div class="row">
         <section pw-status-notification></section>
         <div class="fa sidebar-collapse-switch" ng-show="!expandedNoteLayout"
-             ng-class="sidebarCollapsed ? 'fa-chevron-right sidebar-collapse-switch-closed' : 'fa-chevron-left col-sm-offset-3 col-md-offset-2'"
-             ng-click="sidebarCollapsed = !sidebarCollapsed" ng-init="sidebarCollapsed = false"></div>
-		<div id="sidebarNotebooks" class="col-sm-3 col-md-2 sidebar hidden-xs animate-panel disable-selection" ng-controller="SidebarNotebooksController" ng-show="isVisible()">
+            ng-class="sidebarCollapsed ? 'fa-chevron-right sidebar-collapse-switch-closed' : 'fa-chevron-left col-sm-offset-3 col-md-offset-2'"
+            ng-click="sidebarCollapsed = !sidebarCollapsed" ng-init="sidebarCollapsed = false"></div>
+		<div id="sidebarNotebooks" class="col-sm-3 col-md-2 sidebar hidden-xs animate-panel disable-selection" ng-controller="SidebarNotebooksController" ng-show="isVisible()" ng-hide="sidebarCollapsed" ng-init="initialiseSidebar()">
 			<ul class="nav nav-sidebar sidebar-no-border" ng-hide="sidebarCollapsed">
 				<div class="tree">
 					<ul class="tree-base">
@@ -31,8 +33,8 @@
 							<span class="tree-header tree-header-notebooks" title="Click to {{ notebooksCollapsed ? 'Expand' : 'Collapse' }}" ng-click="notebooksCollapsed=!notebooksCollapsed"><i class="fa {{ notebooksCollapsed ? 'fa-chevron-right' : 'fa-chevron-down' }}"></i> [[Lang::get('keywords.notebooks')]] <button class="btn btn-default btn-xs pull-right" ng-click="modalManageNotebooks();$event.stopPropagation();" title="[[Lang::get('keywords.manage_notebooks')]]"><span class="fa fa-pencil"></span></button></span>
 							<ul class="tree-child" collapse="notebooksCollapsed">
 								<li class="tree-notebook" ng-repeat="notebook in notebooks | orderBy:'title'" ng-cloak>
-									<div class="notebook-title" ng-click="openNotebook(notebook.id, notebook.type, notebook.id)" ng-class="{ 'active': notebook.id == getNotebookSelectedId() }" ng-drop="true" ng-drop-success="onDropSuccess($data,$event)"><i class="fa {{ notebookIconByType(notebook.type) }}"></i> {{notebook.title}}</div>
-									<ul class="tree-child">
+									<div class="notebook-title" ng-click="openNotebook(notebook.id, notebook.type, notebook.id)" ng-class="{ 'active': notebook.id == getNotebookSelectedId() }" ng-drop="true" ng-drop-success="onDropSuccess($data,$event)"><i class="fa" ng-class="isCollectionOpen(notebook.id) ? 'fa-folder-open' : notebookIconByType(notebook.type)"></i> {{notebook.title}}</div>
+									<ul class="tree-child tree-children" ng-class=" { 'hidden': !isCollectionOpen(notebook.id) } ">
 										<li class="tree-notebook" ng-repeat="child in notebook.children | orderBy:'title'">
 											<div class="notebook-title" ng-click="openNotebook(child.id, child.type, child.id)" ng-class="{ 'active': child.id == getNotebookSelectedId() }"><i class="fa {{ notebookIconByType(child.type) }}"></i> {{child.title}}</div>
 										</li>
@@ -75,15 +77,31 @@
 		</div>
 
 		<div id="sidebarNotes" class="col-sm-4 col-md-3 sidebar hidden-xs animate-panel"
-             ng-controller="SidebarNotesController" ng-show="isVisible()" ng-class="sidebarCollapsed ? '' : 'col-sm-offset-3 col-md-offset-2'">
-			<ul id="notes-list" class="nav nav-sidebar notes-list sidebar-no-border" ng-controller="NotesListController">
+             ng-controller="SidebarNotesController" ng-show="isVisible()" ng-class="sidebarCollapsed ? 'sidebar-collapsed-notes' : 'col-sm-offset-3 col-md-offset-2'" ng-if="(notes.length != 0)">
+			<div class="nav nav-sidebar notes-list sidebar-no-border" ng-class="sidebarCollapsed ? 'sidebar-collapsed-notes-list' : ''" ng-cloak>
+			    <p class="text-center">
+			        [[ Lang::get('keywords.sort_notes_by') ]]
+			        <select id="sort_order_change" ng-change="changeSortOrder(sort_order_adjustment)" ng-model="sort_order_adjustment">
+			            <option value="default">[[ Lang::get('keywords.default') ]]</option>
+			            <option value="creation_date">[[ Lang::get('keywords.creation_date') ]]</option>
+			            <option value="modification_date">[[ Lang::get('keywords.modification_date') ]]</option>
+			            <option value="title">[[ Lang::get('keywords.title') ]]</option>
+			        </select>
+			    </p>
+			    <p class="text-center new-note-notes-list-button">
+			        <a ng-controller="SidebarNotesController" ng-click="newNote(getNotebookSelectedId())" href><i class="fa fa-plus"></i> [[ Lang::get('keywords.new_note') ]]</a>
+			    </p>
+			</div>
+			<ul id="notes-list" class="nav nav-sidebar notes-list sidebar-no-border" ng-controller="NotesListController" ng-class="sidebarCollapsed ? 'sidebar-collapsed-notes-list' : ''">
 				<li class="notes-list-item" ng-cloak ng-repeat="note in notes"
 					ng-click="noteSelect(note.notebook_id, note.id)"
 					ng-dblclick="editNote(note.notebook_id, note.id)"
 					ng-class="{ 'active': (note.notebook_id + '-' + note.id == getNoteSelectedId() || (editMultipleNotes && notesSelectedIds[note.id])) }"
 					ng-drag="true"
+					ng-drag-data="(note)"
 					ng-drag-success="onDragSuccess($data,$event)"
 					ng-drag-data="notebook">
+					<span class="draggable"></span>
 					<div class="notes-list-item-checkbox col-sm-1" ng-show="editMultipleNotes">
 						<input name="notes[]" type="checkbox" value="{{ note.id }}" ng-model="notesSelectedIds[note.id]" ng-click="$event.stopPropagation();" ng-dblclick="$event.stopPropagation();">
 					</div>
@@ -111,6 +129,17 @@
                 (sidebarCollapsed ? 'col-sm-8 col-md-9 col-sm-offset-4 col-md-offset-3' : 'col-sm-5 col-md-7 col-sm-offset-7 col-md-offset-5' )
                 : 'col-sm-12 col-md-12' }}"
              ng-controller="ViewController">
+             <div class="text-center"
+                  id="paperworkViewEmpty"
+                  ng-if="(notes.length == 0)"
+                  ng-show="!expandedNoteLayout"
+                  ng-class=""
+                  ng-init=""
+                  ng-cloak>
+		        <p style="font-size:15px;padding-top:15px;display:none">[[ Lang::get('messages.no_notes_in_notebook') ]]</p>
+		        <h1>[[ Lang::get('messages.nothing_here') ]]</h1>
+		        <p style="font-size:15px;padding-top:15px">[[ Lang::get('messages.no_notes_in_notebook') ]]</p>
+             </div>
 			<div id="paperworkView" ng-view></div>
 		</div>
 	</div>

@@ -13,7 +13,7 @@ mkdir -p /var/run
 mkdir -p /var/run/mysqld
 
 # copy storage folders which must be writable to /var
-cp -ar /opt/app/changedfiles/frontend/app/storage /var
+cp -r /opt/app/changedfiles/frontend/app/storage /var
 mkdir -p /var/storage/config/setup
 
 # Cleanup log files
