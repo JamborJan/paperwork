@@ -20,3 +20,4 @@ frontend/install.sh
 frontend/bower_components
 *.spk
 *.zip
+/paperwork

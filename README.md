@@ -21,16 +21,16 @@ You will need to install:
 
 ## Step by Step
 
-    git clone https://github.com/zarvox/vagrant-spk
-    git clone https://github.com/JamborJan/paperwork
-    export PATH=$(pwd)/vagrant-spk:$PATH
-    cd paperwork
-    vagrant-spk vm up
-    vagrant-spk dev
+```
+git clone https://github.com/sandstorm-io/vagrant-spk
+git clone https://github.com/JamborJan/paperwork
+export PATH=$(pwd)/vagrant-spk:$PATH
+cd paperwork
+vagrant-spk vm up
+vagrant-spk dev
+```
 
-    visit [http://local.sandstorm.io:6080/](http://local.sandstorm.io:6080/) in a web browser
-
-    vagrant-spk pack paperwork.spk
+visit [http://local.sandstorm.io:6080/](http://local.sandstorm.io:6080/) in a web browser
 
 Note: when you want to fork this repo and create actual app packages for the app store you would need either the original app key or create a new one and make your own app.
 

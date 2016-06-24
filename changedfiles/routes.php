@@ -37,6 +37,7 @@ if(!File::exists(storage_path()."/db_settings")) {
 
 if (Config::get('paperwork.sandstorm')) {
   Route::get('/login', ["as" => "user/login", "uses" => "UserController@checkSandstormUsers"]);
+}
 
 if(File::exists(storage_path()."/setup")) {
     Route::get('{all}', ["as" => "setup/installer", "uses" => "SetupController@showInstallerPage"])->where('all', '.*');

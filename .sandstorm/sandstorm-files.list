@@ -19,6 +19,7 @@ bin/sleep
 bin/stty
 bin/su
 etc/alternatives/php
+etc/bash.bashrc
 etc/bash_completion.d
 etc/bash_completion.d/debconf
 etc/bash_completion.d/dkms
@@ -90,6 +91,7 @@ etc/profile.d/nodejs.sh
 etc/services
 etc/ssl/openssl.cnf
 initrd.img
+lib/terminfo/d/dumb
 lib/terminfo/x/xterm-256color
 lib/x86_64-linux-gnu/ld-2.19.so
 lib/x86_64-linux-gnu/libacl.so.1
@@ -280,6 +282,7 @@ opt/app/paperwork/frontend/vendor/composer/autoload_files.php
 opt/app/paperwork/frontend/vendor/composer/autoload_namespaces.php
 opt/app/paperwork/frontend/vendor/composer/autoload_psr4.php
 opt/app/paperwork/frontend/vendor/composer/autoload_real.php
+opt/app/paperwork/frontend/vendor/composer/autoload_static.php
 opt/app/paperwork/frontend/vendor/composer/include_paths.php
 opt/app/paperwork/frontend/vendor/doctrine/common/lib/Doctrine/Common/EventManager.php
 opt/app/paperwork/frontend/vendor/doctrine/dbal/lib/Doctrine/DBAL/Configuration.php
@@ -423,6 +426,7 @@ opt/app/paperwork/frontend/vendor/laravel/framework/src/Illuminate/Database/Quer
 opt/app/paperwork/frontend/vendor/laravel/framework/src/Illuminate/Database/Query/JoinClause.php
 opt/app/paperwork/frontend/vendor/laravel/framework/src/Illuminate/Database/Query/Processors/MySqlProcessor.php
 opt/app/paperwork/frontend/vendor/laravel/framework/src/Illuminate/Database/Query/Processors/Processor.php
+opt/app/paperwork/frontend/vendor/laravel/framework/src/Illuminate/Database/QueryException.php
 opt/app/paperwork/frontend/vendor/laravel/framework/src/Illuminate/Database/Schema/Blueprint.php
 opt/app/paperwork/frontend/vendor/laravel/framework/src/Illuminate/Database/Schema/Builder.php
 opt/app/paperwork/frontend/vendor/laravel/framework/src/Illuminate/Database/Schema/Grammars/Grammar.php
@@ -655,6 +659,7 @@ opt/app/paperwork/frontend/vendor/symfony/console/Symfony/Component/Console/Outp
 opt/app/paperwork/frontend/vendor/symfony/console/Symfony/Component/Console/Output/Output.php
 opt/app/paperwork/frontend/vendor/symfony/console/Symfony/Component/Console/Output/OutputInterface.php
 opt/app/paperwork/frontend/vendor/symfony/console/Symfony/Component/Console/Output/StreamOutput.php
+opt/app/paperwork/frontend/vendor/symfony/debug/Symfony/Component/Debug/Exception/FatalErrorException.php
 opt/app/paperwork/frontend/vendor/symfony/finder/Symfony/Component/Finder/Adapter/AbstractAdapter.php
 opt/app/paperwork/frontend/vendor/symfony/finder/Symfony/Component/Finder/Adapter/AbstractFindAdapter.php
 opt/app/paperwork/frontend/vendor/symfony/finder/Symfony/Component/Finder/Adapter/AdapterInterface.php
