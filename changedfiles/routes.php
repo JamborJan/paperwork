@@ -35,10 +35,6 @@ if(!File::exists(storage_path()."/db_settings")) {
     File::put(storage_path()."/setup", "");
 }
 
-if (Config::get('paperwork.sandstorm')) {
-  Route::get('/login', ["as" => "user/login", "uses" => "UserController@checkSandstormUsers"]);
-}
-
 if(File::exists(storage_path()."/setup")) {
     Route::get('{all}', ["as" => "setup/installer", "uses" => "SetupController@showInstallerPage"])->where('all', '.*');
     Route::post('/install/checkdb', ["as" => "install/checkdb", "uses" => "SetupController@setupDatabase"]);
@@ -47,8 +43,12 @@ if(File::exists(storage_path()."/setup")) {
     Route::post("/install/configurate", ["as" => "install/configurate", "uses" => "SetupController@configurate"]);
     Route::post("/install/update", ["as" => "install/update", "uses" => "SetupController@update"]);
 }else{
-    Route::get('/login', ["as" => "user/login", "uses" => "UserController@showLoginForm"]);
-    Route::post('/login', ["as" => "user/login", "uses" => "UserController@login"]);
+		if (Config::get('paperwork.sandstorm')) {
+		  Route::get('/login', ["as" => "user/login", "uses" => "UserController@checkSandstormUsers"]);
+		} else {
+			Route::get('/login', ["as" => "user/login", "uses" => "UserController@showLoginForm"]);
+			Route::post('/login', ["as" => "user/login", "uses" => "UserController@login"]);
+		}
 
     if (Config::get('paperwork.registration')) {
         Route::get("/register", ["as" => "user/register", "uses" => "UserController@showRegistrationForm"]);

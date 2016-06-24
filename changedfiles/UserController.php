@@ -115,8 +115,6 @@ class UserController extends BaseController
 
     public function checkSandstormUsers()
     {
-
-      return View::make('user.debug');
       
       // get permission via HTTP_X_SANDSTORM header
       $sandstorm_permissions = $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'];
