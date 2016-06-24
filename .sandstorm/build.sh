@@ -37,3 +37,5 @@ cp /opt/app/changedfiles/UserController.php /opt/app/paperwork/frontend/app/cont
 # These two things are used for debugging:
 cp /opt/app/changedfiles/debug-main.blade.php /opt/app/paperwork/frontend/app/views/partials/debug-main.blade.php
 cp /opt/app/changedfiles/debug.blade.php /opt/app/paperwork/frontend/app/views/user/debug.blade.php
+# Remove buttons we don't need in Sandstorm mode
+cp /opt/app/changedfiles/navigation-main.blade.php /opt/app/paperwork/frontend/app/views/partials/navigation-main.blade.php
