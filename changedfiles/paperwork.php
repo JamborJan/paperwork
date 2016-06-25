@@ -1,5 +1,11 @@
 <?php
 
+if(File::exists(storage_path() . "/config/paperwork.json")) {
+    $configuration = json_decode(file_get_contents(storage_path() . "/config/paperwork.json"));
+}else{
+    $configuration = json_decode(file_get_contents(storage_path() . "/config/default_paperwork.json"));
+}
+
 return array(
 	/*
 	|--------------------------------------------------------------------------
@@ -66,7 +72,7 @@ return array(
 	| no new users will be able to register.
 	|
 	*/
-	'registration' => false,
+	'registration' => isset($configuration->registration) ? ($configuration->registration == "true") : true,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -76,7 +82,7 @@ return array(
 	| If set to true, forgot password link is enabled.
 	|
 	*/
-	'forgot_password' => false,
+	'forgot_password' => isset($configuration->forgot_password) ? ($configuration->forgot_password == "true") : true,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -88,7 +94,7 @@ return array(
 	| language set in app.php -> locale will be used.
 	|
 	*/
-	'userAgentLanguage' => true,
+	'userAgentLanguage' => isset($configuration->userAgentLanguage) ? ($configuration->userAgentLanguage == "true") : false,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -164,7 +170,7 @@ return array(
 	| If set to true, a link for reporting issues is being displayed.
 	|
 	*/
-	'showIssueReportingLink' => false,
+	'showIssueReportingLink' => isset($configuration->showIssueReportingLink) ? ($configuration->showIssueReportingLink == "true") : true,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -187,5 +193,14 @@ return array(
 	*/
 	'tagsPublicPrefixCharacter' => '+',
   	'purgeTagList' => ['script'],
+
+  	/*
+  	|------------------------------------------------------------------------
+  	| Maximum Attachments Per Note
+  	|------------------------------------------------------------------------
+  	|
+  	| The maximum number of attachments that can be attachned to each note.
+  	*/
+  	'maximumAttachmentsPerNote' => 10,
 
 );
