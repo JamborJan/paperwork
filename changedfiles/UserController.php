@@ -115,7 +115,7 @@ class UserController extends BaseController
 
     public function checkSandstormUsers()
     {
-      
+
       // get permission via HTTP_X_SANDSTORM header
       $sandstorm_permissions = $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'];
       // Only when we are admin, we check and create users
@@ -196,22 +196,24 @@ class UserController extends BaseController
           $noteCreate->users()->attach($sandstorm_admin->id, ['umask' => PaperworkHelpers::UMASK_OWNER]);
           $noteCreate->tags()->sync([$tagCreate->id]);
         }
-        // login
-        if ($sandstorm_permissions == "read") {
-          $credentials = ["username" => "sandstorm_readonly", "password" => "sandstorm_readonly"];
-        }
-        if ($sandstorm_permissions == "write,read") {
-          $credentials = ["username" => "sandstorm_readwrite", "password" => "sandstorm_readwrite"];
-        }
-        if ($sandstorm_permissions == "admin,write,read") {
-          $credentials = ["username" => "sandstorm_admin", "password" => "sandstorm_admin"];
-        }
-        if (Auth::attempt($credentials)) {
-          $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
-          Session::put('ui_language', $settings->ui_language);
-          return Redirect::route("/");
-        }
       }
+
+      // login
+      if ($sandstorm_permissions == "read") {
+        $credentials = ["username" => "sandstorm_readonly", "password" => "sandstorm_readonly"];
+      }
+      if ($sandstorm_permissions == "write,read") {
+        $credentials = ["username" => "sandstorm_readwrite", "password" => "sandstorm_readwrite"];
+      }
+      if ($sandstorm_permissions == "admin,write,read") {
+        $credentials = ["username" => "sandstorm_admin", "password" => "sandstorm_admin"];
+      }
+      if (Auth::attempt($credentials)) {
+        $settings = Setting::where('user_id', '=', Auth::user()->id)->first();
+        Session::put('ui_language', $settings->ui_language);
+        return Redirect::route("/");
+      }
+
     }
 
     protected function isPostRequest()
