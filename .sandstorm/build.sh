@@ -29,17 +29,4 @@ rm -rf /var/storage
 ln -s /var/storage /opt/app/paperwork/frontend/app
 
 # Some files needed to be changed for ruinning Paperwork on Sandstorm
-# We have a prepared config file
-cp /opt/app/changedfiles/paperwork.php /opt/app/paperwork/frontend/app/config/paperwork.php
-# This changes some routes so that we don't have login screens
-cp /opt/app/changedfiles/routes.php /opt/app/paperwork/frontend/app/routes.php
-# This adds Dummy users in Sandstorm mode
-cp /opt/app/changedfiles/UserController.php /opt/app/paperwork/frontend/app/controllers/UserController.php
-# These things are used for debugging:
-cp /opt/app/changedfiles/debug-main.blade.php /opt/app/paperwork/frontend/app/views/partials/debug-main.blade.php
-cp /opt/app/changedfiles/debug.blade.php /opt/app/paperwork/frontend/app/views/user/debug.blade.php
-cp /opt/app/changedfiles/main.blade.php /opt/app/paperwork/frontend/app/views/main.blade.php
-# Remove buttons we don't need in Sandstorm mode
-cp /opt/app/changedfiles/navigation-main.blade.php /opt/app/paperwork/frontend/app/views/partials/navigation-main.blade.php
-cp /opt/app/changedfiles/menu-main.blade.php /opt/app/paperwork/frontend/app/views/partials/menu-main.blade.php
-cp /opt/app/changedfiles/paperworkNoteShow.blade.php /opt/app/paperwork/frontend/app/views/templates/paperworkNoteShow.blade.php
+cp -rf /opt/app/changedfiles/frontend/* /opt/app/paperwork/frontend

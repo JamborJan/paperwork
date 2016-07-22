@@ -478,24 +478,29 @@ class UserController extends BaseController
     {
         if ($this->isPostRequest()) {
             if(Input::hasFile('enex')) {
-                $notebookId = with(new \Paperwork\Import\EvernoteImport())->import(Input::file('enex'));
-                if($notebookId) {
-                    // TODO: redirect to notebook
-                    return Redirect::route("/");
+                $notebookNew = with(new \Paperwork\Import\EvernoteImport())->import(Input::file('enex'));
+                if($notebookNew[0]) {
+                    return Redirect::route("user/settings")
+                                   ->withErrors(["enex_file_success" => $notebookNew[1]]);
                 }
                 else {
-                    // Show some error message
+                    return Redirect::route("user/settings")
+                                   ->withErrors(["enex_file" => $notebookNew[1]]);
                 }
+            } else {
+              return Redirect::route("user/settings")
+                            ->withErrors(["enex_file" => "You must choose a ENEX file!"]);
             }
+        } else {
+          return Redirect::route("user/settings")
+                        ->withErrors(["enex_file" => "Nothing selected!"]);
         }
-        return Redirect::route("user/settings");
     }
 
     public function export()
     {
         $file_content = "";
         $noteNumber   = 0;
-
         $notes = DB::table('notes')
                    ->join('note_user', function ($join) {
                        $join->on('notes.id', '=', 'note_user.note_id')
@@ -515,13 +520,11 @@ class UserController extends BaseController
                    ->whereNull('notes.deleted_at')
                    ->whereNull('notebooks.deleted_at')
                    ->get();
-
         $noteCount = count($notes);
         foreach ($notes as $note) {
             $noteNumber++;
             $versionId = $note->version_id;
             $noteid    = $note->id;
-
             $noteArray = [
               'title'   => $note->title,
               'content' => $note->content,
@@ -530,7 +533,6 @@ class UserController extends BaseController
               'updated' => date('omd', strtotime($note->updated_at)) . 'T' .
                            date('His', strtotime($note->updated_at)) . 'Z'
             ];
-
             $attachments = DB::table('attachment_version')
                              ->join('versions',
                                function ($join) use (&$versionId) {
@@ -546,7 +548,6 @@ class UserController extends BaseController
                                'attachments.mimetype')
                              ->whereNull('attachments.deleted_at')
                              ->get();
-
             $tags = DB::table('tags')
                       ->join('tag_note', function ($join) use (&$noteid) {
                           $join->on('tags.id', '=', 'tag_note.tag_id')
@@ -554,14 +555,11 @@ class UserController extends BaseController
                       })
                       ->select('tags.title')
                       ->get();
-
             foreach ($tags as $tag) {
                 $noteArray['tags'][] = ['title' => $tag->title];
             }
-
             $noteArray['firstname'] = Auth::user()->firstname;
             $noteArray['lastname']  = Auth::user()->lastname;
-
             foreach ($attachments as $attachment) {
                 $attachments_directory =
                   Config::get('paperwork.attachmentsDirectory');
@@ -570,7 +568,6 @@ class UserController extends BaseController
                   $attachment->filename;
                 $file_contents         = File::get($path);
                 $data                  = base64_encode($file_contents);
-
                 $noteArray['attachments'][] = [
                   'hash'     => md5($file_contents),
                   'filename' => $attachment->filename,
@@ -578,24 +575,19 @@ class UserController extends BaseController
                   'encoded'  => $data
                 ];
             }
-
             if ($noteNumber == 1) {
                 $noteArray['start'] = 1;
             }
-
             if ($noteNumber == $noteCount) {
                 $noteArray['end'] = 1;
             }
-
             $file_content .= View::make('user/settings/export_file', $noteArray)
                                  ->render();
         }
-
         $headers = [
           "Content-Type"        => "application/xml",
           "Content-Disposition" => "attachment; filename=\"export.enex\""
         ];
-
         return Response::make(rtrim($file_content, "\r\n"), 200, $headers);
     }
 }
