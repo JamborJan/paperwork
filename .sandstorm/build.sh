@@ -16,6 +16,7 @@ php composer.phar self-update
 
 # Install paperwork's npm dependencies
 npm install
+npm update
 
 # Install bower dependencies
 bower install
