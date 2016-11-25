@@ -3,6 +3,7 @@
 # Create a bunch of folders under the clean /var that php, nginx, and mysql expect to exist
 mkdir -p /var/lib/mysql
 mkdir -p /var/lib/nginx
+mkdir -p /var/lib/php5/sessions
 mkdir -p /var/log
 mkdir -p /var/log/mysql
 mkdir -p /var/log/nginx
@@ -10,16 +11,12 @@ mkdir -p /var/log/nginx
 # TODO someday: I'd prefer a tmpfs for these.
 rm -rf /var/run
 mkdir -p /var/run
+rm -rf /var/tmp
+mkdir -p /var/tmp
 mkdir -p /var/run/mysqld
 
-# move storage folders which must be writable to /var
-mkdir -p /var/storage
-mkdir -p /var/storage/attachments
-mkdir -p /var/storage/cache
-mkdir -p /var/storage/logs
-mkdir -p /var/storage/meta
-mkdir -p /var/storage/sessions
-mkdir -p /var/storage/views
+# copy storage folders which must be writable to /var
+cp -r /opt/app/changedfiles/storage /var
 
 # Cleanup log files
 FILES="$(find /var/log -name '*.log')"
@@ -47,7 +44,14 @@ done
 # Ensure the paperwork database exists.
 echo "CREATE DATABASE IF NOT EXISTS paperwork DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; GRANT ALL PRIVILEGES ON paperwork.* TO 'paperwork'@'localhost' IDENTIFIED BY 'paperwork' WITH GRANT OPTION; FLUSH PRIVILEGES;" | mysql --user root --socket /var/run/mysqld/mysqld.sock
 # Run database migrations.
-time php /opt/app/frontend/artisan migrate --force
+time php /opt/app/paperwork/frontend/artisan migrate --force
+
+# Some files needed to be changed for ruinning Paperwork
+# on Sandstorm. We copy these in the repository
+/usr/bin/mysqladmin -u root password 'new-password'
+rm -rf /opt/app/paperwork/frontend/app/storage/setup
+cp /opt/app/changedfiles/db_settings /opt/app/paperwork/frontend/app/storage/db_settings
+cp /opt/app/changedfiles/paperwork_settings /opt/app/paperwork/frontend/app/storage/paperwork_settings
 
 # Start nginx.
 /usr/sbin/nginx -c /opt/app/.sandstorm/service-config/nginx.conf -g "daemon off;"

@@ -3,9 +3,10 @@
 
 set -euo pipefail
 
-cd /opt/app/frontend
+# Setup composer
+cd /opt/app/paperwork/frontend
 
-if [ -f /opt/app/frontend/composer.json ] ; then
+if [ -f /opt/app/paperwork/frontend/composer.json ] ; then
     if [ ! -f composer.phar ] ; then
         curl -sS https://getcomposer.org/installer | php
     fi
@@ -15,6 +16,7 @@ php composer.phar self-update
 
 # Install paperwork's npm dependencies
 npm install
+npm update
 
 # Install bower dependencies
 bower install
@@ -23,6 +25,9 @@ bower install
 gulp
 
 # link storage folder
-rm -rf /opt/app/frontend/app/storage
+rm -rf /opt/app/paperwork/frontend/app/storage
 rm -rf /var/storage
-ln -s /var/storage /opt/app/frontend/app
+ln -s /var/storage /opt/app/paperwork/frontend/app
+
+# Some files needed to be changed for ruinning Paperwork on Sandstorm
+cp -rf /opt/app/changedfiles/frontend/* /opt/app/paperwork/frontend

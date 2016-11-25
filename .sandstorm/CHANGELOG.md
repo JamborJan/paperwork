@@ -1,3 +1,16 @@
+## Version 8
+
+Bugfixes:
+- Some performance improvements due to update to latest Paperwork version
+- Fixed a blank screen issue due to update to latest Paperwork version https://github.com/JamborJan/paperwork/issues/45
+- Import issues fixed, see https://github.com/twostairs/paperwork/issues/667 (the import is still kind of weak)
+
+House keeping:
+- Improved build process to allow easier updates of the Sandstorm port when Paperwork is updated
+- Updated to latest Paperwork version
+- Updated the vagrant lemp-stack settings
+- Updated from nodejs version 5 to version 6 LTS
+
 ## Version 7
 This version has a new app ID. It requires Sandstorm v0.146 (2016-02-21) to allow seamless update to this version.
 
