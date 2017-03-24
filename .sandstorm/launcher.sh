@@ -17,6 +17,7 @@ mkdir -p /var/run/mysqld
 
 # copy storage folders which must be writable to /var
 cp -r /opt/app/changedfiles/storage /var
+chmod 777 -R /var/storage
 
 # Cleanup log files
 FILES="$(find /var/log -name '*.log')"
