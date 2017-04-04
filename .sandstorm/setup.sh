@@ -63,11 +63,11 @@ cd /opt/app/
 rm -rf /opt/app/paperwork
 
 # Clone git repository for master build
-# git clone https://github.com/twostairs/paperwork
+git clone https://github.com/twostairs/paperwork
 
 # Clone other repos & checkout branches for tests
-git clone https://github.com/Liongold/paperwork
-cd /opt/app/paperwork/
-git checkout issue-731-bugfix
+#git clone https://github.com/Liongold/paperwork
+#cd /opt/app/paperwork/
+#git checkout issue-731-bugfix
 
 exit 0
