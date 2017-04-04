@@ -61,10 +61,13 @@ EOF
 cd /opt/app/
 # Purge git repository just in case it is there
 rm -rf /opt/app/paperwork
-# Clone git repository
-git clone https://github.com/twostairs/paperwork
-# Check out develpoment branch
-#cd /opt/app/paperwork/
-#git checkout develop
+
+# Clone git repository for master build
+# git clone https://github.com/twostairs/paperwork
+
+# Clone other repos & checkout branches for tests
+git clone https://github.com/Liongold/paperwork
+cd /opt/app/paperwork/
+git checkout issue-731-bugfix
 
 exit 0
