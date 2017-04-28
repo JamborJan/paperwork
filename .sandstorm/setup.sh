@@ -4,9 +4,9 @@ set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
 # Add latest nodejs sources
-curl -sL https://deb.nodesource.com/setup_6.x | bash -
+curl -sL https://deb.nodesource.com/setup_7.x | bash -
 apt-get update
-apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-dev php5-gd php5-mcrypt mysql-server nodejs git
+apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-dev php5-gd php5-mcrypt php5-ldap mysql-server nodejs git
 # Install bower and gulp
 npm install -g gulp bower
 # Enable mcrypt for PHP
@@ -68,6 +68,6 @@ git clone https://github.com/twostairs/paperwork
 # Clone other repos & checkout branches for tests
 #git clone https://github.com/Liongold/paperwork
 #cd /opt/app/paperwork/
-#git checkout issue-731-bugfix
+#git checkout branch-name
 
 exit 0
