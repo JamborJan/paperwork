@@ -15,6 +15,11 @@ rm -rf /var/tmp
 mkdir -p /var/tmp
 mkdir -p /var/run/mysqld
 
+# cleanup for update of older grains
+rm -rf /var/storage/config/setup
+rm /var/storage/paperwork_settings
+rm /var/storage/db_settings
+
 # copy storage folders which must be writable to /var
 cp -r /opt/app/changedfiles/storage /var
 chmod 777 -R /var/storage

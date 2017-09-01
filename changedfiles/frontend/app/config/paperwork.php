@@ -61,7 +61,7 @@ return array(
   |
   */
   'sandstorm' => true,
-  'sandstorm_debug' => true,
+  'sandstorm_debug' => false,
 
 	/*
 	|--------------------------------------------------------------------------

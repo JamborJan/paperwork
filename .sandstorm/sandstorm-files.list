@@ -159,12 +159,14 @@ opt/app/.sandstorm/service-config/nginx.conf
 opt/app/changedfiles/db_settings
 opt/app/changedfiles/paperwork_settings
 opt/app/changedfiles/storage
+opt/app/changedfiles/storage/.DS_Store
 opt/app/changedfiles/storage/.gitignore
 opt/app/changedfiles/storage/attachments
 opt/app/changedfiles/storage/attachments/.empty
 opt/app/changedfiles/storage/cache
 opt/app/changedfiles/storage/cache/.gitignore
 opt/app/changedfiles/storage/config
+opt/app/changedfiles/storage/config/.DS_Store
 opt/app/changedfiles/storage/config/.gitignore
 opt/app/changedfiles/storage/config/database.json
 opt/app/changedfiles/storage/config/paperwork.json
