@@ -47,12 +47,5 @@ echo "CREATE DATABASE IF NOT EXISTS paperwork DEFAULT CHARACTER SET utf8 COLLATE
 # Run database migrations.
 time php /opt/app/paperwork/frontend/artisan migrate --force
 
-# Some files needed to be changed for ruinning Paperwork
-# on Sandstorm. We copy these in the repository
-/usr/bin/mysqladmin -u root password 'new-password'
-rm -rf /opt/app/paperwork/frontend/app/storage/setup
-cp /opt/app/changedfiles/db_settings /opt/app/paperwork/frontend/app/storage/db_settings
-cp /opt/app/changedfiles/paperwork_settings /opt/app/paperwork/frontend/app/storage/paperwork_settings
-
 # Start nginx.
 /usr/sbin/nginx -c /opt/app/.sandstorm/service-config/nginx.conf -g "daemon off;"
