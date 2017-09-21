@@ -19,7 +19,7 @@ const pkgdef :Spk.PackageDefinition = (
 
     appTitle = (defaultText = "Paperwork"),
 
-    appVersion = 8,  # Increment this for every release.
+    appVersion = 9,  # Increment this for every release.
 
     appMarketingVersion = (defaultText = "2017.09.01"),
     # Human-readable representation of appVersion. Should match the way you
