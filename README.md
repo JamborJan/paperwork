@@ -1,4 +1,6 @@
-This project is dormant ([reasons](https://gist.github.com/JamborJan/8e42eff813b6fb0b6fe987afb9241c5e)). Feel free to fork it and take over maintenance.
+This project is dormant ([reasons](https://gist.github.com/JamborJan/8e42eff813b6fb0b6fe987afb9241c5e)). 
+
+Issues have been closed as there will be no further progress on them. Feel free to fork the repo and take over maintenance.
 
 # Paperwork Sandstorm package
 
